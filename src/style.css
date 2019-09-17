@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.leaflet-container {
+    height: 100vh;
+}
+
+.button {
+    z-index: 5555;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
