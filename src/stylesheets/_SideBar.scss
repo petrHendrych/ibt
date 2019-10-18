@@ -1,0 +1,12 @@
+.side-bar {
+  position: absolute;
+  width: 400px;
+  height: 100vh;
+  right: 0;
+  top: 0;
+  background: #f6f6f6;
+  z-index: 1000;
+  -webkit-box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
+  box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
+}
