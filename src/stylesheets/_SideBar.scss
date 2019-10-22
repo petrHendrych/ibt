@@ -1,7 +1,9 @@
 .side-bar {
-  position: absolute;
+  position: relative;
+  float: right;
   width: 400px;
   height: 100vh;
+  overflow-y: auto;
   right: 0;
   top: 0;
   background: #f6f6f6;
@@ -9,4 +11,34 @@
   -webkit-box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
   -moz-box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
   box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
+
+  .card {
+    border-radius: 0;
+    border-right: none;
+  }
+
+  .accordion {
+    margin-top: 50px;
+  }
+}
+
+/* SideBar header css */
+
+.side-bar-header {
+  position: fixed;
+  z-index: 444;
+  width: 400px;
+  background: #fff;
+  height: 50px;
+  border-bottom: 1px solid black;
+  .box {
+    width: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    &:hover {
+      background: #f6f6f6;
+    }
+  }
 }

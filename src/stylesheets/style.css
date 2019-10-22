@@ -1,7 +1,9 @@
 .side-bar {
-  position: absolute;
+  position: relative;
+  float: right;
   width: 400px;
   height: 100vh;
+  overflow-y: auto;
   right: 0;
   top: 0;
   background: #f6f6f6;
@@ -9,6 +11,28 @@
   -webkit-box-shadow: 0 0 20px -3px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0 0 20px -3px rgba(0, 0, 0, 0.75);
   box-shadow: 0 0 20px -3px rgba(0, 0, 0, 0.75); }
+  .side-bar .card {
+    border-radius: 0;
+    border-right: none; }
+  .side-bar .accordion {
+    margin-top: 50px; }
+
+/* SideBar header css */
+.side-bar-header {
+  position: fixed;
+  z-index: 444;
+  width: 400px;
+  background: #fff;
+  height: 50px;
+  border-bottom: 1px solid black; }
+  .side-bar-header .box {
+    width: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; }
+    .side-bar-header .box:hover {
+      background: #f6f6f6; }
 
 * {
   margin: 0;
@@ -19,15 +43,20 @@
   top: 0;
   height: 100vh; }
 
-button {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  z-index: 5555; }
-
 .card-header {
   cursor: pointer !important;
   text-align: center;
   padding: 5px 1.25rem !important; }
+
+button {
+  position: absolute;
+  z-index: 9999;
+  bottom: 0;
+  left: 0; }
+
+.flex-mid {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
 
 /*# sourceMappingURL=style.css.map */
