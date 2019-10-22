@@ -15,6 +15,9 @@
   .card {
     border-radius: 0;
     border-right: none;
+    .card-header:hover {
+      background: #def6df;
+    }
   }
 
   .accordion {
@@ -38,7 +41,11 @@
     justify-content: center;
     cursor: pointer;
     &:hover {
-      background: #f6f6f6;
+      background: #c0f6c5;
     }
   }
+}
+
+.selected {
+  background: #def6df;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import {applyMiddleware, createStore} from 'redux';
 import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
@@ -8,8 +8,17 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import reducers from './reducers';
 
+const loggerMiddleware = store => next => action => {
+    console.group(action.type);
+    console.info("Action", action);
+    const result = next(action);
+    console.log("Next state", store.getState());
+    console.groupEnd();
+    return result;
+};
+
 ReactDOM.render(
-    <Provider store={createStore(reducers)}>
+    <Provider store={createStore(reducers, applyMiddleware(loggerMiddleware))}>
         <App />
     </Provider>,
     document.getElementById('root')

@@ -1,6 +1,6 @@
-export const selectPoint = point => {
+export const selectPoint = pointIndex => {
     return {
         type: 'POINT_SELECTED',
-        payload: point
+        payload: pointIndex
     }
 };

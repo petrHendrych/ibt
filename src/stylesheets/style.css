@@ -14,6 +14,8 @@
   .side-bar .card {
     border-radius: 0;
     border-right: none; }
+    .side-bar .card .card-header:hover {
+      background: #def6df; }
   .side-bar .accordion {
     margin-top: 50px; }
 
@@ -32,7 +34,10 @@
     justify-content: center;
     cursor: pointer; }
     .side-bar-header .box:hover {
-      background: #f6f6f6; }
+      background: #c0f6c5; }
+
+.selected {
+  background: #def6df; }
 
 * {
   margin: 0;
@@ -49,6 +54,7 @@
   padding: 5px 1.25rem !important; }
 
 button {
+  padding: 5px 15px;
   position: absolute;
   z-index: 9999;
   bottom: 0;

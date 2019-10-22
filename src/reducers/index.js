@@ -275,8 +275,11 @@ const pointsReducer = () => {
     ]
 };
 
-const selectedPointReducer = (selectedPoint = [], action) => {
+const selectedPointReducer = (selectedPoint = null, action) => {
     if (action.type === 'POINT_SELECTED') {
+        if (selectedPoint === action.payload) {
+            return null;
+        }
         return action.payload;
     }
     return selectedPoint;
@@ -284,5 +287,5 @@ const selectedPointReducer = (selectedPoint = [], action) => {
 
 export default combineReducers({
     points: pointsReducer,
-    selectedSong: selectedPointReducer
+    selectedPoint: selectedPointReducer
 });

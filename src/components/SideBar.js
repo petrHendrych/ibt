@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
+import { selectPoint } from "../actions";
 
 
 export default class SideBar extends Component {
@@ -11,9 +12,11 @@ export default class SideBar extends Component {
         return (
             <div className="side-bar">
                 <SideBarHeader />
-                <Accordion>
+                <Accordion activeKey={this.props.selectedIndex}>
                     {this.props.points.map((coordinates, index) =>
                         <SideBarCard
+                            onClick={() => this.props.selectPoint(index)}
+                            active={index === this.props.selectedIndex}
                             key={`card-${index}`}
                             index={index}
                             lng={this.props.points[index][1]}
@@ -30,7 +33,13 @@ export default class SideBar extends Component {
 SideBar = connect (
     state => {
         return {
-            points: state.points
+            points: state.points,
+            selectedIndex: state.selectedPoint
+        }
+    },
+    dispatch => {
+        return {
+            selectPoint: (p) => dispatch(selectPoint(p))
         }
     }
 )(SideBar);

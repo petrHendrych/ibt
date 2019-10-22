@@ -1,6 +1,7 @@
-import React, {Component, createRef} from 'react';
+import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {Map, TileLayer, Polyline, FeatureGroup} from "react-leaflet";
+import {Map, TileLayer, Polyline, Marker, FeatureGroup} from "react-leaflet";
+import {latLngBounds} from "leaflet";
 
 
 
@@ -8,8 +9,8 @@ export default class MyMap extends Component {
     constructor(props) {
         super(props);
 
-        this.map = createRef();
-        this.group = createRef();
+        this.map = React.createRef();
+        this.group = React.createRef();
     }
 
     handleClick = () => {
@@ -19,23 +20,19 @@ export default class MyMap extends Component {
     };
 
     render() {
+        const bounds = latLngBounds(this.props.points);
+
         return (
-            <Map
-                ref={this.map}
-                center={[49.9277237, 14.2883905]}
-                zoom={14}
-                doubleClickZoom={false}
-                // boundsOptions={this.group.current.leafletElement.getBounds()}
-            >
+            <Map doubleClickZoom={false} bounds={bounds} ref={this.map}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <button onClick={this.handleClick}>click</button>
-
+                <button onClick={this.handleClick} className="button">FIT</button>
                 <FeatureGroup ref={this.group}>
                     <Polyline color="black" positions={this.props.points} ref={this.line}/>
                 </FeatureGroup>
+                {this.props.selectedIndex === null ? <></> : <Marker position={this.props.points[this.props.selectedIndex]}/>}
             </Map>
         );
     }
@@ -44,7 +41,8 @@ export default class MyMap extends Component {
 MyMap = connect (
     state => {
         return {
-            points: state.points
+            points: state.points,
+            selectedIndex: state.selectedPoint
         }
     }
 )(MyMap);

@@ -12,7 +12,7 @@ export default class SideBarCard extends Component {
     render() {
         return (
             <Card>
-                <Accordion.Toggle as={Card.Header} eventKey={this.props.index}>
+                <Accordion.Toggle as={Card.Header} eventKey={this.props.index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
                     Bod: {this.state.lat}, {this.state.lng}
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={this.props.index}>
