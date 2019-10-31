@@ -4,6 +4,7 @@ export default class Input extends Component {
     state = { value: this.props.coords };
 
     onInputChange = event => {
+        //TODO allow to use only numbers in inputs
         this.setState({value: event.target.value});
     };
 

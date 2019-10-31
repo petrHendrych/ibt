@@ -3,7 +3,7 @@ import {Card, Accordion} from "react-bootstrap";
 import Input from './Input';
 
 export default class SideBarCard extends Component {
-    state = {lat: this.props.lat, lng: this.props.lng};
+    state = {lat: this.props.coords[0], lng: this.props.coords[1]};
 
     onFormSubmit = event => {
         event.preventDefault();
@@ -21,15 +21,15 @@ export default class SideBarCard extends Component {
                             <form onSubmit={this.onFormSubmit}>
                                 <div>
                                     <label className="mr-2">Latitude</label>
-                                    <Input coords={this.props.lat}/>
+                                    <Input coords={this.props.coords[0]}/>
                                 </div>
                                 <div>
                                     <label className="mr-2">Longitude</label>
-                                    <Input coords={this.props.lng}/>
+                                    <Input coords={this.props.coords[1]}/>
                                 </div>
                                 <div>
                                     <label className="mr-2">Elevation</label>
-                                    <Input coords={this.props.ele}/>
+                                    <Input coords={this.props.coords[2]}/>
                                 </div>
                             </form>
                         </div>

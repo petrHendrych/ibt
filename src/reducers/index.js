@@ -287,5 +287,5 @@ const selectedPointReducer = (selectedPoint = null, action) => {
 
 export default combineReducers({
     points: pointsReducer,
-    selectedPoint: selectedPointReducer
+    selectedIndex: selectedPointReducer
 });
