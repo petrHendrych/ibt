@@ -56,6 +56,7 @@ MyMap = connect (
     dispatch => {
         return {
             fetchData: () => dispatch(fetchData())
+            // getPointLatLng: (e) => dispatch(getPointLatLng(e))
         }
     }
 )(MyMap);

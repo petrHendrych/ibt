@@ -13,9 +13,9 @@ export const fetchData = () => async dispatch => {
     dispatch({ type: 'FETCH_DATA', payload: response.data });
 };
 
-export const getPointLatLng = (e) => {
-    return {
-        type: 'GET_POINT_LAT_LNG',
-        payload: e
-    }
-};
+// export const getPointLatLng = (e) => {
+//     return {
+//         type: 'GET_POINT_LAT_LNG',
+//         payload: e.latlng
+//     }
+// };

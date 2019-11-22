@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import {pointsReducer} from './pointsReducer';
 import dataReducer from './dataReducer';
 
 const selectedPointReducer = (selectedPoint = null, action) => {
@@ -12,9 +11,18 @@ const selectedPointReducer = (selectedPoint = null, action) => {
     return selectedPoint;
 };
 
+// const getBoundsReducer = (state = [], action) => {
+//     switch (action.type) {
+//         case 'GET_POINT_LAT_LNG':
+//             return action.payload;
+//         default:
+//             return state;
+//     }
+// };
+
 
 export default combineReducers({
-    points: pointsReducer,
     selectedIndex: selectedPointReducer,
-    data: dataReducer
+    data: dataReducer,
+    // bounds: getBoundsReducer
 });
