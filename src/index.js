@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {applyMiddleware, createStore} from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import 'bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
 
@@ -18,7 +19,7 @@ const loggerMiddleware = store => next => action => {
 };
 
 ReactDOM.render(
-    <Provider store={createStore(reducers, applyMiddleware(loggerMiddleware))}>
+    <Provider store={createStore(reducers, applyMiddleware(thunk, loggerMiddleware))}>
         <App />
     </Provider>,
     document.getElementById('root')

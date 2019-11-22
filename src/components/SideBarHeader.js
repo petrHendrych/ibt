@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons';
 import {Button, Modal} from "react-bootstrap";
 
 const SideBarHeader = () => {
