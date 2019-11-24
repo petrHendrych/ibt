@@ -11,18 +11,21 @@ const selectedPointReducer = (selectedPoint = null, action) => {
     return selectedPoint;
 };
 
-// const getBoundsReducer = (state = [], action) => {
-//     switch (action.type) {
-//         case 'GET_POINT_LAT_LNG':
-//             return action.payload;
-//         default:
-//             return state;
-//     }
-// };
+const getBoundsReducer = (state = [], action) => {
+    switch (action.type) {
+        case 'GET_POINT_LAT_LNG':
+            if (state.length === 2) {
+                return [action.payload];
+            }
+            return [...state, action.payload];
+        default:
+            return state;
+    }
+};
 
 
 export default combineReducers({
     selectedIndex: selectedPointReducer,
     data: dataReducer,
-    // bounds: getBoundsReducer
+    bounds: getBoundsReducer
 });

@@ -19,18 +19,16 @@
       background: #def6df;
     }
   }
-
-  .accordion {
-    margin-top: 50px;
-  }
 }
 
 /* SideBar header css */
 
 .side-bar-header {
-  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
   z-index: 444;
-  width: 400px;
+  width: 100%;
   background: #fff;
   height: 50px;
   border-bottom: 1px solid black;

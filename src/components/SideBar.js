@@ -33,7 +33,8 @@ export default class SideBar extends Component {
                             active={index === this.props.selectedIndex}
                             key={`card-${index}`}
                             index={index}
-                            coords={this.props.data.features[1].geometry.coordinates[index]}
+                            coords={coordinates}
+                            render={this.props.bounds.length === 2}
                         />
                     )}
                 </Accordion>
@@ -45,7 +46,7 @@ export default class SideBar extends Component {
 SideBar = connect (
     state => {
         return {
-            points: state.points,
+            bounds: state.bounds,
             selectedIndex: state.selectedIndex,
             data: state.data
         }
