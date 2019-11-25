@@ -47,18 +47,10 @@ SideBarCard = connect (
 function CardBody(props) {
     return (
         <Card.Body>
-            <div>
-                <label className="mr-2">Latitude</label>
-                <Input coords={props.coords[0]}/>
-            </div>
-            <div>
-                <label className="mr-2">Longitude</label>
-                <Input coords={props.coords[1]}/>
-            </div>
-            <div>
-                <label className="mr-2">Elevation</label>
-                <Input coords={props.coords[2]}/>
-            </div>
+            <Input label="Lat" coords={props.coords[0]}/>
+            <Input label="Lng" coords={props.coords[1]}/>
+            <Input label="Ele" coords={props.coords[2]}/>
+            <Input label="Time" coords={props.coords[2]}/>
         </Card.Body>
     );
 }

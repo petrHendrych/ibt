@@ -28,6 +28,10 @@ export default class MyMap extends Component {
         this.props.getPointLatLng(coords);
     };
 
+    updateMarker = () => {
+        console.log(this.props.selectedIndex);
+    };
+
     render() {
         let bounds = latLngBounds([[49.24, 16.54], [49.15, 16.71]]);
 
@@ -45,7 +49,7 @@ export default class MyMap extends Component {
                 <FeatureGroup ref={this.group}>
                     {_.isEmpty(this.props.data) ? <></> : <Polyline color="black" positions={this.props.data.features[1].geometry.coordinates} />}
                 </FeatureGroup>
-                {this.props.selectedIndex === null ? <></> : <Marker position={this.props.data.features[1].geometry.coordinates[this.props.selectedIndex]}/>}
+                {this.props.selectedIndex === null ? <></> : <Marker onDrag={this.updateMarker} draggable={true} position={this.props.data.features[1].geometry.coordinates[this.props.selectedIndex]}/>}
                 {this.props.bounds.length === 2 ? <Rectangle bounds={this.props.bounds}/> : <></>}
             </Map>
         );

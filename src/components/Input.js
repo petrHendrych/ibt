@@ -10,9 +10,12 @@ export default class Input extends Component {
 
     render () {
         return (
-            <div>
+            <div className="input-group input-group-sm mb-2 d-inline-flex w-50">
+                <div className="input-group-prepend">
+                    <span className="input-group-text justify-content-center input-span">{this.props.label}</span>
+                </div>
                 <input
-                    className="pl-1"
+                    className="pl-1 side-bar-input"
                     type="text"
                     value={this.state.value}
                     onChange={this.onInputChange}

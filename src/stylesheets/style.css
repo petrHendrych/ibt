@@ -39,9 +39,21 @@
 .selected {
   background: #def6df; }
 
+.side-bar-input {
+  width: 120px;
+  border-radius: 0;
+  border: 1px solid #ced4da; }
+
+.input-span {
+  width: 47.7px;
+  border-radius: 0 !important; }
+
 * {
   margin: 0;
   padding: 0; }
+
+html, body {
+  height: 100%; }
 
 .leaflet-container {
   overflow: hidden;
@@ -75,5 +87,10 @@
 
 .close:focus {
   outline: none !important; }
+
+.side-bar-header a {
+  color: black; }
+  .side-bar-header a:hover {
+    color: black; }
 
 /*# sourceMappingURL=style.css.map */

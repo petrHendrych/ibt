@@ -5,6 +5,10 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+}
+
 .leaflet-container {
   overflow: hidden;
   top: 0;
@@ -43,4 +47,11 @@
 
 .close:focus {
   outline: none !important;
+}
+
+.side-bar-header a {
+  color: black;
+  &:hover {
+    color: black;
+  }
 }

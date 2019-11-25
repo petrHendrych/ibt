@@ -19,3 +19,10 @@ export const getPointLatLng = point => {
         payload: point
     }
 };
+
+export const updatePointLatLng = (points, index) => {
+    return {
+        type: 'UPDATE_POINT',
+        payload: index
+    }
+};

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons';
 import {Button, Modal} from "react-bootstrap";
+import {NavLink} from "react-router-dom";
 
 const SideBarHeader = () => {
     const [show, setShow] = useState(false);
@@ -15,10 +16,13 @@ const SideBarHeader = () => {
                 <FontAwesomeIcon icon={faMapMarkedAlt} className="mr-2"/>
                 Moje trasy
             </div>
-            <div className="box text-center h-100">
-                <FontAwesomeIcon icon={faUser} className="mr-2"/>
-                Petr Hendrych
-            </div>
+            <NavLink to="/login">
+                <div className="box text-center h-100">
+                    <FontAwesomeIcon icon={faUser} className="mr-2"/>
+                    Petr Hendrych
+                </div>
+            </NavLink>
+
             <Modal show={show} onHide={handleClose} backdrop={'static'}>
                 <Modal.Header closeButton>
                     <Modal.Title>Modal heading</Modal.Title>

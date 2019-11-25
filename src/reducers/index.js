@@ -23,7 +23,6 @@ const getBoundsReducer = (state = [], action) => {
     }
 };
 
-
 export default combineReducers({
     selectedIndex: selectedPointReducer,
     data: dataReducer,
