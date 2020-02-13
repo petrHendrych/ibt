@@ -1,9 +1,17 @@
 import React, {Component} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {Redirect} from "react-router";
+import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
-export default class RegisterView extends Component {
+import {registerUser} from "../actions/auth";
+
+class RegisterView extends Component {
     render() {
+        if (this.props.isAuthenticated) {
+            return <Redirect to={"/"}/>
+        }
         return (
             <Container className="w-50">
                 <Row className="justify-content-center align-items-center flex-fill">
@@ -12,7 +20,7 @@ export default class RegisterView extends Component {
                             <Card.Body>
                                 <h1>Register</h1>
                                 <p className="text-muted">Create new account. All fields are required</p>
-                                <RegisterForm />
+                                <RegisterForm registerUser={this.props.registerUser} isAuthenticated={this.props.isAuthenticated}/>
                                 <p className="mt-4">Already have an account? <Link to="/login">Login here!</Link></p>
                             </Card.Body>
                         </Card>
@@ -23,6 +31,12 @@ export default class RegisterView extends Component {
     }
 }
 
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, {registerUser})(RegisterView);
+
 class RegisterForm extends Component {
     state = {
         username: '',
@@ -31,9 +45,25 @@ class RegisterForm extends Component {
         password2: ''
     };
 
+    static propTypes = {
+        registerUser: PropTypes.func.isRequired,
+        isAuthenticated: PropTypes.bool
+    };
+
     onSubmit = (e) => {
         e.preventDefault();
-        console.log('submit');
+        const { username, email, password, password2 } = this.state;
+        if (password !== password2) {
+            // TODO messages reducer
+        } else {
+            const newUser = {
+                username,
+                email,
+                password
+            };
+
+            this.props.registerUser(newUser);
+        }
     };
 
     onChange = (e) => {

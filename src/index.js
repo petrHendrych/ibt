@@ -9,6 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import reducers from './reducers';
 
+
 const loggerMiddleware = store => next => action => {
     console.group(action.type);
     console.info("Action", action);

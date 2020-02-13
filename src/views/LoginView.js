@@ -20,7 +20,7 @@ class LoginView extends Component {
                             <Card.Body>
                                 <h1>Login</h1>
                                 <p className="text-muted">All fields are required</p>
-                                <LoginForm  loginUser={this.props.loginUser} isAuthenticated={this.props.isAuthenticated}/>
+                                <LoginForm  loginUser={this.props.loginUser} />
                                 <p className="mt-4">Do not have an account, yet? <Link to="/register">Register here!</Link></p>
                             </Card.Body>
                         </Card>
@@ -30,6 +30,13 @@ class LoginView extends Component {
         );
     }
 }
+
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { loginUser })(LoginView);
+
 
 class LoginForm extends Component {
     state = {
@@ -74,9 +81,3 @@ class LoginForm extends Component {
         );
     }
 }
-
-const mapStateToProps = (state) => ({
-    isAuthenticated: state.auth.isAuthenticated
-});
-
-export default connect(mapStateToProps, { loginUser })(LoginView);
