@@ -8,6 +8,12 @@ export default (state = {}, action) => {
                 }
             );
             return arr;
+        case 'UPDATE_POINT':
+            let pom =  [...state.features[1].geometry.coordinates];
+            pom[action.payload.index][0] = action.payload.val.lat;
+            pom[action.payload.index][1] = action.payload.val.lng;
+            state.features[1].geometry.coordinates = pom;
+            return {...state};
         default:
             return state;
     }

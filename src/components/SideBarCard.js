@@ -6,8 +6,8 @@ import Input from './Input';
 import {latLngBounds} from 'leaflet';
 
 export default class SideBarCard extends Component {
-    render() {
 
+    render() {
         if (this.props.render) {
             if (latLngBounds(this.props.bounds[0], this.props.bounds[1]).contains(this.props.coords)) {
                 return (

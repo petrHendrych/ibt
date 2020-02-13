@@ -24,17 +24,37 @@ export default class RegisterView extends Component {
 }
 
 class RegisterForm extends Component {
+    state = {
+        username: '',
+        email: '',
+        password: '',
+        password2: ''
+    };
+
+    onSubmit = (e) => {
+        e.preventDefault();
+        console.log('submit');
+    };
+
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+    };
+
     render() {
+        const {username, email, password, password2} = this.state;
+
         return (
-            <Form>
+            <Form onSubmit={this.onSubmit}>
                 <Form.Group controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="email" placeholder="Enter username" />
+                    <Form.Control type="text" placeholder="Enter username" onChange={this.onChange} value={username}
+                    name="username"/>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" placeholder="example@gmail.com" />
+                    <Form.Control type="email" placeholder="example@gmail.com" onChange={this.onChange} value={email}
+                    name="email"/>
                     <Form.Text className="text-muted">
                         We'll never share your email with anyone else.
                     </Form.Text>
@@ -42,12 +62,12 @@ class RegisterForm extends Component {
 
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" />
+                    <Form.Control type="password" onChange={this.onChange} value={password} name="password"/>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Verity password</Form.Label>
-                    <Form.Control type="password" />
+                    <Form.Control type="password" onChange={this.onChange} value={password2} name="password2"/>
                     <Form.Text className="text-muted">
                         Verify password by entering the same password from the above field.
                     </Form.Text>

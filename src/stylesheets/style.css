@@ -31,8 +31,7 @@
     width: 50%;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer; }
+    justify-content: center; }
     .side-bar-header .box:hover {
       background: #c0f6c5; }
 

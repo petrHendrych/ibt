@@ -1,9 +1,17 @@
 import React, {Component} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {Redirect} from "react-router";
+import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
-export default class LoginView extends Component {
+import { loginUser } from '../actions/auth';
+
+class LoginView extends Component {
     render() {
+        if (this.props.isAuthenticated) {
+            return <Redirect to={"/"}/>
+        }
         return (
             <Container className="w-50">
                 <Row className="justify-content-center align-items-center flex-fill">
@@ -12,7 +20,7 @@ export default class LoginView extends Component {
                             <Card.Body>
                                 <h1>Login</h1>
                                 <p className="text-muted">All fields are required</p>
-                                <LoginForm />
+                                <LoginForm  loginUser={this.props.loginUser} isAuthenticated={this.props.isAuthenticated}/>
                                 <p className="mt-4">Do not have an account, yet? <Link to="/register">Register here!</Link></p>
                             </Card.Body>
                         </Card>
@@ -24,17 +32,40 @@ export default class LoginView extends Component {
 }
 
 class LoginForm extends Component {
+    state = {
+        username: '',
+        password: ''
+    };
+
+    static propTypes = {
+        loginUser: PropTypes.func.isRequired,
+        isAuthenticated: PropTypes.bool
+    };
+
+    onSubmit = (e) => {
+        e.preventDefault();
+        this.props.loginUser(this.state.username, this.state.password);
+    };
+
+    onChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    };
+
     render() {
+        const {username, password} = this.state;
+
         return (
-            <Form>
+            <Form onSubmit={this.onSubmit}>
                 <Form.Group controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="email" placeholder="Enter username" />
+                    <Form.Control type="text" placeholder="Enter username" name="username" value={username} onChange={this.onChange}/>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
+                    <Form.Control type="password" placeholder="Password" name="password" value={password} onChange={this.onChange}/>
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Login
@@ -43,3 +74,9 @@ class LoginForm extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { loginUser })(LoginView);

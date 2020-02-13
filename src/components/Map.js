@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {Map, TileLayer, Polyline, Marker, FeatureGroup, Rectangle} from "react-leaflet";
+import {Map, TileLayer, Polyline, Marker, FeatureGroup, Rectangle, GeoJSON} from "react-leaflet";
 import {latLngBounds} from "leaflet";
-import {fetchData, getPointLatLng} from "../actions";
+import {fetchData, getPointLatLng, updatePointLatLng} from "../actions";
 import _ from 'lodash';
 
 export default class MyMap extends Component {
@@ -14,7 +14,7 @@ export default class MyMap extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchData();
+        // this.props.fetchData();
     }
 
     handleClick = () => {
@@ -28,15 +28,16 @@ export default class MyMap extends Component {
         this.props.getPointLatLng(coords);
     };
 
-    updateMarker = () => {
-        console.log(this.props.selectedIndex);
+    updateMarker = (e) => {
+        const coords = e.target.getLatLng();
+        this.props.updatePointLatLng(this.props.selectedIndex, coords);
     };
 
     render() {
         let bounds = latLngBounds([[49.24, 16.54], [49.15, 16.71]]);
 
-        if (!_.isEmpty(this.props.data)) {
-            bounds = latLngBounds(this.props.data.features[1].geometry.coordinates);
+        if (!_.isEmpty(this.props.coordinates)) {
+            bounds = latLngBounds(this.props.coordinates);
         }
 
         return (
@@ -45,11 +46,22 @@ export default class MyMap extends Component {
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {_.isEmpty(this.props.data) ? <></> : <button onClick={this.handleClick} className="fit-button">fit track</button>}
+                {_.isEmpty(this.props.coordinates) ? <></> : <button onClick={this.handleClick} className="fit-button">fit track</button>}
+
                 <FeatureGroup ref={this.group}>
-                    {_.isEmpty(this.props.data) ? <></> : <Polyline color="black" positions={this.props.data.features[1].geometry.coordinates} />}
+                    <Polyline color="black" positions={this.props.coordinates} />
                 </FeatureGroup>
-                {this.props.selectedIndex === null ? <></> : <Marker onDrag={this.updateMarker} draggable={true} position={this.props.data.features[1].geometry.coordinates[this.props.selectedIndex]}/>}
+                {/*{*/}
+                    {/*_.isEmpty(this.props.data) ? <></> :*/}
+                        {/*<GeoJSON data={this.props.data}/>*/}
+                {/*}*/}
+                {
+                    this.props.selectedIndex === null ? <></> :
+                    <Marker onDragEnd={this.updateMarker}
+                            draggable={true}
+                            position={this.props.coordinates[this.props.selectedIndex]}
+                    />
+                }
                 {this.props.bounds.length === 2 ? <Rectangle bounds={this.props.bounds}/> : <></>}
             </Map>
         );
@@ -60,14 +72,16 @@ MyMap = connect (
     state => {
         return {
             selectedIndex: state.selectedIndex,
-            data: state.data,
-            bounds: state.bounds
+            coordinates: _.isEmpty(state.data) ? [] : state.data.features[1].geometry.coordinates,
+            bounds: state.bounds,
+            data: state.data
         }
     },
     dispatch => {
         return {
             fetchData: () => dispatch(fetchData()),
-            getPointLatLng: (point) => dispatch(getPointLatLng(point))
+            getPointLatLng: (point) => dispatch(getPointLatLng(point)),
+            updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
         }
     }
 )(MyMap);

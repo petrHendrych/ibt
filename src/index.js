@@ -18,8 +18,10 @@ const loggerMiddleware = store => next => action => {
     return result;
 };
 
+export const store = createStore(reducers, applyMiddleware(thunk, loggerMiddleware));
+
 ReactDOM.render(
-    <Provider store={createStore(reducers, applyMiddleware(thunk, loggerMiddleware))}>
+    <Provider store={store}>
         <App />
     </Provider>,
     document.getElementById('root')

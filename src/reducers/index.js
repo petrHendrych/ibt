@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import dataReducer from './dataReducer';
+import auth from "./auth";
 
 const selectedPointReducer = (selectedPoint = null, action) => {
     if (action.type === 'POINT_SELECTED') {
@@ -26,5 +27,6 @@ const getBoundsReducer = (state = [], action) => {
 export default combineReducers({
     selectedIndex: selectedPointReducer,
     data: dataReducer,
-    bounds: getBoundsReducer
+    bounds: getBoundsReducer,
+    auth: auth
 });
