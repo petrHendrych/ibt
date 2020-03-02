@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Accordion } from "react-bootstrap";
 import { connect } from 'react-redux';
-// import {List} from 'react-virtualized';
+import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
@@ -13,24 +13,12 @@ import {getTrack} from "../actions/tracks";
 
 export default class SideBar extends Component {
 
-    renderRow = ({index, key}) => {
+    rowRenderer = ({index, key, isScrolling, style}) => {
         return (
-            <SideBarCard
-                onClick={() => this.props.selectPoint(index)}
-                active={index === this.props.selectedIndex}
-                key={`card-${key}`}
-                index={index}
-                coords={this.props.data.features[1].geometry.coordinates[index]}
-                render={this.props.bounds.length === 2}
-            />
-        //     <List
-        // height={700}
-        // width={400}
-        // rowHeight={35}
-        // rowCount={this.props.data.features[1].geometry.coordinates.length}
-        // rowRenderer={this.renderRow}
-        // />
-        );
+            <div key={key} style={style} onClick={() => this.props.getTrack(this.props.trackList[index].id)}>
+                <div>{this.props.trackList[index].name}</div>
+            </div>
+        )
     };
 
     render() {
@@ -49,9 +37,21 @@ export default class SideBar extends Component {
         return (
             <div className="side-bar">
                 <SideBarHeader />
-                {this.props.trackList.map((track) =>
-                    <li key={track.id} onClick={() => this.props.getTrack(track.id)}>{track.name}</li>
-                )}
+                <div className="list-area">
+                    <List
+                        rowCount={this.props.trackList.length}
+                        width={400}
+                        height={600}
+                        rowHeight={40}
+                        rowRenderer={this.rowRenderer}
+                        overscanRowCount={3}
+                    />
+                </div>
+
+                {/*{this.props.trackList.map((track) =>*/}
+                    {/*<li key={track.id} onClick={() => this.props.getTrack(track.id)}>{track.name}</li>*/}
+                {/*)}*/}
+                <Footer/>
                 {/*<Accordion activeKey={this.props.selectedIndex}>*/}
                     {/*{this.props.data.features[1].geometry.coordinates.map((coordinates, index) =>*/}
                         {/*<SideBarCard*/}
@@ -67,6 +67,16 @@ export default class SideBar extends Component {
             </div>
         );
     }
+}
+
+function Footer(props) {
+    return (
+        <div className="footer mb-2">
+            <span>Tato práce byla vytvořena jako bakalářská práce na
+                <a href="https://www.fit.vut.cz/"> Fakultě informačních technologií VUT v Brně</a>
+            </span>
+        </div>
+    )
 }
 
 SideBar = connect (

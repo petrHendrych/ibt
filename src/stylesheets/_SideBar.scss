@@ -21,6 +21,10 @@
   }
 }
 
+.list-area {
+  height: calc(100vh - 50px);
+}
+
 /* SideBar header css */
 
 .side-bar-header {
@@ -57,4 +61,10 @@
 .input-span {
   width: 47.7px;
   border-radius: 0 !important;
+}
+
+.footer {
+  text-align: center;
+  position: absolute;
+  bottom: 0;
 }
