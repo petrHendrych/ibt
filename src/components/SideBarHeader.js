@@ -6,7 +6,7 @@ import {NavLink} from "react-router-dom";
 import { connect } from "react-redux";
 
 import { logoutUser } from "../actions/auth";
-import { uploadFile } from "../actions/files";
+import {deleteFile, uploadFile} from "../actions/files";
 
 export default class SideBarHeader extends Component {
     state = {
@@ -29,6 +29,10 @@ export default class SideBarHeader extends Component {
 
     };
 
+    updateState = () => {
+        this.setState({isShow: false});
+    };
+
     render() {
         return (
             <div className="side-bar-header">
@@ -37,7 +41,7 @@ export default class SideBarHeader extends Component {
                         ?
                         <div className="box text-center border-right h-100" onClick={() => this.setState({isShow: true})}>
                             <FontAwesomeIcon icon={faFileUpload} className="mr-2"/>
-                            Upload file
+                            Files
                         </div>
                         :
                         <NavLink to="/register">
@@ -66,13 +70,10 @@ export default class SideBarHeader extends Component {
 
                 <Modal show={this.state.isShow} onHide={() => this.setState({isShow: false})} backdrop={'static'}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Upload new file</Modal.Title>
+                        <Modal.Title>Files</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {
-                            this.props.files.map(file =>
-                                <li key={file.id}>{file.title}</li>
-                            )}
+                        <TableRender files={this.props.files} onClick={this.props.deleteFile} updateState={this.updateState}/>
                     </Modal.Body>
                     <Modal.Footer>
                         <form onSubmit={this.formSubmit}>
@@ -87,13 +88,33 @@ export default class SideBarHeader extends Component {
         );
     }
 }
-//
-// const mapStateToProps = (state) => ({
-//     auth: state.auth,
-//     files: state.files.data ? state.files.data : []
-// });
-//
-// export default connect(mapStateToProps, {logoutUser})(SideBarHeader);
+
+function TableRender(props) {
+    return (
+        <table className="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th/>
+                </tr>
+            </thead>
+            <tbody>
+            {props.files.map(file => (
+                <tr key={file.id}>
+                    <td>{file.id}</td>
+                    <td>{file.title}</td>
+                    <td>
+                        <button className="btn btn-danger btn-sm" onClick={() => {props.onClick(file.id); props.updateState()}}>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            ))}
+            </tbody>
+        </table>
+    )
+}
 
 SideBarHeader = connect (
     state => {
@@ -106,6 +127,7 @@ SideBarHeader = connect (
         return {
             logoutUser: () => dispatch(logoutUser()),
             uploadFile: (file, title) => dispatch(uploadFile(file, title)),
+            deleteFile: (id) => dispatch(deleteFile(id))
         }
     }
 )(SideBarHeader);

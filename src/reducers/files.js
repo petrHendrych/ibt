@@ -1,4 +1,4 @@
-import {FILES_LOADING, GET_FILES, FILES_CLEAR} from "../actions/types";
+import {FILES_LOADING, GET_FILES, FILES_CLEAR, FILE_DELETE} from "../actions/types";
 
 const initialState = {
     isLoading: false,
@@ -17,6 +17,11 @@ export default function(state = initialState, action) {
                 ...state,
                 isLoading: false,
                 data: action.payload
+            };
+        case FILE_DELETE:
+            return {
+                ...state,
+                data: state.data.filter(file => file.id !== action.payload)
             };
         case FILES_CLEAR:
             return {

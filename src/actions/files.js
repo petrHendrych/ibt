@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {FILES_LOADING, GET_FILES} from './types';
+import {FILE_DELETE, FILES_LOADING, GET_FILES} from './types';
 import {tokenConfig} from "./auth";
 import {getTracks} from "./tracks";
 
@@ -40,4 +40,18 @@ export const uploadFile = (file, title) => (dispatch, getState) => {
         .catch((e) => {
             console.log(e);
         })
+};
+
+// DELETE FILE
+export const deleteFile = (id) => (dispatch, getState) => {
+    axios.delete(`http://localhost:8000/api/files/${id}`, tokenConfig(getState))
+        .then(res => {
+            dispatch({
+                type: FILE_DELETE,
+                payload: id
+            });
+
+            dispatch(getTracks());
+        })
+        .catch(err => console.log(err))
 };
