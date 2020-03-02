@@ -1,6 +1,6 @@
 from tracks.models import GPXTrack
 from rest_framework import viewsets, permissions
-from .serializers import GPXTrackSerializer
+from .serializers import TrackSerializer
 
 
 class GPXTrackViewSet(viewsets.ModelViewSet):
@@ -8,11 +8,13 @@ class GPXTrackViewSet(viewsets.ModelViewSet):
         permissions.AllowAny
     ]
 
-    serializer_class = GPXTrackSerializer
+    serializer_class = TrackSerializer
 
     def get_queryset(self):
         return self.request.user.track.all()
 
-    def perform_create(self, serializer: GPXTrackSerializer):
+    def perform_create(self, serializer: TrackSerializer):
         serializer.save(owner=self.request.user)
+
+
 

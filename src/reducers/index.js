@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
-import dataReducer from './dataReducer';
 import auth from "./auth";
 import errors from "./errors";
+import files from "./files";
+import tracks from "./tracks";
 
 const selectedPointReducer = (selectedPoint = null, action) => {
     if (action.type === 'POINT_SELECTED') {
@@ -27,8 +28,9 @@ const getBoundsReducer = (state = [], action) => {
 
 export default combineReducers({
     selectedIndex: selectedPointReducer,
-    data: dataReducer,
     bounds: getBoundsReducer,
     auth: auth,
-    errors: errors
+    errors: errors,
+    files: files,
+    tracks: tracks
 });

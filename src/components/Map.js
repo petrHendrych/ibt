@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {Map, TileLayer, Polyline, Marker, FeatureGroup, Rectangle, GeoJSON} from "react-leaflet";
+import {Map, TileLayer, Polyline, Marker, FeatureGroup, Rectangle} from "react-leaflet";
 import {latLngBounds} from "leaflet";
-import {fetchData, getPointLatLng, updatePointLatLng} from "../actions";
+import {getPointLatLng, updatePointLatLng} from "../actions";
 import _ from 'lodash';
+import {getFiles} from "../actions/files";
+import {getTracks} from "../actions/tracks";
 
 export default class MyMap extends Component {
     constructor(props) {
@@ -15,6 +17,8 @@ export default class MyMap extends Component {
 
     componentDidMount() {
         // this.props.fetchData();
+        this.props.getFiles();
+        this.props.getTracks();
     }
 
     handleClick = () => {
@@ -36,25 +40,25 @@ export default class MyMap extends Component {
     render() {
         let bounds = latLngBounds([[49.24, 16.54], [49.15, 16.71]]);
 
-        if (!_.isEmpty(this.props.coordinates)) {
-            bounds = latLngBounds(this.props.coordinates);
+        if (!_.isEmpty(this.props.track)) {
+            bounds = latLngBounds(this.props.track.geometry.coordinates);
         }
 
         return (
-            <Map doubleClickZoom={false} bounds={bounds} ref={this.map} ondblclick={this.getLatLng}>
+            <Map doubleClickZoom={false} bounds={bounds} ref={this.map} ondblclick={this.getLatLng} maxZoom={18}>
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                {_.isEmpty(this.props.coordinates) ? <></> : <button onClick={this.handleClick} className="fit-button">fit track</button>}
 
-                <FeatureGroup ref={this.group}>
-                    <Polyline color="black" positions={this.props.coordinates} />
-                </FeatureGroup>
-                {/*{*/}
-                    {/*_.isEmpty(this.props.data) ? <></> :*/}
-                        {/*<GeoJSON data={this.props.data}/>*/}
-                {/*}*/}
+                {_.isEmpty(this.props.track) ? <></> : <button onClick={this.handleClick} className="fit-button">fit track</button>}
+
+                { !_.isEmpty(this.props.track) ?
+                    <FeatureGroup ref={this.group}>
+                        <Polyline color="black" positions={this.props.track.geometry.coordinates}/>
+                    </FeatureGroup> :
+                    <></>
+                }
                 {
                     this.props.selectedIndex === null ? <></> :
                     <Marker onDragEnd={this.updateMarker}
@@ -72,14 +76,14 @@ MyMap = connect (
     state => {
         return {
             selectedIndex: state.selectedIndex,
-            coordinates: _.isEmpty(state.data) ? [] : state.data.features[1].geometry.coordinates,
             bounds: state.bounds,
-            data: state.data
+            track: state.tracks.track ? state.tracks.track : {},
         }
     },
     dispatch => {
         return {
-            fetchData: () => dispatch(fetchData()),
+            getFiles: () => dispatch(getFiles()),
+            getTracks: () => dispatch(getTracks()),
             getPointLatLng: (point) => dispatch(getPointLatLng(point)),
             updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
         }

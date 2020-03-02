@@ -1,6 +1,14 @@
 import axios from 'axios';
 import {
-    USER_LOADING, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT_SUCCESS, REGISTER_SUCCESS, REGISTER_FAIL
+    USER_LOADING,
+    USER_LOADED,
+    AUTH_ERROR,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+    LOGOUT_SUCCESS,
+    REGISTER_SUCCESS,
+    REGISTER_FAIL,
+    FILES_CLEAR, TRACKS_CLEAR
 } from './types';
 
 // CHECK TOKEN & LOAD USER
@@ -8,7 +16,7 @@ export const loadUser = () => (dispatch, getState) => {
     // User Loading
     dispatch({ type: USER_LOADING});
 
-    axios.get("http://localhost:8000/api/auth/user", tokenConfig(getState))
+    axios.get("http://localhost:8000/auth/user", tokenConfig(getState))
         .then(res => {
             dispatch({
                 type: USER_LOADED,
@@ -33,7 +41,7 @@ export const loginUser = (username, password) => (dispatch) => {
     // Request Body
     const body = JSON.stringify({ username, password });
 
-    axios.post("http://localhost:8000/api/auth/login", body, config)
+    axios.post("http://localhost:8000/auth/login", body, config)
         .then(res => {
             dispatch({
                 type: LOGIN_SUCCESS,
@@ -58,7 +66,7 @@ export const registerUser = ({username, email, password}) => dispatch => {
     // Request Body
     const body = JSON.stringify({ username, email, password });
 
-    axios.post("http://localhost:8000/api/auth/register", body, config)
+    axios.post("http://localhost:8000/auth/register", body, config)
         .then(res => {
             dispatch({
                 type: REGISTER_SUCCESS,
@@ -73,10 +81,16 @@ export const registerUser = ({username, email, password}) => dispatch => {
 
 // LOGOUT USER
 export const logoutUser = () => (dispatch, getState) => {
-       axios.post("http://localhost:8000/api/auth/logout", null, tokenConfig(getState))
+       axios.post("http://localhost:8000/auth/logout", null, tokenConfig(getState))
         .then(res => {
             dispatch({
                 type: LOGOUT_SUCCESS,
+            });
+            dispatch({
+                type: FILES_CLEAR,
+            });
+            dispatch({
+                type: TRACKS_CLEAR,
             });
         }).catch(err => {
             console.log("logout");

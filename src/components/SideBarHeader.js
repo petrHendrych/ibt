@@ -1,31 +1,32 @@
-import React, {useState, Component} from 'react';
+import React, {Component} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faMapMarkedAlt, faClipboardList, faPowerOff } from '@fortawesome/free-solid-svg-icons';
-import {Button, Modal, Dropdown} from "react-bootstrap";
+import { faUser, faClipboardList, faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import {Button, Modal} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
 import { connect } from "react-redux";
-import { logoutUser } from "../actions/auth";
 
-class SideBarHeader extends Component {
+import { logoutUser } from "../actions/auth";
+import { uploadFile } from "../actions/files";
+
+export default class SideBarHeader extends Component {
     state = {
         isShow: false,
-        file: null
-    };
-
-    onFormSubmit = (e) => {
-        e.preventDefault();
-        this.fileUpload(this.state.file)
-            .then((response) => {
-                console.log(response.data);
-            })
+        file: null,
+        title: ''
     };
 
     onChange = (e) => {
-        this.setState({file: e.target.files[0]})
+        this.setState({
+            file: e.target.files[0],
+            title: e.target.files[0].name
+        });
     };
 
-    fileUpload = (file) => {
-        const url = 'localhost:8000'
+    formSubmit = (e) => {
+        e.preventDefault();
+        this.props.uploadFile(this.state.file, this.state.title);
+        this.setState({isShow: false});
+
     };
 
     render() {
@@ -35,8 +36,8 @@ class SideBarHeader extends Component {
                     this.props.auth.isAuthenticated
                         ?
                         <div className="box text-center border-right h-100" onClick={() => this.setState({isShow: true})}>
-                            <FontAwesomeIcon icon={faMapMarkedAlt} className="mr-2"/>
-                            Moje trasy
+                            <FontAwesomeIcon icon={faFileUpload} className="mr-2"/>
+                            Upload file
                         </div>
                         :
                         <NavLink to="/register">
@@ -65,26 +66,46 @@ class SideBarHeader extends Component {
 
                 <Modal show={this.state.isShow} onHide={() => this.setState({isShow: false})} backdrop={'static'}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>Upload new file</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                    <Modal.Body>
+                        {
+                            this.props.files.map(file =>
+                                <li key={file.id}>{file.title}</li>
+                            )}
+                    </Modal.Body>
                     <Modal.Footer>
-                        <form onSubmit={this.onFormSubmit}>
-
+                        <form onSubmit={this.formSubmit}>
+                            <input type="file" name="gpx_file" onChange={this.onChange}/>
+                            <Button type="submit" variant="success" value="Submit">
+                                Upload
+                            </Button>
                         </form>
-                        <input type="file"/>
-                        <Button variant="secondary" onClick={() => this.setState({isShow: false})}>
-                            Close
-                        </Button>
                     </Modal.Footer>
                 </Modal>
             </div>
         );
     }
 }
+//
+// const mapStateToProps = (state) => ({
+//     auth: state.auth,
+//     files: state.files.data ? state.files.data : []
+// });
+//
+// export default connect(mapStateToProps, {logoutUser})(SideBarHeader);
 
-const mapStateToProps = (state) => ({
-    auth: state.auth
-});
-
-export default connect(mapStateToProps, {logoutUser})(SideBarHeader);
+SideBarHeader = connect (
+    state => {
+        return {
+            auth: state.auth,
+            files: state.files.data ? state.files.data : []
+        }
+    },
+    dispatch => {
+        return {
+            logoutUser: () => dispatch(logoutUser()),
+            uploadFile: (file, title) => dispatch(uploadFile(file, title)),
+        }
+    }
+)(SideBarHeader);

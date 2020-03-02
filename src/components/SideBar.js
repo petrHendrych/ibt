@@ -8,6 +8,7 @@ import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
 import { selectPoint } from "../actions";
 import { Spinner } from "../utils";
+import {getTrack} from "../actions/tracks";
 
 
 export default class SideBar extends Component {
@@ -34,7 +35,7 @@ export default class SideBar extends Component {
 
     render() {
 
-        if (_.isEmpty(this.props.data)) {
+        if (this.props.trackLoading) {
             return (
                 <div className="side-bar">
                     <SideBarHeader/>
@@ -48,18 +49,21 @@ export default class SideBar extends Component {
         return (
             <div className="side-bar">
                 <SideBarHeader />
-                <Accordion activeKey={this.props.selectedIndex}>
-                    {this.props.data.features[1].geometry.coordinates.map((coordinates, index) =>
-                        <SideBarCard
-                            onClick={() => this.props.selectPoint(index)}
-                            active={index === this.props.selectedIndex}
-                            key={`card-${index}`}
-                            index={index}
-                            coords={coordinates}
-                            render={this.props.bounds.length === 2}
-                        />
-                    )}
-                </Accordion>
+                {this.props.trackList.map((track) =>
+                    <li key={track.id} onClick={() => this.props.getTrack(track.id)}>{track.name}</li>
+                )}
+                {/*<Accordion activeKey={this.props.selectedIndex}>*/}
+                    {/*{this.props.data.features[1].geometry.coordinates.map((coordinates, index) =>*/}
+                        {/*<SideBarCard*/}
+                            {/*onClick={() => this.props.selectPoint(index)}*/}
+                            {/*active={index === this.props.selectedIndex}*/}
+                            {/*key={`card-${index}`}*/}
+                            {/*index={index}*/}
+                            {/*coords={coordinates}*/}
+                            {/*render={this.props.bounds.length === 2}*/}
+                        {/*/>*/}
+                    {/*)}*/}
+                {/*</Accordion>*/}
             </div>
         );
     }
@@ -70,12 +74,14 @@ SideBar = connect (
         return {
             bounds: state.bounds,
             selectedIndex: state.selectedIndex,
-            data: state.data
+            trackLoading: state.tracks.isLoading,
+            trackList: state.tracks.data ? state.tracks.data : []
         }
     },
     dispatch => {
         return {
-            selectPoint: (p) => dispatch(selectPoint(p))
+            selectPoint: (p) => dispatch(selectPoint(p)),
+            getTrack: (id) => dispatch(getTrack(id))
         }
     }
 )(SideBar);
