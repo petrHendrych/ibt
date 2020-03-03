@@ -27,7 +27,7 @@ export default class SideBar extends Component {
             return (
                 <div className="side-bar">
                     <SideBarHeader/>
-                    <div className="flex-mid h-100">
+                    <div className="flex-mid">
                         <Spinner size="5x"/>
                     </div>
                 </div>
@@ -35,18 +35,26 @@ export default class SideBar extends Component {
         }
 
         return (
-            <div className="side-bar">
+            <div className="side-bar d-flex flex-column justify-content-between">
                 <SideBarHeader />
-                <div className="list-area">
-                    <List
-                        rowCount={this.props.trackList.length}
-                        width={400}
-                        height={600}
-                        rowHeight={40}
-                        rowRenderer={this.rowRenderer}
-                        overscanRowCount={3}
-                    />
+                <div style={{ flex: '1 1 auto' }}>
+                    <AutoSizer>
+                        {({ height, width }) => (
+                            <List
+                                rowCount={this.props.trackList.length}
+                                width={width}
+                                height={height}
+                                rowHeight={40}
+                                rowRenderer={this.rowRenderer}
+                                overscanRowCount={3}
+                            />
+                        )}
+                    </AutoSizer>
                 </div>
+                {/*<div className="list-area">*/}
+                    {/*<AutoSizer disableHeight={} disableWidth={}/>*/}
+                    {/**/}
+                {/*</div>*/}
 
                 {/*{this.props.trackList.map((track) =>*/}
                     {/*<li key={track.id} onClick={() => this.props.getTrack(track.id)}>{track.name}</li>*/}
@@ -72,7 +80,7 @@ export default class SideBar extends Component {
 function Footer(props) {
     return (
         <div className="footer mb-2">
-            <span>Tato práce byla vytvořena jako bakalářská práce na
+            <span className="small">Tato práce byla vytvořena jako bakalářská práce na
                 <a href="https://www.fit.vut.cz/"> Fakultě informačních technologií VUT v Brně</a>
             </span>
         </div>
