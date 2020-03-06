@@ -1,3 +1,5 @@
+@import "mixins";
+
 .side-bar {
   position: relative;
   float: right;
@@ -9,14 +11,6 @@
   -webkit-box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
   -moz-box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
   box-shadow: 0 0 20px -3px rgba(0,0,0,0.75);
-
-  .card {
-    border-radius: 0;
-    border-right: none;
-    .card-header:hover {
-      background: #def6df;
-    }
-  }
 }
 
 .list-area {
@@ -41,14 +35,41 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    &:hover {
+    &:hover, &:hover button {
       background: #c0f6c5;
+    }
+    button {
+      transition: none;
+      background-color: inherit;
+      color: #000;
+      border: none;
+    }
+    button:hover, button:active, button:focus {
+      background-color: inherit !important;
+      color: #000 !important;
+      -webkit-box-shadow: none !important;
+      -moz-box-shadow: none !important;
+      box-shadow: none !important;
+      border: none;
     }
   }
 }
 
 .selected {
   background: #def6df;
+}
+
+.side-card {
+  -webkit-box-shadow: 0 0 25px -15px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0 0 25px -15px rgba(0,0,0,0.75);
+  box-shadow: 0 0 25px -15px rgba(0,0,0,0.75);
+  width: calc(100% - 8px) !important;
+  padding: 8px;
+  margin: 0 auto;
+  cursor: pointer;
+  &:hover {
+    border-width: 2px;
+  }
 }
 
 .side-bar-input {
@@ -63,9 +84,9 @@
 }
 
 .footer {
+  background: #fff;
   text-align: center;
   display: flex;
   align-self: flex-end;
-  //position: absolute;
-  //bottom: 0;
+  border-top: 1px solid black;
 }

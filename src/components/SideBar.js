@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Accordion } from "react-bootstrap";
+import { Accordion, Card } from "react-bootstrap";
 import { connect } from 'react-redux';
 import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import _ from 'lodash';
@@ -12,12 +12,48 @@ import {getTrack} from "../actions/tracks";
 
 
 export default class SideBar extends Component {
+    constructor(props) {
+        super(props);
 
-    rowRenderer = ({index, key, isScrolling, style}) => {
+        this.cache = new CellMeasurerCache({
+            fixedWidth: true,
+            defaultHeight: 50
+        })
+    }
+
+    getFileName = (id) => {
+        let result = "";
+        this.props.files.forEach(track => {
+            if (track.id === id) {
+                result = track.title;
+            }
+        });
+        return result;
+    };
+
+    rowRenderer = ({index, key, isScrolling, style, parent}) => {
         return (
-            <div key={key} style={style} onClick={() => this.props.getTrack(this.props.trackList[index].id)}>
-                <div>{this.props.trackList[index].name}</div>
-            </div>
+            <CellMeasurer
+                parent={parent}
+                key={key}
+                cache={this.cache}
+                columnIndex={0}
+                rowIndex={index}
+            >
+                <div className="p-2 clearfix" style={style}>
+                    <Card className="side-card"
+                          border="success"
+                          onClick={() => this.props.getTrack(this.props.trackList[index].id)}
+                    >
+                        <div><strong>{this.props.trackList[index].name}</strong></div>
+                        <div>
+                            <span className="float-left pt-2">File: {this.getFileName(this.props.trackList[index].gpx_file)}</span>
+                            <button className="btn btn-danger btn-sm float-right m-2">Delete</button>
+                        </div>
+                    </Card>
+                </div>
+
+            </CellMeasurer>
         )
     };
 
@@ -44,21 +80,14 @@ export default class SideBar extends Component {
                                 rowCount={this.props.trackList.length}
                                 width={width}
                                 height={height}
-                                rowHeight={40}
+                                defferedMeasurementCache={this.cache}
+                                rowHeight={this.cache.rowHeight}
                                 rowRenderer={this.rowRenderer}
                                 overscanRowCount={3}
                             />
                         )}
                     </AutoSizer>
                 </div>
-                {/*<div className="list-area">*/}
-                    {/*<AutoSizer disableHeight={} disableWidth={}/>*/}
-                    {/**/}
-                {/*</div>*/}
-
-                {/*{this.props.trackList.map((track) =>*/}
-                    {/*<li key={track.id} onClick={() => this.props.getTrack(track.id)}>{track.name}</li>*/}
-                {/*)}*/}
                 <Footer/>
                 {/*<Accordion activeKey={this.props.selectedIndex}>*/}
                     {/*{this.props.data.features[1].geometry.coordinates.map((coordinates, index) =>*/}
@@ -79,9 +108,8 @@ export default class SideBar extends Component {
 
 function Footer(props) {
     return (
-        <div className="footer mb-2">
-            <span className="small">Tato práce byla vytvořena jako bakalářská práce na
-                <a href="https://www.fit.vut.cz/"> Fakultě informačních technologií VUT v Brně</a>
+        <div className="footer p-2">
+            <span className="small">Tato práce byla vytvořena jako bakalářská práce na <a href="https://www.fit.vut.cz/">Fakultě informačních technologií VUT v Brně</a>
             </span>
         </div>
     )
@@ -93,7 +121,8 @@ SideBar = connect (
             bounds: state.bounds,
             selectedIndex: state.selectedIndex,
             trackLoading: state.tracks.isLoading,
-            trackList: state.tracks.data ? state.tracks.data : []
+            trackList: state.tracks.data ? state.tracks.data : [],
+            files: state.files.data ? state.files.data : []
         }
     },
     dispatch => {

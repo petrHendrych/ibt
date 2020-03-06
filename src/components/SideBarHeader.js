@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faClipboardList, faFileUpload } from '@fortawesome/free-solid-svg-icons';
-import {Button, Modal} from "react-bootstrap";
+import {Button, Dropdown, Modal} from "react-bootstrap";
 import {NavLink} from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -54,11 +54,18 @@ export default class SideBarHeader extends Component {
 
                 {
                     this.props.auth.isAuthenticated ?
-                        <div className="box text-center h-100">
-                            <FontAwesomeIcon icon={faUser} className="mr-2"/>
-                            {this.props.auth.user.username}
-                            <button className="ml-2" onClick={this.props.logoutUser}>logout</button>
-                        </div>
+                        <Dropdown className="box text-center h-100">
+                            <div className="box text-center h-100">
+                                <FontAwesomeIcon icon={faUser} className="mr-2"/>
+                                {this.props.auth.user.username}
+                                <Dropdown.Toggle split id="dropdown-split-basic"/>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={this.props.logoutUser}>Logout</Dropdown.Item>
+                                </Dropdown.Menu>
+                                {/*<button className="ml-2" onClick={this.props.logoutUser}>logout</button>*/}
+                            </div>
+                        </Dropdown>
+
                         :
                         <NavLink to="/login">
                             <div className="box text-center h-100">
