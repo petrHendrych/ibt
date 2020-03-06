@@ -81,6 +81,15 @@ export const registerUser = ({username, email, password}) => dispatch => {
                 payload: res.data
             });
         }).catch(err => {
+            console.log(err);
+        const errors = {
+            msg: err.response.data,
+            status: err.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
         dispatch({
             type: REGISTER_FAIL
         });

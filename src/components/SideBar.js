@@ -52,22 +52,47 @@ export default class SideBar extends Component {
                         </div>
                     </Card>
                 </div>
-
             </CellMeasurer>
         )
     };
 
     render() {
 
-        if (this.props.trackLoading) {
+        if (this.props.auth.isLoading || this.props.trackLoading) {
             return (
-                <div className="side-bar">
+                <div className="side-bar d-flex flex-column justify-content-between">
                     <SideBarHeader/>
                     <div className="flex-mid">
                         <Spinner size="5x"/>
                     </div>
+                    <Footer/>
                 </div>
             );
+        }
+
+        if (_.isEmpty(this.props.trackList) && this.props.auth.isAuthenticated) {
+            return (
+                <div className="side-bar d-flex flex-column justify-content-between">
+                    <SideBarHeader/>
+                    <div className="flex-mid">
+                        <span className="new-line text-center">{"No tracks \nUpload gpx file"}</span>
+                    </div>
+                    <Footer/>
+                </div>
+            )
+        }
+
+        if (_.isEmpty(this.props.trackList)) {
+            return (
+                <div className="side-bar d-flex flex-column justify-content-between">
+                    <SideBarHeader/>
+                    <div className="flex-mid">
+                        <span
+                            className="new-line text-center">{"No tracks available \nPlease login or create new account"}</span>
+                    </div>
+                    <Footer/>
+                </div>
+            )
         }
 
         return (
@@ -122,7 +147,8 @@ SideBar = connect (
             selectedIndex: state.selectedIndex,
             trackLoading: state.tracks.isLoading,
             trackList: state.tracks.data ? state.tracks.data : [],
-            files: state.files.data ? state.files.data : []
+            files: state.files.data ? state.files.data : [],
+            auth: state.auth
         }
     },
     dispatch => {

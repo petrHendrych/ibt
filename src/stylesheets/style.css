@@ -68,6 +68,9 @@
   width: 47.7px;
   border-radius: 0 !important; }
 
+.new-line {
+  white-space: pre-line; }
+
 .footer {
   background: #fff;
   text-align: center;
