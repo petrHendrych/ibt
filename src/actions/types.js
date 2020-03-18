@@ -13,5 +13,6 @@ export const FILES_CLEAR = "FILES_CLEAR";
 export const FILE_DELETE = "FILE_DELETE";
 export const TRACKS_LOADED = "TRACKS_LOADED";
 export const TRACK_LOADED = "TRACK_LOADED";
+export const TRACK_CLEAR = "TRACK_CLEAR";
 export const TRACKS_CLEAR = "TRACKS_CLEAR";
 export const TRACKS_LOADING = "TRACKS_LOADING";

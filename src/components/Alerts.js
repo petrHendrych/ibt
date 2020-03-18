@@ -9,6 +9,9 @@ class Alerts extends Component {
             if (error.msg.non_field_errors) {
                 alert.error(error.msg.non_field_errors.join())
             }
+            if (error.status === 403) {
+                alert.error(error.msg.detail)
+            }
         }
     }
 

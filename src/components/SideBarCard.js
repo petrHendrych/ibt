@@ -9,14 +9,14 @@ export default class SideBarCard extends Component {
 
     render() {
         if (this.props.render) {
-            if (latLngBounds(this.props.bounds[0], this.props.bounds[1]).contains(this.props.coords)) {
+            if (latLngBounds(this.props.bounds[0], this.props.bounds[1]).contains(this.props.track.geometry.coordinates)) {
                 return (
                     <Card>
                         <Accordion.Toggle as={Card.Header} eventKey={this.props.index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
-                            Bod: {this.props.coords[0]}, {this.props.coords[1]}
+                            Bod: {this.props.track.geometry.coordinates[0]}, {this.props.track.geometry.coordinates[1]}
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey={this.props.index}>
-                            <CardBody coords={this.props.coords} />
+                            <CardBody coords={this.props.track.geometry.coordinates} />
                         </Accordion.Collapse>
                     </Card>
                 );
@@ -26,10 +26,10 @@ export default class SideBarCard extends Component {
         return (
             <Card>
                 <Accordion.Toggle as={Card.Header} eventKey={this.props.index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
-                    Bod: {this.props.coords[0]}, {this.props.coords[1]}
+                    Bod: {this.props.track.geometry.coordinates[0]}, {this.props.track.geometry.coordinates[1]}
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={this.props.index}>
-                    <CardBody coords={this.props.coords} />
+                    <CardBody coords={this.props.track.geometry.coordinates} />
                 </Accordion.Collapse>
             </Card>
         );
@@ -49,8 +49,8 @@ function CardBody(props) {
         <Card.Body>
             <Input label="Lat" coords={props.coords[0]}/>
             <Input label="Lng" coords={props.coords[1]}/>
-            <Input label="Ele" coords={props.coords[2]}/>
-            <Input label="Time" coords={props.coords[2]}/>
+            {/*<Input label="Ele" coords={props.coords[2]}/>*/}
+            {/*<Input label="Time" coords={props.coords[2]}/>*/}
         </Card.Body>
     );
 }

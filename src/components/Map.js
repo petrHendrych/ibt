@@ -16,7 +16,6 @@ export default class MyMap extends Component {
     }
 
     componentDidMount() {
-        // this.props.fetchData();
         this.props.getFiles();
         this.props.getTracks();
     }

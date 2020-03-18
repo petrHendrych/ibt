@@ -11,8 +11,10 @@ export const getTracks = () => async (dispatch, getState) => {
     dispatch({ type: TRACKS_LOADED, payload: response.data});
 };
 
+// GET USER'S TRACK
 export const getTrack = (id) => async (dispatch, getState) => {
     let response = await axios.get(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
 
     dispatch({ type: TRACK_LOADED, payload: response.data});
 };
+

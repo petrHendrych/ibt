@@ -62,7 +62,6 @@ export default class SideBarHeader extends Component {
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={this.props.logoutUser}>Logout</Dropdown.Item>
                                 </Dropdown.Menu>
-                                {/*<button className="ml-2" onClick={this.props.logoutUser}>logout</button>*/}
                             </div>
                         </Dropdown>
 

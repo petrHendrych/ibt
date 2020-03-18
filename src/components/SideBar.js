@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import { Accordion, Card } from "react-bootstrap";
 import { connect } from 'react-redux';
 import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
@@ -9,16 +11,26 @@ import SideBarHeader from './SideBarHeader';
 import { selectPoint } from "../actions";
 import { Spinner } from "../utils";
 import {getTrack} from "../actions/tracks";
+import {TRACK_CLEAR} from "../actions/types";
 
 
 export default class SideBar extends Component {
     constructor(props) {
         super(props);
 
-        this.cache = new CellMeasurerCache({
+        this.cacheTracks = new CellMeasurerCache({
             fixedWidth: true,
             defaultHeight: 50
-        })
+        });
+
+        this.cachePoints = new CellMeasurerCache({
+            fixedWidth: true,
+            defaultHeight: 25
+        });
+
+        this.state = {
+            isShow: false
+        }
     }
 
     getFileName = (id) => {
@@ -31,19 +43,23 @@ export default class SideBar extends Component {
         return result;
     };
 
-    rowRenderer = ({index, key, isScrolling, style, parent}) => {
+    isShow = () => {
+        this.setState({isShow: !this.state.isShow});
+    };
+
+    tracksRenderer = ({index, key, isScrolling, style, parent}) => {
         return (
             <CellMeasurer
                 parent={parent}
                 key={key}
-                cache={this.cache}
+                cache={this.cacheTracks}
                 columnIndex={0}
                 rowIndex={index}
             >
                 <div className="p-2 clearfix" style={style}>
                     <Card className="side-card"
                           border="success"
-                          onClick={() => this.props.getTrack(this.props.trackList[index].id)}
+                          onClick={() => {this.props.getTrack(this.props.trackList[index].id); this.isShow()}}
                     >
                         <div><strong>{this.props.trackList[index].name}</strong></div>
                         <div>
@@ -56,8 +72,26 @@ export default class SideBar extends Component {
         )
     };
 
-    render() {
+    pointsRenderer = ({index, key, isScrolling, style, parent}) => {
+        return (
+            <CellMeasurer
+                parent={parent}
+                key={key}
+                cache={this.cachePoints}
+                columnIndex={0}
+                rowIndex={index}
+            >
+                <div style={style}>
+                    <div>
+                        {this.props.track.geometry.coordinates[0][index][0]}
+                        {this.props.track.geometry.coordinates[0][index][1]}
+                    </div>
+                </div>
+            </CellMeasurer>
+        )
+    };
 
+    render() {
         if (this.props.auth.isLoading || this.props.trackLoading) {
             return (
                 <div className="side-bar d-flex flex-column justify-content-between">
@@ -98,34 +132,47 @@ export default class SideBar extends Component {
         return (
             <div className="side-bar d-flex flex-column justify-content-between">
                 <SideBarHeader />
-                <div style={{ flex: '1 1 auto' }}>
+                <div style={{ flex: '1 1 auto', overflow: 'hidden' }}>
                     <AutoSizer>
                         {({ height, width }) => (
                             <List
                                 rowCount={this.props.trackList.length}
                                 width={width}
                                 height={height}
-                                defferedMeasurementCache={this.cache}
-                                rowHeight={this.cache.rowHeight}
-                                rowRenderer={this.rowRenderer}
-                                overscanRowCount={3}
+                                defferedMeasurementCache={this.cacheTracks}
+                                rowHeight={this.cacheTracks.rowHeight}
+                                rowRenderer={this.tracksRenderer}
+                                overscanRowCount={2}
                             />
                         )}
                     </AutoSizer>
+                    <div className={"point-container " + (this.state.isShow ? "show" : "")}>
+                        <div onClick={() => {this.isShow(); this.props.clearTrack()}} className="pointer text-center border-bottom">
+                            <FontAwesomeIcon icon={faArrowRight} className="mr-2"/>
+                            <span>back to tracks</span>
+                        </div>
+                        {!_.isEmpty(this.props.track) ?
+                            <div style={{ flex: '1 1 auto' }}>
+                                <AutoSizer>
+                                    {({ height, width }) => (
+                                        <List
+                                            rowCount={this.props.track.geometry.coordinates[0].length}
+                                            height={height}
+                                            width={width}
+                                            defferedMeasurementCache={this.cachePoints}
+                                            rowHeight={this.cachePoints.rowHeight}
+                                            rowRenderer={this.pointsRenderer}
+                                            overscanRowCount={3}
+                                        />
+                                    )}
+                                </AutoSizer>
+                            </div>
+                            :
+                            <></>
+                        }
+                    </div>
                 </div>
                 <Footer/>
-                {/*<Accordion activeKey={this.props.selectedIndex}>*/}
-                    {/*{this.props.data.features[1].geometry.coordinates.map((coordinates, index) =>*/}
-                        {/*<SideBarCard*/}
-                            {/*onClick={() => this.props.selectPoint(index)}*/}
-                            {/*active={index === this.props.selectedIndex}*/}
-                            {/*key={`card-${index}`}*/}
-                            {/*index={index}*/}
-                            {/*coords={coordinates}*/}
-                            {/*render={this.props.bounds.length === 2}*/}
-                        {/*/>*/}
-                    {/*)}*/}
-                {/*</Accordion>*/}
             </div>
         );
     }
@@ -148,13 +195,15 @@ SideBar = connect (
             trackLoading: state.tracks.isLoading,
             trackList: state.tracks.data ? state.tracks.data : [],
             files: state.files.data ? state.files.data : [],
-            auth: state.auth
+            auth: state.auth,
+            track: state.tracks.track
         }
     },
     dispatch => {
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
-            getTrack: (id) => dispatch(getTrack(id))
+            getTrack: (id) => dispatch(getTrack(id)),
+            clearTrack: () => dispatch({type: TRACK_CLEAR})
         }
     }
 )(SideBar);

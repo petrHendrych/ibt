@@ -1,11 +1,11 @@
 import {
-    TRACKS_LOADING, TRACKS_LOADED, TRACK_LOADED, TRACKS_CLEAR
+    TRACKS_LOADING, TRACKS_LOADED, TRACK_LOADED, TRACKS_CLEAR, TRACK_CLEAR
 } from "../actions/types";
 
 const initialState = {
     isLoading: false,
     data: null,
-    track: null
+    track: {}
 };
 
 export default function (state = initialState, action) {
@@ -27,12 +27,18 @@ export default function (state = initialState, action) {
                 isLoading: false,
                 track: action.payload
             };
+        case TRACK_CLEAR:
+            return {
+                ...state,
+                isLoading: false,
+                track: {}
+            };
         case TRACKS_CLEAR:
             return {
                 ...state,
                 isLoading: false,
                 data: null,
-                track: null
+                track: {}
             };
         default:
             return state;
