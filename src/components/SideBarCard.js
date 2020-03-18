@@ -8,28 +8,28 @@ import {latLngBounds} from 'leaflet';
 export default class SideBarCard extends Component {
 
     render() {
-        if (this.props.render) {
-            if (latLngBounds(this.props.bounds[0], this.props.bounds[1]).contains(this.props.track.geometry.coordinates)) {
-                return (
-                    <Card>
-                        <Accordion.Toggle as={Card.Header} eventKey={this.props.index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
-                            Bod: {this.props.track.geometry.coordinates[0]}, {this.props.track.geometry.coordinates[1]}
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey={this.props.index}>
-                            <CardBody coords={this.props.track.geometry.coordinates} />
-                        </Accordion.Collapse>
-                    </Card>
-                );
-            } else return <></>;
-        }
+        // if (this.props.render) {
+        //     if (latLngBounds(this.props.bounds[0], this.props.bounds[1]).contains(this.props.track.geometry.coordinates)) {
+        //         return (
+        //             <Card>
+        //                 <Accordion.Toggle as={Card.Header} eventKey={this.props.index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
+        //                     Bod: {this.props.coords[0]}, {this.props.coords[1]}
+        //                 </Accordion.Toggle>
+        //                 <Accordion.Collapse eventKey={this.props.index}>
+        //                     <CardBody coords={this.props.coords} />
+        //                 </Accordion.Collapse>
+        //             </Card>
+        //         );
+        //     } else return <></>;
+        // }
 
         return (
             <Card>
                 <Accordion.Toggle as={Card.Header} eventKey={this.props.index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
-                    Bod: {this.props.track.geometry.coordinates[0]}, {this.props.track.geometry.coordinates[1]}
+                    Bod: {this.props.coords[0]}, {this.props.coords[1]}
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={this.props.index}>
-                    <CardBody coords={this.props.track.geometry.coordinates} />
+                    <CardBody coords={this.props.coords} />
                 </Accordion.Collapse>
             </Card>
         );

@@ -82,10 +82,15 @@ export default class SideBar extends Component {
                 rowIndex={index}
             >
                 <div style={style}>
-                    <div>
-                        {this.props.track.geometry.coordinates[0][index][0]}
-                        {this.props.track.geometry.coordinates[0][index][1]}
-                    </div>
+                    <Accordion activeKey={this.props.selectedIndex}>
+                        <SideBarCard
+                            onClick={() => this.props.selectPoint(index)}
+                            active={index === this.props.selectedIndex}
+                            key={`card-${index}`}
+                            index={index}
+                            coords={this.props.track.geometry.coordinates[0][index]}
+                        />
+                    </Accordion>
                 </div>
             </CellMeasurer>
         )
@@ -142,7 +147,7 @@ export default class SideBar extends Component {
                                 defferedMeasurementCache={this.cacheTracks}
                                 rowHeight={this.cacheTracks.rowHeight}
                                 rowRenderer={this.tracksRenderer}
-                                overscanRowCount={2}
+                                overscanRowCount={5}
                             />
                         )}
                     </AutoSizer>
@@ -162,7 +167,7 @@ export default class SideBar extends Component {
                                             defferedMeasurementCache={this.cachePoints}
                                             rowHeight={this.cachePoints.rowHeight}
                                             rowRenderer={this.pointsRenderer}
-                                            overscanRowCount={3}
+                                            overscanRowCount={10}
                                         />
                                     )}
                                 </AutoSizer>

@@ -58,13 +58,13 @@ export default class MyMap extends Component {
                     </FeatureGroup> :
                     <></>
                 }
-                {
-                    this.props.selectedIndex === null ? <></> :
-                    <Marker onDragEnd={this.updateMarker}
-                            draggable={true}
-                            position={this.props.coordinates[this.props.selectedIndex]}
-                    />
-                }
+                {/*{*/}
+                    {/*this.props.selectedIndex === null ? <></> :*/}
+                    {/*<Marker onDragEnd={this.updateMarker}*/}
+                            {/*draggable={true}*/}
+                            {/*position={this.props.coordinates[this.props.selectedIndex]}*/}
+                    {/*/>*/}
+                {/*}*/}
                 {this.props.bounds.length === 2 ? <Rectangle bounds={this.props.bounds}/> : <></>}
             </Map>
         );
