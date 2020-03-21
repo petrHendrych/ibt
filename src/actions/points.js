@@ -1,8 +1,6 @@
-import {SELECT_POINT} from "./types";
-
 export const selectPoint = pointIndex => {
     return {
-        type: SELECT_POINT,
+        type: 'POINT_SELECTED',
         payload: pointIndex
     }
 };

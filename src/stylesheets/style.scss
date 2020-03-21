@@ -60,3 +60,7 @@ html, body {
 .pointer {
   cursor: pointer;
 }
+
+.collapsing {
+  transition: none !important;
+}

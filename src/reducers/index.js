@@ -1,3 +1,5 @@
+import {SELECT_POINT, UNSELECT_POINT} from "../actions/types";
+
 import { combineReducers } from 'redux';
 import auth from "./auth";
 import errors from "./errors";
@@ -5,12 +7,17 @@ import files from "./files";
 import tracks from "./tracks";
 
 const selectedPointReducer = (selectedPoint = null, action) => {
-    if (action.type === 'POINT_SELECTED') {
+    if (action.type === SELECT_POINT) {
         if (selectedPoint === action.payload) {
             return null;
         }
         return action.payload;
     }
+
+    if (action.type === UNSELECT_POINT) {
+        return null;
+    }
+
     return selectedPoint;
 };
 

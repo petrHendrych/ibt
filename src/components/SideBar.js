@@ -11,7 +11,7 @@ import SideBarHeader from './SideBarHeader';
 import { selectPoint } from "../actions";
 import { Spinner } from "../utils";
 import {getTrack} from "../actions/tracks";
-import {TRACK_CLEAR} from "../actions/types";
+import {TRACK_CLEAR, UNSELECT_POINT} from "../actions/types";
 
 
 export default class SideBar extends Component {
@@ -23,15 +23,16 @@ export default class SideBar extends Component {
             defaultHeight: 50
         });
 
-        this.cachePoints = new CellMeasurerCache({
-            fixedWidth: true,
-            defaultHeight: 25
-        });
-
         this.state = {
             isShow: false
-        }
+        };
+
+        this.isShow = this.isShow.bind(this);
     }
+
+    isShow = () => {
+        this.setState({isShow: !this.state.isShow});
+    };
 
     getFileName = (id) => {
         let result = "";
@@ -41,10 +42,6 @@ export default class SideBar extends Component {
             }
         });
         return result;
-    };
-
-    isShow = () => {
-        this.setState({isShow: !this.state.isShow});
     };
 
     tracksRenderer = ({index, key, isScrolling, style, parent}) => {
@@ -67,30 +64,6 @@ export default class SideBar extends Component {
                             <button className="btn btn-danger btn-sm float-right m-2">Delete</button>
                         </div>
                     </Card>
-                </div>
-            </CellMeasurer>
-        )
-    };
-
-    pointsRenderer = ({index, key, isScrolling, style, parent}) => {
-        return (
-            <CellMeasurer
-                parent={parent}
-                key={key}
-                cache={this.cachePoints}
-                columnIndex={0}
-                rowIndex={index}
-            >
-                <div style={style}>
-                    <Accordion activeKey={this.props.selectedIndex}>
-                        <SideBarCard
-                            onClick={() => this.props.selectPoint(index)}
-                            active={index === this.props.selectedIndex}
-                            key={`card-${index}`}
-                            index={index}
-                            coords={this.props.track.geometry.coordinates[0][index]}
-                        />
-                    </Accordion>
                 </div>
             </CellMeasurer>
         )
@@ -151,31 +124,7 @@ export default class SideBar extends Component {
                             />
                         )}
                     </AutoSizer>
-                    <div className={"point-container " + (this.state.isShow ? "show" : "")}>
-                        <div onClick={() => {this.isShow(); this.props.clearTrack()}} className="pointer text-center border-bottom">
-                            <FontAwesomeIcon icon={faArrowRight} className="mr-2"/>
-                            <span>back to tracks</span>
-                        </div>
-                        {!_.isEmpty(this.props.track) ?
-                            <div style={{ flex: '1 1 auto' }}>
-                                <AutoSizer>
-                                    {({ height, width }) => (
-                                        <List
-                                            rowCount={this.props.track.geometry.coordinates[0].length}
-                                            height={height}
-                                            width={width}
-                                            defferedMeasurementCache={this.cachePoints}
-                                            rowHeight={this.cachePoints.rowHeight}
-                                            rowRenderer={this.pointsRenderer}
-                                            overscanRowCount={10}
-                                        />
-                                    )}
-                                </AutoSizer>
-                            </div>
-                            :
-                            <></>
-                        }
-                    </div>
+                    <PointContainer show={this.state.isShow} onChange={this.isShow}/>
                 </div>
                 <Footer/>
             </div>
@@ -208,9 +157,118 @@ SideBar = connect (
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
             getTrack: (id) => dispatch(getTrack(id)),
-            clearTrack: () => dispatch({type: TRACK_CLEAR})
+            clearTrack: () => dispatch({type: TRACK_CLEAR}),
+            clearIndex: () => dispatch({type: UNSELECT_POINT})
         }
     }
 )(SideBar);
 
+class PointContainer extends Component {
+    constructor(props) {
+        super(props);
 
+        this.cachePoints = new CellMeasurerCache({
+            fixedWidth: true,
+            defaultHeight: 25
+        });
+    }
+
+    bindListRef = ref => {
+        this.list = ref;
+    };
+
+    makeTimeout = () => {
+        setTimeout(() => {
+            if (this.list) {
+                this.cachePoints.clearAll();
+                this.list.forceUpdateGrid();
+            }
+        }, 5)
+    };
+
+    componentDidUpdate(pProps) {
+        if (this.list) {
+            this.cachePoints.clearAll();
+            this.list.forceUpdateGrid();
+        }
+    };
+
+    pointsRenderer = ({index, key, isScrolling, style, parent}) => {
+        return (
+            <CellMeasurer
+                parent={parent}
+                key={key}
+                cache={this.cachePoints}
+                columnIndex={0}
+                rowIndex={index}
+            >
+                <div style={style}>
+                    <Accordion activeKey={this.props.selectedIndex}>
+                        <SideBarCard
+                            onClick={() => {this.props.selectPoint(index); this.makeTimeout()}}
+                            active={index === this.props.selectedIndex}
+                            key={`card-${index}`}
+                            index={index}
+                            coords={this.props.track.geometry.coordinates[0][index]}
+                        />
+                    </Accordion>
+                </div>
+            </CellMeasurer>
+        )
+    };
+
+    render() {
+        return (
+            <div className={"point-container " + (this.props.show ? "show" : "")}>
+                <div onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}} className="pointer text-center border-bottom">
+                    <FontAwesomeIcon icon={faArrowRight} className="mr-2"/>
+                    <span>back to tracks</span>
+                </div>
+                {!_.isEmpty(this.props.track) ?
+                    <div style={{ flex: '1 1 auto' }}>
+                        <AutoSizer>
+                            {({ height, width }) => (
+                                <List
+                                    ref={this.bindListRef}
+                                    rowCount={this.props.track.geometry.coordinates[0].length}
+                                    height={height}
+                                    width={width}
+                                    defferedMeasurementCache={this.cachePoints}
+                                    rowHeight={this.cachePoints.rowHeight}
+                                    rowRenderer={this.pointsRenderer}
+                                    overscanRowCount={10}
+                                />
+                            )}
+                        </AutoSizer>
+                    </div>
+                    :
+                    <></>
+                }
+            </div>
+        )
+    }
+}
+
+//
+// const mapStateToProps = state => ({
+//     bounds: state.bounds,
+//     selectedIndex: state.selectedIndex,
+//     track: state.tracks.track
+// });
+
+PointContainer = connect (
+    state => {
+        return {
+            bounds: state.bounds,
+            selectedIndex: state.selectedIndex,
+            track: state.tracks.track
+        }
+    },
+    dispatch => {
+        return {
+            selectPoint: (p) => dispatch(selectPoint(p)),
+            clearTrack: () => dispatch({type: TRACK_CLEAR}),
+            clearIndex: () => dispatch({type: UNSELECT_POINT})
+        }
+    }
+)(PointContainer);
