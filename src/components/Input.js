@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 
 export default class Input extends Component {
-    state = { value: this.props.coords };
+    state = { value: this.props.val };
 
     onInputChange = event => {
-        //TODO allow to use only numbers in inputs
-        this.setState({value: event.target.value});
+        const re = /^[-]?([0-9]+(\.[0-9]*)?)$/;
+        if (event.target.value === '' || re.test(event.target.value)) {
+            this.setState({value: event.target.value});
+        }
     };
 
     render () {

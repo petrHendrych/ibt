@@ -135,7 +135,8 @@ export default class SideBar extends Component {
 function Footer(props) {
     return (
         <div className="footer p-2">
-            <span className="small">Tato práce byla vytvořena jako bakalářská práce na <a href="https://www.fit.vut.cz/">Fakultě informačních technologií VUT v Brně</a>
+            <span className="small">
+                Tato práce byla vytvořena jako bakalářská práce na <a href="https://www.fit.vut.cz/">Fakultě informačních technologií VUT v Brně</a>
             </span>
         </div>
     )
@@ -183,7 +184,7 @@ class PointContainer extends Component {
                 this.cachePoints.clearAll();
                 this.list.forceUpdateGrid();
             }
-        }, 5)
+        }, 1)
     };
 
     componentDidUpdate(pProps) {
@@ -210,6 +211,8 @@ class PointContainer extends Component {
                             key={`card-${index}`}
                             index={index}
                             coords={this.props.track.geometry.coordinates[0][index]}
+                            elevation={this.props.track.properties.elevations[index]}
+                            time={this.props.track.properties.times[index]}
                         />
                     </Accordion>
                 </div>
@@ -220,7 +223,9 @@ class PointContainer extends Component {
     render() {
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
-                <div onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}} className="pointer text-center border-bottom">
+                <div onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}}
+                     className="go-back pointer text-center"
+                >
                     <FontAwesomeIcon icon={faArrowRight} className="mr-2"/>
                     <span>back to tracks</span>
                 </div>
@@ -248,13 +253,6 @@ class PointContainer extends Component {
         )
     }
 }
-
-//
-// const mapStateToProps = state => ({
-//     bounds: state.bounds,
-//     selectedIndex: state.selectedIndex,
-//     track: state.tracks.track
-// });
 
 PointContainer = connect (
     state => {

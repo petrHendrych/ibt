@@ -58,6 +58,9 @@ def save_gpx_to_database(f, file_instance):
                     track_list_of_points.append(point_in_segment.coords)
 
                 # TODO check if track has at least 2 points
+                if len(track_list_of_points) == 1:
+                    track_list_of_points.append(track_list_of_points[0])
+                    
                 new_track_segment = LineString(track_list_of_points)
 
             new_track.track = MultiLineString(new_track_segment)

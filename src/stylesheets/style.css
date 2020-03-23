@@ -48,6 +48,10 @@
 .selected {
   background: #def6df; }
 
+.go-back {
+  background: #e0e4e8;
+  border-bottom: 1px solid black; }
+
 .side-card {
   -webkit-box-shadow: 0 0 25px -15px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0 0 25px -15px rgba(0, 0, 0, 0.75);
@@ -144,5 +148,8 @@ html, body {
 
 .collapsing {
   transition: none !important; }
+
+a {
+  outline: 0; }
 
 /*# sourceMappingURL=style.css.map */
