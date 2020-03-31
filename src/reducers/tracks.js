@@ -1,5 +1,5 @@
 import {
-    TRACKS_LOADING, TRACKS_LOADED, TRACK_LOADED, TRACKS_CLEAR, TRACK_CLEAR
+    TRACKS_LOADING, TRACKS_LOADED, TRACK_LOADED, TRACKS_CLEAR, TRACK_CLEAR, UPDATE_POINT
 } from "../actions/types";
 
 const initialState = {
@@ -26,6 +26,15 @@ export default function (state = initialState, action) {
                 ...state,
                 isLoading: false,
                 track: action.payload
+            };
+        case UPDATE_POINT:
+            const cTrack = Object.assign({}, state.track);
+            const copyTrack = [...state.track.geometry.coordinates[0]];
+            cTrack.geometry.coordinates[0] = copyTrack;
+            copyTrack[action.index] = [action.val.lat, action.val.lng];
+            return {
+                ...state,
+                track: cTrack
             };
         case TRACK_CLEAR:
             return {

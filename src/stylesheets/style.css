@@ -45,11 +45,14 @@
       box-shadow: none !important;
       border: none; }
 
+.accordion .card-header:hover {
+  background: #def6df; }
+
 .selected {
   background: #def6df; }
 
 .go-back {
-  background: #e0e4e8;
+  background: #e7ebef;
   border-bottom: 1px solid black; }
 
 .side-card {

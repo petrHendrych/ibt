@@ -54,7 +54,7 @@ export default class MyMap extends Component {
 
                 { !_.isEmpty(this.props.track) ?
                     <FeatureGroup ref={this.group}>
-                        <Polyline color="black" positions={this.props.track.geometry.coordinates}/>
+                        <Polyline color="black" positions={this.props.track.geometry.coordinates[0]}/>
                     </FeatureGroup> :
                     <></>
                 }

@@ -1,4 +1,4 @@
-import {SELECT_POINT} from "./types";
+import {SELECT_POINT, UPDATE_POINT} from "./types";
 
 export const selectPoint = pointIndex => {
     return {
@@ -15,10 +15,8 @@ export const getPointLatLng = point => {
 
 export const updatePointLatLng = (index, val) => {
     return {
-        type: 'UPDATE_POINT',
-        payload: {
-            index: index,
-            val: val
-        }
+        type: UPDATE_POINT,
+        index: index,
+        val: val
     }
 };
