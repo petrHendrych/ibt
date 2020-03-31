@@ -8,15 +8,15 @@ export default class Input extends Component {
         const lngRe = /^([+-])?(?:180(?:(?:\.0{0,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{0,6})?))$/;
 
         if (this.props.label === "Lat") {
-            if (event.target.value === '' || latRe.test(event.target.value)) {
+            if (latRe.test(event.target.value)) {
                 this.setState({value: event.target.value}, () => {
                     this.props.onChange(this.state.value, 0);
                 });
-            } else if (event.target.value === '' || lngRe.test(event.target.value)) {
-                this.setState({value: event.target.value}, () => {
-                    this.props.onChange(this.state.value, 1);
-                })
             }
+        } else if (lngRe.test(event.target.value)) {
+            this.setState({value: event.target.value}, () => {
+                this.props.onChange(this.state.value, 1);
+            });
         }
         // if (event.target.value === '' || re.test(event.target.value)) {
         //     this.setState({value: event.target.value}, () => {
