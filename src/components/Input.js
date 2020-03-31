@@ -18,15 +18,6 @@ export default class Input extends Component {
                 this.props.onChange(this.state.value, 1);
             });
         }
-        // if (event.target.value === '' || re.test(event.target.value)) {
-        //     this.setState({value: event.target.value}, () => {
-        //         if (this.props.label === "Lat") {
-        //             this.props.onChange(this.state.value, 0);
-        //         } else {
-        //             this.props.onChange(this.state.value, 1);
-        //         }
-        //     });
-        // }
     };
 
     onInputBlur = () => {

@@ -20,21 +20,17 @@ export default class SideBarCard extends Component {
     changeHandler = (val, idx) => {
         const arr = this.state.coords;
         arr[idx] = parseFloat(val);
+        if (isNaN(arr[idx])) {
+
+        }
         this.setState({coords: arr});
     };
 
     blurHandler = () => {
-        const val = {};
-        Object.defineProperties(val, {
-            'lat': {
-                value: this.state.coords[0],
-                writable: true
-            },
-            'lng': {
-                value: this.state.coords[1],
-                writable: true
-            }
-        });
+        const val =  {
+                lat: this.state.coords[0],
+                lng: this.state.coords[1],
+        };
         this.props.updatePointLatLng(this.props.selectedIndex, val);
     };
 
