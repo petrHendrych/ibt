@@ -55,8 +55,23 @@
   }
 }
 
-.accordion .card-header:hover {
-  background: #def6df;
+.accordion .card-header {
+  color: #767676;
+  &:hover {
+    color: #000;
+    background: #def6df;
+  }
+}
+
+//.accordion .card:last-of-type {
+//  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+//}
+
+.icon-error {
+  float: left;
+  position: absolute;
+  top: 10px;
+  left: 40px
 }
 
 .selected {
@@ -82,14 +97,34 @@
 }
 
 .side-bar-input {
-  width: 120px;
+  width: 1%;
+  flex: 1 1 auto;
   border-radius: 0;
   border: 1px solid #ced4da;
 }
 
 .input-span {
-  width: 47.7px;
+  width: 42.7px;
   border-radius: 0 !important;
+}
+
+.input-error {
+  font-size: 11px;
+  font-weight: 400;
+  &.left {
+    text-align: left;
+  }
+  &.right {
+    text-align: right;
+  }
+}
+
+.card-body .input-group:first-of-type {
+  padding-right: 5px;
+}
+
+.card-body .input-group:nth-last-of-type(2) {
+  padding-left: 5px;
 }
 
 .new-line {

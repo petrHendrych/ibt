@@ -32,7 +32,9 @@ export default class MyMap extends Component {
     };
 
     updateMarker = (e) => {
-        const coords = e.target.getLatLng();
+        let coords = e.target.getLatLng();
+        coords.lat = parseFloat(coords.lat.toFixed(6));
+        coords.lng = parseFloat(coords.lng.toFixed(6));
         this.props.updatePointLatLng(this.props.selectedIndex, coords);
     };
 

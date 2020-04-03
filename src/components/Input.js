@@ -1,48 +1,82 @@
 import React, {Component} from 'react';
 
 export default class Input extends Component {
-    state = { value: this.props.val };
+    state = {
+        value: this.props.val,
+        valid: true
+    };
 
     onInputChange = event => {
-        const latRe = /^([+-])?(?:90(?:(?:\.0{0,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{0,6})?))$/;
-        const lngRe = /^([+-])?(?:180(?:(?:\.0{0,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{0,6})?))$/;
+        const re = /^[-]?([0-9]+(\.[0-9]{0,6})?)$/;
 
-        if (this.props.label === "Lat") {
-            if (latRe.test(event.target.value)) {
-                this.setState({value: event.target.value}, () => {
-                    this.props.onChange(this.state.value, 0);
-                });
-            }
-        } else if (lngRe.test(event.target.value)) {
+        if (event.target.value === '' || re.test(event.target.value)) {
             this.setState({value: event.target.value}, () => {
-                this.props.onChange(this.state.value, 1);
+                if (this.props.label === "Lat") {
+                    this.props.onChange(this.state.value, 0);
+                } else {
+                    this.props.onChange(this.state.value, 1);
+                }
             });
         }
     };
 
     onInputBlur = () => {
-        this.props.onBlur();
+        if (this.props.label === "Lat") {
+            if (this.validate(0)) {
+                this.setState({valid: true});
+                this.props.onBlur(true, 0);
+
+            } else {
+                this.setState({valid: false});
+                this.props.onBlur(false, 0);
+            }
+        } else {
+            if (this.validate(1)) {
+                this.setState({valid: true});
+                this.props.onBlur(true, 1);
+
+            } else {
+                this.setState({valid: false});
+                this.props.onBlur(false, 1);
+            }
+        }
+    };
+
+    validate = (idx) => {
+        if (idx === 0) {
+            return (this.state.value >= -90 && this.state.value <= 90)
+        } else {
+            return (this.state.value >= -180 && this.state.value <= 180)
+        }
     };
 
     componentDidUpdate(prevProps) {
         if (this.props.val !== prevProps.val) {
-            this.setState({value: this.props.val})
+            this.setState({value: this.props.val});
+            this.setState({valid: true});
         }
     }
 
     render () {
+        const {label} = this.props;
         return (
-            <div className="input-group input-group-sm mb-2 d-inline-flex w-50">
+            <div className="input-group input-group-sm d-inline-flex w-50">
                 <div className="input-group-prepend">
-                    <span className="input-group-text justify-content-center input-span">{this.props.label}</span>
+                    <span className="input-group-text justify-content-center input-span">{label}</span>
                 </div>
                 <input
-                    className="pl-1 side-bar-input"
+                    className={"pl-1 side-bar-input " + (this.state.valid ? "" : "border-danger")}
                     type="text"
                     value={this.state.value}
                     onChange={this.onInputChange}
                     onBlur={this.onInputBlur}
                 />
+                {
+                    this.state.valid ? <></> :
+                        <label className={"input-error text-danger w-100 mb-0 " + (label === "Lat" ? "left" : "right")}>
+                            {label === "Lat" ? "Set value between -90 and 90" : "Set value between -180 and 180"}
+                        </label>
+                }
             </div>
         );
     }
