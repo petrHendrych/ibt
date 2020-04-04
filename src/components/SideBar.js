@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import { Accordion, Card } from "react-bootstrap";
+import {Accordion, Card, OverlayTrigger, Tooltip} from "react-bootstrap";
 import { connect } from 'react-redux';
 import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faDumpster, faSave } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
@@ -231,18 +231,27 @@ class PointContainer extends Component {
     render() {
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
-                <div onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}}
-                     className="go-back pointer text-center"
-                >
-                    <FontAwesomeIcon icon={faArrowRight} className="mr-2"/>
-                    <span>back to tracks</span>
+                <div className="go-back text-center">
+                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">back to tracks</Tooltip>}>
+                        <FontAwesomeIcon
+                            onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}}
+                            icon={faArrowRight}
+                            className="pointer"
+                        />
+                    </OverlayTrigger>
+                    <div className="mx-5 d-inline-block">
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">save changes</Tooltip>}>
+                            <FontAwesomeIcon
+                                onClick={() => this.props.updateTrack(this.props.track.properties.id, this.props.track)}
+                                icon={faSave}
+                                className="pointer"
+                            />
+                        </OverlayTrigger>
+                    </div>
+                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">delete points</Tooltip>}>
+                          <FontAwesomeIcon icon={faDumpster} className="pointer"/>
+                    </OverlayTrigger>
                 </div>
-
-                <button onClick={() =>
-                    {this.props.updateTrack(this.props.track.properties.id, this.props.track); this.props.onChange()}
-                }>
-                    Update
-                </button>
 
                 {!_.isEmpty(this.props.track) ?
                     <div style={{ flex: '1 1 auto' }}>
