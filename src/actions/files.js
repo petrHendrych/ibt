@@ -56,7 +56,7 @@ export const uploadFile = (file, title) => (dispatch, getState) => {
 // DELETE FILE
 export const deleteFile = (id) => (dispatch, getState) => {
     axios.delete(`http://localhost:8000/api/files/${id}`, tokenConfig(getState))
-        .then(res => {
+        .then(() => {
             dispatch({
                 type: FILE_DELETE,
                 payload: id

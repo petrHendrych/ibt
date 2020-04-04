@@ -18,6 +18,7 @@ export const TRACK_LOADED = "TRACK_LOADED";
 export const TRACK_CLEAR = "TRACK_CLEAR";
 export const TRACKS_CLEAR = "TRACKS_CLEAR";
 export const TRACKS_LOADING = "TRACKS_LOADING";
+export const DELETE_TRACK = "DELETE_TRACK";
 
 export const SELECT_POINT = "SELECT_POINT";
 export const UNSELECT_POINT = "UNSELECT_POINT";

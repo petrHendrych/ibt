@@ -10,7 +10,7 @@ import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
 import { selectPoint } from "../actions";
 import { Spinner } from "../utils";
-import {getTrack, updateTrack} from "../actions/tracks";
+import {deleteTrack, getTrack, updateTrack} from "../actions/tracks";
 import {TRACK_CLEAR, UNSELECT_POINT} from "../actions/types";
 
 
@@ -61,7 +61,14 @@ export default class SideBar extends Component {
                         <div><strong>{this.props.trackList[index].name}</strong></div>
                         <div>
                             <span className="float-left pt-2">File: {this.getFileName(this.props.trackList[index].gpx_file)}</span>
-                            <button className="btn btn-danger btn-sm float-right m-2">Delete</button>
+                            <button
+                                className="btn btn-danger btn-sm float-right m-2"
+                                onClick={(e) =>
+                                    {e.stopPropagation(); this.props.deleteTrack(this.props.trackList[index].id)}
+                                }
+                            >
+                                Delete
+                            </button>
                         </div>
                     </Card>
                 </div>
@@ -158,6 +165,7 @@ SideBar = connect (
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
             getTrack: (id) => dispatch(getTrack(id)),
+            deleteTrack: (id) => dispatch(deleteTrack(id)),
             clearTrack: () => dispatch({type: TRACK_CLEAR}),
             clearIndex: () => dispatch({type: UNSELECT_POINT})
         }
@@ -223,14 +231,19 @@ class PointContainer extends Component {
     render() {
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
-                <button onClick={() => this.props.updateTrack(this.props.track.properties.id, this.props.track)}>Update</button>
-
                 <div onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}}
                      className="go-back pointer text-center"
                 >
                     <FontAwesomeIcon icon={faArrowRight} className="mr-2"/>
                     <span>back to tracks</span>
                 </div>
+
+                <button onClick={() =>
+                    {this.props.updateTrack(this.props.track.properties.id, this.props.track); this.props.onChange()}
+                }>
+                    Update
+                </button>
+
                 {!_.isEmpty(this.props.track) ?
                     <div style={{ flex: '1 1 auto' }}>
                         <AutoSizer>

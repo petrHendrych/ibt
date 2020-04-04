@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {TRACK_LOADED, TRACKS_LOADED, TRACKS_LOADING} from "./types";
+import {DELETE_TRACK, TRACK_LOADED, TRACKS_LOADED, TRACKS_LOADING} from "./types";
 import {tokenConfig} from "./auth";
 
 // GET USER'S TRACKS
@@ -32,4 +32,21 @@ export const updateTrack = (id, track) => (dispatch, getState) => {
         .catch(err => {
             console.log(err);
         })
+};
+
+// DELETE TRACK
+export const deleteTrack = (id) => (dispatch, getState) => {
+    axios.delete(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState))
+        .then(() => {
+            dispatch({
+                type: DELETE_TRACK,
+                payload: id
+            });
+
+            dispatch(getTracks());
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
 };

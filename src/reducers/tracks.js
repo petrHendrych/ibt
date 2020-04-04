@@ -1,5 +1,5 @@
 import {
-    TRACKS_LOADING, TRACKS_LOADED, TRACK_LOADED, TRACKS_CLEAR, TRACK_CLEAR, UPDATE_POINT
+    TRACKS_LOADING, TRACKS_LOADED, TRACK_LOADED, TRACKS_CLEAR, TRACK_CLEAR, UPDATE_POINT, DELETE_TRACK
 } from "../actions/types";
 
 const initialState = {
@@ -21,11 +21,29 @@ export default function (state = initialState, action) {
                 isLoading: false,
                 data: action.payload
             };
+        case TRACKS_CLEAR:
+            return {
+                ...state,
+                isLoading: false,
+                data: null,
+                track: {}
+            };
         case TRACK_LOADED:
             return {
                 ...state,
                 isLoading: false,
                 track: action.payload
+            };
+        case TRACK_CLEAR:
+            return {
+                ...state,
+                isLoading: false,
+                track: {}
+            };
+        case DELETE_TRACK:
+            return {
+                ...state,
+                data: state.data.filter(track => track.id !== action.payload)
             };
         case UPDATE_POINT:
             const cTrack = Object.assign({}, state.track);
@@ -35,19 +53,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 track: cTrack
-            };
-        case TRACK_CLEAR:
-            return {
-                ...state,
-                isLoading: false,
-                track: {}
-            };
-        case TRACKS_CLEAR:
-            return {
-                ...state,
-                isLoading: false,
-                data: null,
-                track: {}
             };
         default:
             return state;
