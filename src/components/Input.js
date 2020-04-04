@@ -70,6 +70,7 @@ export default class Input extends Component {
                     value={this.state.value}
                     onChange={this.onInputChange}
                     onBlur={this.onInputBlur}
+                    onKeyPress={this.onInputBlur}
                 />
                 {
                     this.state.valid ? <></> :

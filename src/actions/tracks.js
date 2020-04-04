@@ -18,3 +18,18 @@ export const getTrack = (id) => async (dispatch, getState) => {
     dispatch({ type: TRACK_LOADED, payload: response.data});
 };
 
+// UPDATE TRACK POINTS
+export const updateTrack = (id, track) => (dispatch, getState) => {
+    dispatch({type: TRACKS_LOADING});
+
+    axios.put(`http://localhost:8000/api/tracks/${id}`, track, tokenConfig(getState))
+        .then(res => {
+            dispatch({
+                type: TRACK_LOADED,
+                payload: res.data
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
+};

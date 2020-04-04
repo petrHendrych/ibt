@@ -50,6 +50,8 @@
   .accordion .card-header:hover {
     color: #000;
     background: #def6df; }
+  .accordion .card-header.selected {
+    color: #000; }
 
 .icon-error {
   float: left;
@@ -123,6 +125,8 @@
     -webkit-transform: translateX(-100%);
     -ms-transform: translateX(-100%);
     transform: translateX(-100%); }
+  .point-container > * .ReactVirtualized__Grid__innerScrollContainer {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125); }
 
 * {
   margin: 0;

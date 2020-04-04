@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import action
 
 from django.conf import settings
 from django.contrib.gis.geos import Point, MultiLineString, LineString
@@ -57,7 +58,6 @@ def save_gpx_to_database(f, file_instance):
                     tracks_times.append(point.time.isoformat())
                     track_list_of_points.append(point_in_segment.coords)
 
-                # TODO check if track has at least 2 points
                 if len(track_list_of_points) == 1:
                     track_list_of_points.append(track_list_of_points[0])
                     
@@ -89,3 +89,10 @@ class TrackViewSet(viewsets.ModelViewSet):
             return serializers.TracksSerializer
         else:
             return serializers.TrackSerializer
+
+    @action(methods=['post'], detail=True)
+    def partition(self, request, pk=None):
+        track = models.GPXTrack.objects.get(pk)
+
+        rectangle = request.data
+        #TODO ze zaslanych dat udelat rectangle pro contains

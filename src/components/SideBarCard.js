@@ -73,15 +73,6 @@ export default class SideBarCard extends Component {
                             </div>
                         </div>
                     </div>
-                    {/*{!(this.state.valid[0] && this.state.valid[1]) ?*/}
-                        {/*<FontAwesomeIcon icon={faExclamationCircle} className="icon-error text-danger"/> :*/}
-                        {/*<></>*/}
-                    {/*}*/}
-                    {/*Point: <span className={this.state.valid[0] ? "" : "text-danger"}>*/}
-                        {/*{this.state.coords[0]}*/}
-                    {/*</span>, <span className={this.state.valid[1] ? "" : "text-danger"}>*/}
-                        {/*{this.state.coords[1]}*/}
-                        {/*</span>*/}
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={index}>
                     <Card.Body>

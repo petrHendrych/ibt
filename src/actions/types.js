@@ -22,4 +22,5 @@ export const TRACKS_LOADING = "TRACKS_LOADING";
 export const SELECT_POINT = "SELECT_POINT";
 export const UNSELECT_POINT = "UNSELECT_POINT";
 export const GET_POINT_LAT_LNG = "GET_POINT_LAT_LNG";
+
 export const UPDATE_POINT = "UPDATE_POINT";

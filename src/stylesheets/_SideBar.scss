@@ -61,11 +61,10 @@
     color: #000;
     background: #def6df;
   }
+  &.selected {
+    color: #000;
+  }
 }
-
-//.accordion .card:last-of-type {
-//  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-//}
 
 .icon-error {
   float: left;
@@ -152,5 +151,8 @@
   transition: transform 0.3s;
   &.show {
     @include prefix(transform, translateX(-100%), webkit ms);
+  }
+  & > * .ReactVirtualized__Grid__innerScrollContainer {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
   }
 }

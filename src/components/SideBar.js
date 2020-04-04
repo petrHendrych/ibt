@@ -10,7 +10,7 @@ import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
 import { selectPoint } from "../actions";
 import { Spinner } from "../utils";
-import {getTrack} from "../actions/tracks";
+import {getTrack, updateTrack} from "../actions/tracks";
 import {TRACK_CLEAR, UNSELECT_POINT} from "../actions/types";
 
 
@@ -44,7 +44,7 @@ export default class SideBar extends Component {
         return result;
     };
 
-    tracksRenderer = ({index, key, isScrolling, style, parent}) => {
+    tracksRenderer = ({index, key, style, parent}) => {
         return (
             <CellMeasurer
                 parent={parent}
@@ -194,7 +194,7 @@ class PointContainer extends Component {
         }
     };
 
-    pointsRenderer = ({index, key, isScrolling, style, parent}) => {
+    pointsRenderer = ({index, key, style, parent}) => {
         return (
             <CellMeasurer
                 parent={parent}
@@ -223,6 +223,8 @@ class PointContainer extends Component {
     render() {
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
+                <button onClick={() => this.props.updateTrack(this.props.track.properties.id, this.props.track)}>Update</button>
+
                 <div onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}}
                      className="go-back pointer text-center"
                 >
@@ -241,7 +243,7 @@ class PointContainer extends Component {
                                     defferedMeasurementCache={this.cachePoints}
                                     rowHeight={this.cachePoints.rowHeight}
                                     rowRenderer={this.pointsRenderer}
-                                    overscanRowCount={15}
+                                    overscanRowCount={45}
                                 />
                             )}
                         </AutoSizer>
@@ -265,6 +267,7 @@ PointContainer = connect (
     dispatch => {
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
+            updateTrack: (id, track) => dispatch(updateTrack(id, track)),
             clearTrack: () => dispatch({type: TRACK_CLEAR}),
             clearIndex: () => dispatch({type: UNSELECT_POINT})
         }
