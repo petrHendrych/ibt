@@ -25,3 +25,5 @@ export const UNSELECT_POINT = "UNSELECT_POINT";
 export const GET_POINT_LAT_LNG = "GET_POINT_LAT_LNG";
 
 export const UPDATE_POINT = "UPDATE_POINT";
+export const DELETE_POINT = "DELETE_POINT";
+export const DELETE_POINTS = "DELETE_POINTS";

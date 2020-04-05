@@ -1,6 +1,8 @@
+import {DELETE_POINT, SELECT_POINT, UPDATE_POINT} from "./types";
+
 export const selectPoint = pointIndex => {
     return {
-        type: 'POINT_SELECTED',
+        type: SELECT_POINT,
         payload: pointIndex
     }
 };
@@ -13,10 +15,15 @@ export const getPointLatLng = point => {
 
 export const updatePointLatLng = (index, val) => {
     return {
-        type: 'UPDATE_POINT',
-        payload: {
-            index: index,
-            val: val
-        }
+        type: UPDATE_POINT,
+        index: index,
+        val: val
+    }
+};
+
+export const deletePoint = index => {
+    return {
+        type: DELETE_POINT,
+        index: index
     }
 };

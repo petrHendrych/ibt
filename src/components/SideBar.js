@@ -3,12 +3,12 @@ import {Accordion, Card, OverlayTrigger, Tooltip} from "react-bootstrap";
 import { connect } from 'react-redux';
 import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faDumpster, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
-import { selectPoint } from "../actions";
+import { selectPoint } from "../actions/points";
 import { Spinner } from "../utils";
 import {deleteTrack, getTrack, updateTrack} from "../actions/tracks";
 import {TRACK_CLEAR, UNSELECT_POINT} from "../actions/types";
@@ -182,6 +182,19 @@ class PointContainer extends Component {
         });
     }
 
+    state = {
+        toggleDelete: false,
+        checkAll: false,
+        checked: []
+    };
+
+    componentDidUpdate(pProps) {
+        if (this.list) {
+            this.cachePoints.clearAll();
+            this.list.forceUpdateGrid();
+        }
+    };
+
     bindListRef = ref => {
         this.list = ref;
     };
@@ -195,10 +208,33 @@ class PointContainer extends Component {
         }, 1)
     };
 
-    componentDidUpdate(pProps) {
-        if (this.list) {
-            this.cachePoints.clearAll();
-            this.list.forceUpdateGrid();
+    toggleCheckboxes = (toggle = true) => {
+        if (toggle) {
+            this.setState({toggleDelete: !this.state.toggleDelete})
+        }
+    };
+
+    toggleDelete = () => {
+        if (this.state.toggleDelete) {
+            if (window.confirm("Are you sure you want to delete these points?")) {
+                console.log(this.props.track);
+                this.toggleCheckboxes();
+            }
+        } else {
+            this.toggleCheckboxes();
+        }
+    };
+
+    // checkAll = () => {
+    //     this.setState({checkAll: !this.state.checkAll});
+    //
+    // };
+
+    checkboxHandler = (index) => {
+        if (this.state.checked.includes(index)) {
+            this.setState({checked: this.state.checked.filter(idx => idx !== index)})
+        } else {
+            this.setState({checked: [...this.state.checked, index]});
         }
     };
 
@@ -221,6 +257,9 @@ class PointContainer extends Component {
                             coords={this.props.track.geometry.coordinates[0][index]}
                             elevation={this.props.track.properties.elevations[index]}
                             time={this.props.track.properties.times[index]}
+                            delete={this.state.toggleDelete}
+                            checked={this.checkboxHandler}
+                            // check={this.state.checkAll}
                         />
                     </Accordion>
                 </div>
@@ -231,10 +270,15 @@ class PointContainer extends Component {
     render() {
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
-                <div className="go-back text-center">
-                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">back to tracks</Tooltip>}>
+                <nav className="navigation text-center">
+                    <OverlayTrigger placement="bottom" overlay={<Tooltip className="nav-tooltip" id="tooltip-disabled">back to tracks</Tooltip>}>
                         <FontAwesomeIcon
-                            onClick={() => {this.props.onChange(); this.props.clearTrack(); this.props.clearIndex()}}
+                            onClick={() => {
+                                this.props.onChange();
+                                this.props.clearTrack();
+                                this.props.clearIndex();
+                                this.toggleCheckboxes(this.state.toggleDelete)
+                            }}
                             icon={faArrowRight}
                             className="pointer"
                         />
@@ -248,10 +292,24 @@ class PointContainer extends Component {
                             />
                         </OverlayTrigger>
                     </div>
-                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">delete points</Tooltip>}>
-                          <FontAwesomeIcon icon={faDumpster} className="pointer"/>
+                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">delete multiple points</Tooltip>}>
+                          <FontAwesomeIcon
+                              icon={faTrashAlt}
+                              className="pointer"
+                              onClick={(e) => {e.stopPropagation(); this.toggleDelete()}}
+                          />
                     </OverlayTrigger>
-                </div>
+                    { this.state.toggleDelete ?
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">select all</Tooltip>}>
+                            <input
+                                type="checkbox"
+                                className="select-all-checkbox"
+                                onChange={() => this.checkAll()}
+                            />
+                        </OverlayTrigger> :
+                        <></>
+                    }
+                </nav>
 
                 {!_.isEmpty(this.props.track) ?
                     <div style={{ flex: '1 1 auto' }}>

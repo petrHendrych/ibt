@@ -52,6 +52,22 @@
     background: #def6df; }
   .accordion .card-header.selected {
     color: #000; }
+  .accordion .card-header .left-exclamation {
+    float: left;
+    position: absolute;
+    left: 50px; }
+  .accordion .card-header .right-trash-bin {
+    float: right;
+    position: absolute;
+    right: 20px; }
+  .accordion .card-header .delete-checkbox {
+    position: absolute;
+    right: 45px;
+    top: 11px; }
+
+.center-block {
+  width: 250px;
+  position: relative; }
 
 .icon-error {
   float: left;
@@ -62,9 +78,13 @@
 .selected {
   background: #def6df; }
 
-.go-back {
+.navigation {
   background: #e7ebef;
   border-bottom: 1px solid black; }
+  .navigation .select-all-checkbox {
+    position: absolute;
+    right: 46px;
+    top: 6px; }
 
 .side-card {
   -webkit-box-shadow: 0 0 25px -15px rgba(0, 0, 0, 0.75);

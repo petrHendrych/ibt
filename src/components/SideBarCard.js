@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
 import {Card, Accordion} from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import {connect} from 'react-redux';
-import Input from './Input';
+import _ from 'lodash';
 
-import {updatePointLatLng} from "../actions";
+import Input from './Input';
+import {deletePoint, updatePointLatLng} from "../actions/points";
 
 export default class SideBarCard extends Component {
     state = {
         coords: [...this.props.coords],
-        valid: [true, true]
+        valid: [true, true],
+        // checked: this.props.check
     };
 
+    // updating after marker is moved
     componentDidUpdate(prevProps) {
         if (prevProps.coords !== this.props.coords) {
             this.setState({valid: [true, true]});
@@ -39,7 +42,7 @@ export default class SideBarCard extends Component {
                     lat: this.state.coords[0],
                     lng: this.state.coords[1],
                 };
-                this.props.updatePointLatLng(this.props.selectedIndex, val);
+                this.props.updatePointLatLng(this.props.index, val);
             }
         });
     };
@@ -51,27 +54,46 @@ export default class SideBarCard extends Component {
         )
     };
 
+    deletePointHandler = (index) => {
+        if (!_.isEmpty(this.props.track)) {
+            this.props.deletePoint(index);
+        }
+    };
+
     render() {
         const {index, coords, elevation, time} = this.props;
         return (
             <Card>
                 <Accordion.Toggle as={Card.Header} eventKey={index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
-                    <div className="d-flex">
-                        <div className="text-center">
-                            {!(this.state.valid[0] && this.state.valid[1]) ?
+                    <div className="left-exclamation">
+                        {!(this.state.valid[0] && this.state.valid[1]) ?
                             <FontAwesomeIcon icon={faExclamationCircle} className="text-danger"/> :
                             <></>
-                            }
-                        </div>
-                        <div>Point:</div>
-                        <div>
-                            <div className={"d-inline-block " + (this.state.valid[0] ? "" : "text-danger")}>
-                                {this.state.coords[0]},
-                            </div>
-                            <div className={"d-inline-block " + (this.state.valid[1] ? "" : "text-danger")}>
-                                {this.state.coords[1]}
-                            </div>
-                        </div>
+                        }
+                    </div>
+                    <div className="center-block d-inline-block">
+                        <div className="d-inline-block position-absolute" style={{left: "5px"}}>Point:</div>
+                        <span className={this.state.valid[0] ? "" : "text-danger"}>
+                            {this.state.coords[0]},
+                        </span>
+                        <span className={this.state.valid[1] ? "" : "text-danger"}>
+                            {this.state.coords[1]}
+                        </span>
+                    </div>
+                    { this.props.delete ?
+                        <input
+                            type="checkbox"
+                            className="delete-checkbox"
+                            onClick={e => {e.stopPropagation(); this.props.checked(index)}}
+                            // checked={this.props.check}
+                        /> :
+                        <></>
+                    }
+                    <div className="right-trash-bin d-inline-block">
+                        <FontAwesomeIcon
+                            icon={faTrashAlt}
+                            onClick={(e) => {e.stopPropagation(); this.deletePointHandler(index)}}
+                        />
                     </div>
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={index}>
@@ -101,12 +123,13 @@ SideBarCard = connect (
     state => {
         return {
             bounds: state.bounds,
-            selectedIndex: state.selectedIndex,
+            track: state.tracks.track
         }
     },
     dispatch => {
         return {
-            updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
+            updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val)),
+            deletePoint: (index) => dispatch(deletePoint(index))
         }
     }
 )(SideBarCard);

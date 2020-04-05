@@ -64,6 +64,26 @@
   &.selected {
     color: #000;
   }
+  .left-exclamation {
+    float: left;
+    position: absolute;
+    left: 50px;
+  }
+  .right-trash-bin {
+    float: right;
+    position: absolute;
+    right: 20px;
+  }
+  .delete-checkbox {
+    position: absolute;
+    right: 45px;
+    top: 11px;
+  }
+}
+
+.center-block {
+  width: 250px;
+  position: relative;
 }
 
 .icon-error {
@@ -77,10 +97,25 @@
   background: #def6df;
 }
 
-.go-back {
+.navigation {
   background: #e7ebef;
   border-bottom: 1px solid black;
+  .select-all-checkbox {
+    position: absolute;
+    right: 46px;
+    top: 6px;
+  }
 }
+
+//.tooltip [class$="inner"] {
+//  background-color: #fff;
+//  color: black;
+//  border: 1px solid black;
+//}
+//
+//.tooltip [class$="arrow"] {
+//  border-top: 1px solid black !important;
+//}
 
 .side-card {
   -webkit-box-shadow: 0 0 25px -15px rgba(0,0,0,0.75);

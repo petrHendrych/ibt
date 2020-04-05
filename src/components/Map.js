@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {Map, TileLayer, Polyline, Marker, FeatureGroup, Rectangle} from "react-leaflet";
 import {latLngBounds} from "leaflet";
-import {getPointLatLng, updatePointLatLng} from "../actions";
+import {getPointLatLng, updatePointLatLng} from "../actions/points";
 import _ from 'lodash';
 import {getFiles} from "../actions/files";
 import {getTracks} from "../actions/tracks";
