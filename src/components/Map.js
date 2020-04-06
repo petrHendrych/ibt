@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {Map, TileLayer, Polyline, Marker, FeatureGroup, Rectangle} from "react-leaflet";
-import {latLngBounds} from "leaflet";
-import {getPointLatLng, updatePointLatLng} from "../actions/points";
+import {latLngBounds, polyline} from "leaflet";
+import L from 'leaflet';
 import _ from 'lodash';
 import {getFiles} from "../actions/files";
 import {getTracks} from "../actions/tracks";
+
+import {getPointLatLng, updatePointLatLng} from "../actions/points";
 
 export default class MyMap extends Component {
     constructor(props) {
@@ -20,13 +22,13 @@ export default class MyMap extends Component {
         this.props.getTracks();
     }
 
-    handleClick = () => {
+    boundsHandler = () => {
         const map = this.map.current.leafletElement;
         const group = this.group.current.leafletElement;
         map.fitBounds(group.getBounds());
     };
 
-    getLatLng = (e) => {
+    boundsPointHandler = (e) => {
         const coords = e.latlng;
         this.props.getPointLatLng(coords);
     };
@@ -38,6 +40,20 @@ export default class MyMap extends Component {
         this.props.updatePointLatLng(this.props.selectedIndex, coords);
     };
 
+    polylineClickHandler = (e, line) => {
+        const point = e.latlng;
+        const latlngs = [
+            [45.51, -122.68],
+            [37.77, -122.43],
+            [34.04, -118.2]
+        ];
+        console.log(this.map);
+        const nPol = L.LineUtil.closestPointOnSegment(this.map, line, point);
+        // console.log(nPol.closestLayerPoint([49.4, 16.3]));
+        console.log(nPol);
+        // const p = LineUtil.closestPointOnSegment(this.map, line, point);
+    };
+
     render() {
         let bounds = latLngBounds([[49.24, 16.54], [49.15, 16.71]]);
 
@@ -46,17 +62,26 @@ export default class MyMap extends Component {
         }
 
         return (
-            <Map doubleClickZoom={false} bounds={bounds} ref={this.map} ondblclick={this.getLatLng} maxZoom={18}>
+            <Map doubleClickZoom={false}
+                 bounds={bounds}
+                 ref={this.map}
+                 ondblclick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates)}
+                 maxZoom={18}
+            >
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {_.isEmpty(this.props.track) ? <></> : <button onClick={this.handleClick} className="fit-button">fit track</button>}
+                {_.isEmpty(this.props.track) ? <></> : <button onClick={this.boundsHandler} className="fit-button">fit track</button>}
 
                 { !_.isEmpty(this.props.track) ?
                     <FeatureGroup ref={this.group}>
-                        <Polyline color="black" positions={this.props.track.geometry.coordinates[0]}/>
+                        <Polyline
+                            color="black"
+                            positions={this.props.track.geometry.coordinates[0]}
+                            onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates[0])}
+                        />
                     </FeatureGroup> :
                     <></>
                 }

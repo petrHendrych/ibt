@@ -8,7 +8,7 @@ import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
-import { selectPoint } from "../actions/points";
+import {deletePoints, selectPoint} from "../actions/points";
 import { Spinner } from "../utils";
 import {deleteTrack, getTrack, updateTrack} from "../actions/tracks";
 import {TRACK_CLEAR, UNSELECT_POINT} from "../actions/types";
@@ -210,14 +210,18 @@ class PointContainer extends Component {
 
     toggleCheckboxes = (toggle = true) => {
         if (toggle) {
-            this.setState({toggleDelete: !this.state.toggleDelete})
+            this.setState({
+                toggleDelete: !this.state.toggleDelete,
+                checked: [],
+                checkAll: false
+            });
         }
     };
 
-    toggleDelete = () => {
+    toggleDelete = (indexes) => {
         if (this.state.toggleDelete) {
             if (window.confirm("Are you sure you want to delete these points?")) {
-                console.log(this.props.track);
+                this.props.deletePoints(indexes);
                 this.toggleCheckboxes();
             }
         } else {
@@ -225,10 +229,21 @@ class PointContainer extends Component {
         }
     };
 
-    // checkAll = () => {
-    //     this.setState({checkAll: !this.state.checkAll});
-    //
-    // };
+    checkAll = () => {
+        this.setState({checkAll: !this.state.checkAll}, () => {
+            const arr = this.state.checked;
+
+            if (this.state.checkAll) {
+                for (let i = 0; i < this.props.track.geometry.coordinates[0].length; i++) {
+                    if (arr.includes(i)) {continue;}
+                    arr.push(i);
+                }
+                this.setState({checked: arr});
+            } else {
+                this.setState({checked: []});
+            }
+        });
+    };
 
     checkboxHandler = (index) => {
         if (this.state.checked.includes(index)) {
@@ -259,7 +274,7 @@ class PointContainer extends Component {
                             time={this.props.track.properties.times[index]}
                             delete={this.state.toggleDelete}
                             checked={this.checkboxHandler}
-                            // check={this.state.checkAll}
+                            all={this.state.checkAll}
                         />
                     </Accordion>
                 </div>
@@ -295,8 +310,8 @@ class PointContainer extends Component {
                     <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">delete multiple points</Tooltip>}>
                           <FontAwesomeIcon
                               icon={faTrashAlt}
-                              className="pointer"
-                              onClick={(e) => {e.stopPropagation(); this.toggleDelete()}}
+                              className={"pointer " + (this.state.toggleDelete ? "text-danger" : "")}
+                              onClick={(e) => {e.stopPropagation(); this.toggleDelete(this.state.checked)}}
                           />
                     </OverlayTrigger>
                     { this.state.toggleDelete ?
@@ -304,7 +319,7 @@ class PointContainer extends Component {
                             <input
                                 type="checkbox"
                                 className="select-all-checkbox"
-                                onChange={() => this.checkAll()}
+                                onClick={() => this.checkAll()}
                             />
                         </OverlayTrigger> :
                         <></>
@@ -348,6 +363,7 @@ PointContainer = connect (
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
             updateTrack: (id, track) => dispatch(updateTrack(id, track)),
+            deletePoints: (indexes) => dispatch(deletePoints(indexes)),
             clearTrack: () => dispatch({type: TRACK_CLEAR}),
             clearIndex: () => dispatch({type: UNSELECT_POINT})
         }

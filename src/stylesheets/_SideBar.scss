@@ -73,6 +73,9 @@
     float: right;
     position: absolute;
     right: 20px;
+    .disable {
+      pointer-events: none;
+    }
   }
   .delete-checkbox {
     position: absolute;

@@ -80,7 +80,11 @@ export default class SideBarHeader extends Component {
                         <Modal.Title>Files</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <TableRender files={this.props.files} onClick={this.props.deleteFile} updateState={this.updateState}/>
+                        <TableRender
+                            files={this.props.files}
+                            onClick={() => window.confirm("Really want to delete this file?") ? this.props.deleteFile : null}
+                            updateState={this.updateState}
+                        />
                     </Modal.Body>
                     <Modal.Footer>
                         <form onSubmit={this.formSubmit}>

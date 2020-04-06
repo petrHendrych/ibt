@@ -12,14 +12,22 @@ export default class SideBarCard extends Component {
     state = {
         coords: [...this.props.coords],
         valid: [true, true],
-        // checked: this.props.check
+        checked: this.props.all
     };
 
     // updating after marker is moved
     componentDidUpdate(prevProps) {
         if (prevProps.coords !== this.props.coords) {
-            this.setState({valid: [true, true]});
-            this.setState({coords: [...this.props.coords]})
+            this.setState({
+                valid: [true, true],
+                coords: [...this.props.coords],
+            });
+        }
+        if (prevProps.all !== this.props.all) {
+            const bol = this.props.all;
+            this.setState({
+                checked: bol
+            })
         }
     }
 
@@ -56,7 +64,9 @@ export default class SideBarCard extends Component {
 
     deletePointHandler = (index) => {
         if (!_.isEmpty(this.props.track)) {
-            this.props.deletePoint(index);
+            if (window.confirm("Really want to delete this point?")) {
+                this.props.deletePoint(index);
+            }
         }
     };
 
@@ -84,8 +94,12 @@ export default class SideBarCard extends Component {
                         <input
                             type="checkbox"
                             className="delete-checkbox"
-                            onClick={e => {e.stopPropagation(); this.props.checked(index)}}
-                            // checked={this.props.check}
+                            onChange={e => {
+                                e.stopPropagation();
+                                this.setState({checked: !this.state.checked});
+                                this.props.checked(index)}
+                            }
+                            checked={this.state.checked}
                         /> :
                         <></>
                     }
@@ -93,6 +107,7 @@ export default class SideBarCard extends Component {
                         <FontAwesomeIcon
                             icon={faTrashAlt}
                             onClick={(e) => {e.stopPropagation(); this.deletePointHandler(index)}}
+                            className={this.props.delete ? "disable" : ""}
                         />
                     </div>
                 </Accordion.Toggle>

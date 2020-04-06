@@ -73,11 +73,14 @@ export default function (state = initialState, action) {
             };
         case DELETE_POINTS:
             const copyTrack = Object.assign({}, state.track);
-            const filterPoints = copyTrack.geometry.coordinates[0].filter((point, index) => index !== action.index);
+            const filterPoints = [...state.track.geometry.coordinates[0]];
             copyTrack.geometry.coordinates[0] = filterPoints;
-            console.log(copyTrack);
+            for (let i = action.indexes.length - 1; i >= 0; i--) {
+                filterPoints.splice(action.indexes[i], 1);
+            }
             return {
                 ...state,
+                track: copyTrack
             };
         default:
             return state;
