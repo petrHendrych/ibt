@@ -86,8 +86,8 @@ export default class SideBarCard extends Component {
                         }
                     </div>
                     <div className="center-block d-inline-block">
-                        <div className="d-inline-block position-absolute" style={{left: "5px"}}>Point:</div>
-                        <div className="d-inline-block position-relative" style={{left: "20px"}}>
+                        <div className="d-inline-block position-absolute" style={{left: "24px"}}>Point:</div>
+                        <div className="d-inline-block position-relative" style={{left: "40px"}}>
                             <span className={this.state.valid[0] ? "" : "text-danger"}>
                                 {this.state.coords[0]},
                             </span>

@@ -80,15 +80,14 @@ export default function (state = initialState, action) {
                 track: copTr
             };
         case DELETE_POINTS:
-            const copyTrack = Object.assign({}, state.track);
-            const filterPoints = [...state.track.geometry.coordinates[0]];
-            copyTrack.geometry.coordinates[0] = filterPoints;
             for (let i = action.indexes.length - 1; i >= 0; i--) {
-                filterPoints.splice(action.indexes[i], 1);
+                copTr.geometry.coordinates[0].splice(action.indexes[i], 1);
+                copTr.properties.elevations.splice(action.indexes[i], 1);
+                copTr.properties.times.splice(action.indexes[i], 1);
             }
             return {
                 ...state,
-                track: copyTrack
+                track: copTr
             };
         default:
             return state;

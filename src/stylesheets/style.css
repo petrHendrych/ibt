@@ -50,6 +50,8 @@
   .accordion .card-header:hover {
     color: #000;
     background: #def6df; }
+  .accordion .card-header:hover > .right-trash-bin {
+    visibility: visible; }
   .accordion .card-header.selected {
     color: #000; }
   .accordion .card-header .left-exclamation {
@@ -59,10 +61,11 @@
   .accordion .card-header .right-trash-bin {
     float: right;
     position: absolute;
-    right: 20px; }
+    right: 20px;
+    visibility: hidden; }
   .accordion .card-header .delete-checkbox {
     position: absolute;
-    right: 45px;
+    right: 35px;
     top: 11px; }
 
 .card-header input {

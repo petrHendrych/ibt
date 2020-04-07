@@ -44,6 +44,12 @@ export default class SideBar extends Component {
         return result;
     };
 
+    deleteTrackHandler = (id) => {
+        if (window.confirm("Are you sure you want to delete this track?")) {
+            this.props.deleteTrack(id);
+        }
+    };
+
     tracksRenderer = ({index, key, style, parent}) => {
         return (
             <CellMeasurer
@@ -63,9 +69,10 @@ export default class SideBar extends Component {
                             <span className="float-left pt-2">File: {this.getFileName(this.props.trackList[index].gpx_file)}</span>
                             <button
                                 className="btn btn-danger btn-sm float-right m-2"
-                                onClick={(e) =>
-                                    {e.stopPropagation(); this.props.deleteTrack(this.props.trackList[index].id)}
-                                }
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    this.deleteTrackHandler(this.props.trackList[index].id);
+                                }}
                             >
                                 Delete
                             </button>
