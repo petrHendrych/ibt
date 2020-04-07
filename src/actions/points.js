@@ -1,4 +1,4 @@
-import {DELETE_POINT, DELETE_POINTS, SELECT_POINT, UPDATE_POINT} from "./types";
+import {DELETE_POINT, DELETE_POINTS, INSERT_POINT, SELECT_POINT, UPDATE_POINT} from "./types";
 
 export const selectPoint = pointIndex => {
     return {
@@ -32,5 +32,13 @@ export const deletePoints = indexes => {
     return {
         type: DELETE_POINTS,
         indexes: indexes.sort((a,b) => a - b)
+    }
+};
+
+export const insertPoint = (index, value) => {
+    return {
+        type: INSERT_POINT,
+        index: index,
+        val: value
     }
 };

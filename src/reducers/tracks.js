@@ -7,7 +7,7 @@ import {
     UPDATE_POINT,
     DELETE_TRACK,
     DELETE_POINT,
-    DELETE_POINTS
+    DELETE_POINTS, INSERT_POINT
 } from "../actions/types";
 
 const initialState = {
@@ -17,6 +17,8 @@ const initialState = {
 };
 
 export default function (state = initialState, action) {
+    const copTr = JSON.parse(JSON.stringify(state.track));
+
     switch (action.type) {
         case TRACKS_LOADING:
             return {
@@ -54,22 +56,28 @@ export default function (state = initialState, action) {
                 data: state.data.filter(track => track.id !== action.payload)
             };
         case UPDATE_POINT:
-            const cTrack = Object.assign({}, state.track);
-            const copyPoints = [...state.track.geometry.coordinates[0]];
-            cTrack.geometry.coordinates[0] = copyPoints;
-            copyPoints[action.index] = [action.val.lat, action.val.lng];
+            copTr.geometry.coordinates[0][action.index] = [action.val.lat, action.val.lng];
             return {
                 ...state,
-                track: cTrack
+                track: copTr
+            };
+        case INSERT_POINT:
+            const date = new Date();
+
+            copTr.geometry.coordinates[0].splice(action.index, 0, action.val);
+            copTr.properties.elevations.splice(action.index, 0, copTr.properties.elevations[action.index]);
+            copTr.properties.times.splice(action.index, 0, date.toISOString());
+            return {
+                ...state,
+                track: copTr
             };
         case DELETE_POINT:
-            const trk = {...state.track};
-            const newPoints = [...state.track.geometry.coordinates[0]];
-            trk.geometry.coordinates[0] = newPoints;
-            newPoints.splice(action.index, 1);
+            copTr.geometry.coordinates[0].splice(action.index, 1);
+            copTr.properties.elevations.splice(action.index, 1);
+            copTr.properties.times.splice(action.index, 1);
             return {
                 ...state,
-                track: trk
+                track: copTr
             };
         case DELETE_POINTS:
             const copyTrack = Object.assign({}, state.track);

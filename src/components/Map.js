@@ -6,7 +6,7 @@ import _ from 'lodash';
 import {getFiles} from "../actions/files";
 import {getTracks} from "../actions/tracks";
 
-import {getPointLatLng, updatePointLatLng} from "../actions/points";
+import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 
 export default class MyMap extends Component {
     constructor(props) {
@@ -15,13 +15,6 @@ export default class MyMap extends Component {
         this.map = React.createRef();
         this.polyline = React.createRef();
     }
-
-    state = {
-        marker: {
-            lat: 50.30216818708575,
-            lng: 17.159141868020516
-        }
-    };
 
     componentDidMount() {
         this.props.getFiles();
@@ -47,11 +40,18 @@ export default class MyMap extends Component {
     };
 
     polylineClickHandler = (e) => {
-        const point = e.latlng;
+        let point = e.latlng;
         const mapPoint = this.map.current.leafletElement.latLngToLayerPoint(point);
         const {minPoint, idxClosest} = closestPoint(mapPoint, this.polyline.current.leafletElement);
-        this.setState({marker: this.map.current.leafletElement.layerPointToLatLng(minPoint)});
-        console.log(idxClosest);
+        point = [
+            parseFloat(this.map.current.leafletElement.layerPointToLatLng(minPoint).lat.toFixed(6)),
+            parseFloat(this.map.current.leafletElement.layerPointToLatLng(minPoint).lng.toFixed(6))
+        ];
+        this.props.selectPoint(idxClosest);
+        this.props.insertPoint(idxClosest, point);
+        if (this.props.selectedIndex === null) {
+            this.props.selectPoint(idxClosest);
+        }
     };
 
     render() {
@@ -86,7 +86,6 @@ export default class MyMap extends Component {
                     /> :
                     <></>
                 }
-                <Marker position={this.state.marker}/>
                 {
                     this.props.selectedIndex === null ? <></> :
                     <Marker onDragEnd={this.updateMarker}
@@ -112,12 +111,15 @@ MyMap = connect (
         return {
             getFiles: () => dispatch(getFiles()),
             getTracks: () => dispatch(getTracks()),
+            selectPoint: (p) => dispatch(selectPoint(p)),
+            insertPoint: (idx, val) => dispatch(insertPoint(idx, val)),
             getPointLatLng: (point) => dispatch(getPointLatLng(point)),
             updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
         }
     }
 )(MyMap);
 
+// modified origitnal method of leaflet
 function closestPoint(p, polyline) {
     let minDistance = Infinity,
         minPoint = null,
