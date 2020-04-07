@@ -12,6 +12,10 @@ class Alerts extends Component {
             if (error.status === 403) {
                 alert.error(error.msg.detail)
             }
+            if (error.status === 400) {
+                console.log(error.msg.detail);
+                alert.error(error.msg.detail);
+            }
         }
     }
 

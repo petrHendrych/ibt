@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {FILE_DELETE, FILES_LOADING, GET_ERRORS, GET_FILES} from './types';
+import {FILE_DELETE, FILES_CLEAR, FILES_LOADING, GET_ERRORS, GET_FILES} from './types';
 import {tokenConfig} from "./auth";
 import {getTracks} from "./tracks";
 
@@ -19,6 +19,9 @@ export const getFiles = () => async (dispatch, getState) => {
             type: GET_ERRORS,
             payload: errors
         });
+        dispatch({
+            type: FILES_CLEAR
+        })
     }
 
 };
@@ -49,7 +52,14 @@ export const uploadFile = (file, title) => (dispatch, getState) => {
             dispatch(getTracks());
         })
         .catch((e) => {
-            console.log(e);
+            const errors = {
+                msg: e.response.data,
+                status: e.response.status
+            };
+            dispatch({
+                type: GET_ERRORS,
+                payload: errors
+            });
         })
 };
 

@@ -1,21 +1,29 @@
 import axios from 'axios';
-import {DELETE_TRACK, TRACK_LOADED, TRACKS_LOADED, TRACKS_LOADING} from "./types";
+import {DELETE_TRACK, TRACK_LOADED, TRACKS_CLEAR, TRACKS_LOADED, TRACKS_LOADING} from "./types";
 import {tokenConfig} from "./auth";
 
 // GET USER'S TRACKS
 export const getTracks = () => async (dispatch, getState) => {
     dispatch({type: TRACKS_LOADING});
 
-    let response = await axios.get("http://localhost:8000/api/tracks/", tokenConfig(getState));
+    try {
+        let response = await axios.get("http://localhost:8000/api/tracks/", tokenConfig(getState));
+        dispatch({ type: TRACKS_LOADED, payload: response.data});
+    } catch (error) {
+        dispatch({type: TRACKS_CLEAR});
+    }
 
-    dispatch({ type: TRACKS_LOADED, payload: response.data});
 };
 
 // GET USER'S TRACK
 export const getTrack = (id) => async (dispatch, getState) => {
-    let response = await axios.get(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
+    try {
+        let response = await axios.get(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
+        dispatch({ type: TRACK_LOADED, payload: response.data});
+    } catch (error) {
+        console.log(error);
+    }
 
-    dispatch({ type: TRACK_LOADED, payload: response.data});
 };
 
 // UPDATE TRACK POINTS
