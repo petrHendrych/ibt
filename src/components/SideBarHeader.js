@@ -34,6 +34,10 @@ export default class SideBarHeader extends Component {
         this.setState({isShow: false});
     };
 
+    deleteFileHandler = () => {
+
+    };
+
     render() {
         return (
             <div className="side-bar-header">
@@ -82,7 +86,6 @@ export default class SideBarHeader extends Component {
                     <Modal.Body>
                         <TableRender
                             files={this.props.files}
-                            onClick={() => window.confirm("Really want to delete this file?") ? this.props.deleteFile : null}
                             updateState={this.updateState}
                         />
                     </Modal.Body>
@@ -100,33 +103,6 @@ export default class SideBarHeader extends Component {
     }
 }
 
-function TableRender(props) {
-    return (
-        <table className="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th/>
-                </tr>
-            </thead>
-            <tbody>
-            {props.files.map(file => (
-                <tr key={file.id}>
-                    <td>{file.id}</td>
-                    <td>{file.title}</td>
-                    <td>
-                        <button className="btn btn-danger btn-sm" onClick={() => {props.onClick(file.id); props.updateState()}}>
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
-    )
-}
-
 SideBarHeader = connect (
     state => {
         return {
@@ -138,8 +114,66 @@ SideBarHeader = connect (
         return {
             logoutUser: () => dispatch(logoutUser()),
             uploadFile: (file, title) => dispatch(uploadFile(file, title)),
-            deleteFile: (id) => dispatch(deleteFile(id)),
             clearIndex: () => dispatch({type: UNSELECT_POINT})
         }
     }
 )(SideBarHeader);
+
+class TableRender extends Component {
+
+    deleteFileHandler = (id) => {
+        let arr = [];
+        this.props.tracks.data.forEach(track => {
+            if (track.gpx_file === id) {
+                arr = [...arr, track.name]
+            }
+        });
+
+        if (window.confirm("Are you sure you want to delete this file? Following tracks will be also deleted: \n\n" + arr.join(', '))) {
+            this.props.deleteFile(id);
+        }
+    };
+
+    render () {
+        return (
+            <table className="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th/>
+                </tr>
+                </thead>
+                <tbody>
+                {this.props.files.map(file => (
+                    <tr key={file.id}>
+                        <td>{file.id}</td>
+                        <td>{file.title}</td>
+                        <td>
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => {this.deleteFileHandler(file.id); this.props.updateState()}}
+                            >
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+        )
+    }
+}
+
+TableRender = connect (
+    state => {
+        return {
+            tracks: state.tracks
+        }
+    },
+    dispatch => {
+        return {
+            deleteFile: (id) => dispatch(deleteFile(id))
+        }
+    }
+)(TableRender);

@@ -73,15 +73,19 @@
     float: right;
     position: absolute;
     right: 20px;
-    .disable {
-      pointer-events: none;
-    }
   }
   .delete-checkbox {
     position: absolute;
     right: 45px;
     top: 11px;
   }
+}
+
+.card-header input {
+  pointer-events: auto !important;
+}
+.disable {
+  pointer-events: none;
 }
 
 .center-block {

@@ -60,12 +60,16 @@
     float: right;
     position: absolute;
     right: 20px; }
-    .accordion .card-header .right-trash-bin .disable {
-      pointer-events: none; }
   .accordion .card-header .delete-checkbox {
     position: absolute;
     right: 45px;
     top: 11px; }
+
+.card-header input {
+  pointer-events: auto !important; }
+
+.disable {
+  pointer-events: none; }
 
 .center-block {
   width: 250px;

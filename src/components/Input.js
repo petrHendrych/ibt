@@ -7,7 +7,7 @@ export default class Input extends Component {
     };
 
     onInputChange = event => {
-        const re = /^[-]?([0-9]+(\.[0-9]{0,6})?)$/;
+        const re = /^[-]?([0-9]{1,4}(\.[0-9]{0,6})?)$/;
 
         if (event.target.value === '' || re.test(event.target.value)) {
             this.setState({value: event.target.value}, () => {

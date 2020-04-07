@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {Map, TileLayer, Polyline, Marker, FeatureGroup, Rectangle} from "react-leaflet";
-import {latLngBounds, polyline} from "leaflet";
-import L from 'leaflet';
+import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
+import {latLngBounds, LineUtil} from "leaflet";
 import _ from 'lodash';
 import {getFiles} from "../actions/files";
 import {getTracks} from "../actions/tracks";
@@ -14,8 +13,15 @@ export default class MyMap extends Component {
         super(props);
 
         this.map = React.createRef();
-        this.group = React.createRef();
+        this.polyline = React.createRef();
     }
+
+    state = {
+        marker: {
+            lat: 50.30216818708575,
+            lng: 17.159141868020516
+        }
+    };
 
     componentDidMount() {
         this.props.getFiles();
@@ -24,7 +30,7 @@ export default class MyMap extends Component {
 
     boundsHandler = () => {
         const map = this.map.current.leafletElement;
-        const group = this.group.current.leafletElement;
+        const group = this.polyline.current.leafletElement;
         map.fitBounds(group.getBounds());
     };
 
@@ -40,25 +46,21 @@ export default class MyMap extends Component {
         this.props.updatePointLatLng(this.props.selectedIndex, coords);
     };
 
-    polylineClickHandler = (e, line) => {
+    polylineClickHandler = (e) => {
         const point = e.latlng;
-        const latlngs = [
-            [45.51, -122.68],
-            [37.77, -122.43],
-            [34.04, -118.2]
-        ];
-        console.log(this.map);
-        const nPol = L.LineUtil.closestPointOnSegment(this.map, line, point);
-        // console.log(nPol.closestLayerPoint([49.4, 16.3]));
-        console.log(nPol);
-        // const p = LineUtil.closestPointOnSegment(this.map, line, point);
+        const mapPoint = this.map.current.leafletElement.latLngToLayerPoint(point);
+        const {minPoint, idxClosest} = closestPoint(mapPoint, this.polyline.current.leafletElement);
+        this.setState({marker: this.map.current.leafletElement.layerPointToLatLng(minPoint)});
+        console.log(idxClosest);
     };
 
     render() {
         let bounds = latLngBounds([[49.24, 16.54], [49.15, 16.71]]);
 
         if (!_.isEmpty(this.props.track)) {
-            bounds = latLngBounds(this.props.track.geometry.coordinates);
+            if (!_.isEmpty(this.props.track.geometry.coordinates[0])) {
+                bounds = latLngBounds(this.props.track.geometry.coordinates);
+            }
         }
 
         return (
@@ -76,15 +78,15 @@ export default class MyMap extends Component {
                 {_.isEmpty(this.props.track) ? <></> : <button onClick={this.boundsHandler} className="fit-button">fit track</button>}
 
                 { !_.isEmpty(this.props.track) ?
-                    <FeatureGroup ref={this.group}>
-                        <Polyline
-                            color="black"
-                            positions={this.props.track.geometry.coordinates[0]}
-                            onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates[0])}
-                        />
-                    </FeatureGroup> :
+                    <Polyline
+                        ref={this.polyline}
+                        color="black"
+                        positions={this.props.track.geometry.coordinates[0]}
+                        onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates[0])}
+                    /> :
                     <></>
                 }
+                <Marker position={this.state.marker}/>
                 {
                     this.props.selectedIndex === null ? <></> :
                     <Marker onDragEnd={this.updateMarker}
@@ -115,3 +117,32 @@ MyMap = connect (
         }
     }
 )(MyMap);
+
+function closestPoint(p, polyline) {
+    let minDistance = Infinity,
+        minPoint = null,
+        idxClosest = 0,
+        closest = LineUtil._sqClosestPointOnSegment,
+        p1, p2;
+
+    for (let j = 0, jLen = polyline._parts.length; j < jLen; j++) {
+        let points = polyline._parts[j];
+
+        for (let i = 1, len = points.length; i < len; i++) {
+            p1 = points[i - 1];
+            p2 = points[i];
+
+            let sqDist = closest(p, p1, p2, true);
+
+            if (sqDist < minDistance) {
+                idxClosest = i;
+                minDistance = sqDist;
+                minPoint = closest(p, p1, p2);
+            }
+        }
+    }
+    if (minPoint) {
+        minPoint.distance = Math.sqrt(minDistance);
+    }
+    return {minPoint, idxClosest};
+}

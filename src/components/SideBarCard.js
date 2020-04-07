@@ -72,9 +72,13 @@ export default class SideBarCard extends Component {
 
     render() {
         const {index, coords, elevation, time} = this.props;
+        const cardClass = this.props.delete ? "disable " : (this.props.active ? "selected" : "");
         return (
             <Card>
-                <Accordion.Toggle as={Card.Header} eventKey={index} onClick={this.props.onClick} className={this.props.active ? 'selected' : ''}>
+                <Accordion.Toggle as={Card.Header} eventKey={index}
+                                  onClick={() => {this.props.onClick()}}
+                                  className={`${cardClass}`}
+                >
                     <div className="left-exclamation">
                         {!(this.state.valid[0] && this.state.valid[1]) ?
                             <FontAwesomeIcon icon={faExclamationCircle} className="text-danger"/> :
@@ -83,33 +87,38 @@ export default class SideBarCard extends Component {
                     </div>
                     <div className="center-block d-inline-block">
                         <div className="d-inline-block position-absolute" style={{left: "5px"}}>Point:</div>
-                        <span className={this.state.valid[0] ? "" : "text-danger"}>
-                            {this.state.coords[0]},
-                        </span>
-                        <span className={this.state.valid[1] ? "" : "text-danger"}>
-                            {this.state.coords[1]}
-                        </span>
+                        <div className="d-inline-block position-relative" style={{left: "20px"}}>
+                            <span className={this.state.valid[0] ? "" : "text-danger"}>
+                                {this.state.coords[0]},
+                            </span>
+                                <span className={this.state.valid[1] ? "" : "text-danger"}>
+                                {this.state.coords[1]}
+                            </span>
+                        </div>
                     </div>
                     { this.props.delete ?
                         <input
                             type="checkbox"
                             className="delete-checkbox"
-                            onChange={e => {
-                                e.stopPropagation();
+                            onChange={() => {
                                 this.setState({checked: !this.state.checked});
-                                this.props.checked(index)}
-                            }
+                                this.props.checked(index)
+                            }}
+                            onClick={e => e.stopPropagation()}
                             checked={this.state.checked}
                         /> :
                         <></>
                     }
-                    <div className="right-trash-bin d-inline-block">
-                        <FontAwesomeIcon
-                            icon={faTrashAlt}
-                            onClick={(e) => {e.stopPropagation(); this.deletePointHandler(index)}}
-                            className={this.props.delete ? "disable" : ""}
-                        />
-                    </div>
+                    { !this.props.delete ?
+                        <div className="right-trash-bin d-inline-block">
+                            <FontAwesomeIcon
+                                icon={faTrashAlt}
+                                onClick={(e) => {e.stopPropagation(); this.deletePointHandler(index)}}
+                                className={this.props.delete ? "disable" : ""}
+                            />
+                        </div> :
+                        <></>
+                    }
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={index}>
                     <Card.Body>

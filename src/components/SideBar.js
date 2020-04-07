@@ -163,7 +163,6 @@ SideBar = connect (
     },
     dispatch => {
         return {
-            selectPoint: (p) => dispatch(selectPoint(p)),
             getTrack: (id) => dispatch(getTrack(id)),
             deleteTrack: (id) => dispatch(deleteTrack(id)),
             clearTrack: () => dispatch({type: TRACK_CLEAR}),
@@ -231,12 +230,12 @@ class PointContainer extends Component {
 
     checkAll = () => {
         this.setState({checkAll: !this.state.checkAll}, () => {
-            const arr = this.state.checked;
+            let arr = this.state.checked;
 
             if (this.state.checkAll) {
                 for (let i = 0; i < this.props.track.geometry.coordinates[0].length; i++) {
                     if (arr.includes(i)) {continue;}
-                    arr.push(i);
+                    arr = [...arr, i];
                 }
                 this.setState({checked: arr});
             } else {
@@ -311,7 +310,11 @@ class PointContainer extends Component {
                           <FontAwesomeIcon
                               icon={faTrashAlt}
                               className={"pointer " + (this.state.toggleDelete ? "text-danger" : "")}
-                              onClick={(e) => {e.stopPropagation(); this.toggleDelete(this.state.checked)}}
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  this.toggleDelete(this.state.checked);
+                                  this.props.selectPoint(this.props.selectedIndex);
+                              }}
                           />
                     </OverlayTrigger>
                     { this.state.toggleDelete ?
