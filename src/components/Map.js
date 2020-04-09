@@ -4,7 +4,7 @@ import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
 import {latLngBounds, LineUtil} from "leaflet";
 import _ from 'lodash';
 import {getFiles} from "../actions/files";
-import {getTracks} from "../actions/tracks";
+import {getTrackPartition, getTracks} from "../actions/tracks";
 
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 
@@ -23,13 +23,20 @@ export default class MyMap extends Component {
 
     boundsHandler = () => {
         const map = this.map.current.leafletElement;
-        const group = this.polyline.current.leafletElement;
-        map.fitBounds(group.getBounds());
+        const polyline = this.polyline.current.leafletElement;
+        map.fitBounds(polyline.getBounds());
     };
 
     boundsPointHandler = (e) => {
         const coords = e.latlng;
         this.props.getPointLatLng(coords);
+
+        const bounds = [];
+        if (this.props.bounds.length === 2) {
+            bounds.push([parseFloat(this.props.bounds[0].lat.toFixed(6)), parseFloat(this.props.bounds[0].lng.toFixed(6))]);
+            bounds.push([parseFloat(this.props.bounds[1].lat.toFixed(6)), parseFloat(this.props.bounds[1].lng.toFixed(6))]);
+            this.props.getTrackPartition(this.props.track.properties.id, bounds);
+        }
     };
 
     updateMarker = (e) => {
@@ -62,11 +69,12 @@ export default class MyMap extends Component {
                 bounds = latLngBounds(this.props.track.geometry.coordinates);
             }
         }
-
+        
         return (
             <Map doubleClickZoom={false}
                  bounds={bounds}
                  ref={this.map}
+                 onclick={(e) => this.boundsPointHandler(e)}
                  ondblclick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates)}
                  maxZoom={18}
             >
@@ -81,7 +89,8 @@ export default class MyMap extends Component {
                     <Polyline
                         ref={this.polyline}
                         color="black"
-                        positions={this.props.track.geometry.coordinates[0]}
+                        weight={3}
+                        positions={this.props.track.geometry.coordinates}
                         onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates[0])}
                     /> :
                     <></>
@@ -105,6 +114,7 @@ MyMap = connect (
             selectedIndex: state.selectedIndex,
             bounds: state.bounds,
             track: state.tracks.track ? state.tracks.track : {},
+            partition: state.partition
         }
     },
     dispatch => {
@@ -114,6 +124,7 @@ MyMap = connect (
             selectPoint: (p) => dispatch(selectPoint(p)),
             insertPoint: (idx, val) => dispatch(insertPoint(idx, val)),
             getPointLatLng: (point) => dispatch(getPointLatLng(point)),
+            getTrackPartition: (idx, bounds) => dispatch(getTrackPartition(idx, bounds)),
             updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
         }
     }
@@ -127,15 +138,13 @@ function closestPoint(p, polyline) {
         closest = LineUtil._sqClosestPointOnSegment,
         p1, p2;
 
-    for (let j = 0, jLen = polyline._parts.length; j < jLen; j++) {
-        let points = polyline._parts[j];
-
+    for (let j = 0, jLen = polyline._rings.length; j < jLen; j++) {
+        let points = polyline._rings[j];
         for (let i = 1, len = points.length; i < len; i++) {
             p1 = points[i - 1];
             p2 = points[i];
 
             let sqDist = closest(p, p1, p2, true);
-
             if (sqDist < minDistance) {
                 idxClosest = i;
                 minDistance = sqDist;

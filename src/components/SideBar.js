@@ -159,7 +159,6 @@ function Footer(props) {
 SideBar = connect (
     state => {
         return {
-            bounds: state.bounds,
             selectedIndex: state.selectedIndex,
             trackLoading: state.tracks.isLoading,
             trackList: state.tracks.data ? state.tracks.data : [],

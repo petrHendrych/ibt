@@ -1,4 +1,4 @@
-import {SELECT_POINT, UNSELECT_POINT} from "../actions/types";
+import {GET_TRACK_PARTITION, SELECT_POINT, UNSELECT_POINT} from "../actions/types";
 
 import { combineReducers } from 'redux';
 import auth from "./auth";
@@ -33,11 +33,19 @@ const getBoundsReducer = (state = [], action) => {
     }
 };
 
+const trackPartitions = (state = {}, action) => {
+    if (action.type === GET_TRACK_PARTITION) {
+        return action.payload;
+    }
+    return state;
+};
+
 export default combineReducers({
     selectedIndex: selectedPointReducer,
     bounds: getBoundsReducer,
     auth: auth,
     errors: errors,
     files: files,
-    tracks: tracks
+    tracks: tracks,
+    partition: trackPartitions
 });

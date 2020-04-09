@@ -25,7 +25,6 @@ urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^api/', include("api.urls")),
     re_path(r'^api', router.get_api_root_view()),
-    # re_path('', include("tracks.urls")),
     re_path(r'^auth/', include('accounts.urls'))
 ]
 

@@ -73,6 +73,7 @@ export default class SideBarCard extends Component {
     render() {
         const {index, coords, elevation, time} = this.props;
         const cardClass = this.props.delete ? "disable " : (this.props.active ? "selected" : "");
+
         return (
             <Card>
                 <Accordion.Toggle as={Card.Header} eventKey={index}

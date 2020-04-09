@@ -1,10 +1,12 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from django.conf import settings
-from django.contrib.gis.geos import Point, MultiLineString, LineString
+from django.http import JsonResponse
+from django.contrib.gis.geos import Point, MultiLineString, LineString, Polygon
 
 from tracks import models
 from . import serializers
@@ -92,7 +94,25 @@ class TrackViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post'], detail=True)
     def partition(self, request, pk=None):
-        track = models.GPXTrack.objects.get(pk)
+        trk = models.GPXTrack.objects.get(id=pk)
+        files = models.GPXFile.objects.filter(owner=request.user)
 
-        rectangle = request.data
-        #TODO ze zaslanych dat udelat rectangle pro contains
+        if trk.gpx_file not in files:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        bounds = request.data['bounds']
+        bbox = (bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1])
+
+        poly = Polygon.from_bbox(bbox)
+        prep_poly = poly.prepared
+
+        points = []
+        indexes = []
+        track_list = list(trk.track[0])
+        for idx, (lat, lng) in enumerate(track_list):
+            point = Point(lat, lng)
+            if prep_poly.contains(point):
+                points.append([lat, lng])
+                indexes.append(idx)
+
+        return JsonResponse({'points': points, 'indexes': indexes})

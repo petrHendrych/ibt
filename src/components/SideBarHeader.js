@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 import { logoutUser } from "../actions/auth";
 import {deleteFile, uploadFile} from "../actions/files";
 import {UNSELECT_POINT} from "../actions/types";
-import Alerts from "./Alerts";
 
 export default class SideBarHeader extends Component {
     state = {
@@ -38,7 +37,6 @@ export default class SideBarHeader extends Component {
     render() {
         return (
             <div className="side-bar-header">
-                <Alerts/>
                 {
                     this.props.auth.isAuthenticated
                         ?
