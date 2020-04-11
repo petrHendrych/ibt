@@ -47,8 +47,7 @@ export default class SideBarNavigation extends Component {
                 </div>
                 <NavIcon text="delete multiple points"
                          icon={faTrashAlt}
-                         onClick={(e) => {
-                             e.stopPropagation();
+                         onClick={() => {
                              this.props.onDelete(this.props.checked);
                              this.props.selectPoint(this.props.selectedIndex);
                          }}
