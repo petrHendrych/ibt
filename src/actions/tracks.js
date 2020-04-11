@@ -1,5 +1,13 @@
 import axios from 'axios';
-import {DELETE_TRACK, GET_TRACK_PARTITION, TRACK_LOADED, TRACKS_CLEAR, TRACKS_LOADED, TRACKS_LOADING} from "./types";
+import {
+    DELETE_TRACK,
+    TRACK_PARTITION_LOADED,
+    TRACK_LOADED,
+    TRACKS_CLEAR,
+    TRACKS_LOADED,
+    TRACKS_LOADING,
+    TRACK_PARTITION_LOADING, TRACK_LOADING
+} from "./types";
 import {tokenConfig} from "./auth";
 
 // GET USER'S TRACKS
@@ -17,6 +25,8 @@ export const getTracks = () => async (dispatch, getState) => {
 
 // GET USER'S TRACK
 export const getTrack = (id) => async (dispatch, getState) => {
+    dispatch({type: TRACK_LOADING});
+
     try {
         let response = await axios.get(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
         dispatch({ type: TRACK_LOADED, payload: response.data});
@@ -29,9 +39,12 @@ export const getTrack = (id) => async (dispatch, getState) => {
 // GET USER'S TRACK'S PARTITION IN BOUNDS
 export const getTrackPartition = (id, bounds) => async (dispatch, getState) => {
     const _bounds = {"bounds": bounds};
+
+    dispatch({ type: TRACK_PARTITION_LOADING});
+
     try {
         let response = await axios.post(`http://localhost:8000/api/tracks/${id}/partition`, _bounds, tokenConfig(getState));
-        dispatch({ type: GET_TRACK_PARTITION, payload: response.data });
+        dispatch({ type: TRACK_PARTITION_LOADED, payload: response.data });
     } catch (error) {
         console.log(error);
     }
@@ -39,7 +52,7 @@ export const getTrackPartition = (id, bounds) => async (dispatch, getState) => {
 
 // UPDATE TRACK POINTS
 export const updateTrack = (id, track) => (dispatch, getState) => {
-    dispatch({type: TRACKS_LOADING});
+    dispatch({type: TRACK_LOADING});
 
     axios.put(`http://localhost:8000/api/tracks/${id}`, track, tokenConfig(getState))
         .then(res => {

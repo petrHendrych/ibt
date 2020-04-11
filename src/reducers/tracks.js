@@ -7,10 +7,11 @@ import {
     UPDATE_POINT,
     DELETE_TRACK,
     DELETE_POINT,
-    DELETE_POINTS, INSERT_POINT
+    DELETE_POINTS, INSERT_POINT, TRACK_LOADING
 } from "../actions/types";
 
 const initialState = {
+    isLoadings: false,
     isLoading: false,
     data: null,
     track: {}
@@ -23,21 +24,21 @@ export default function (state = initialState, action) {
         case TRACKS_LOADING:
             return {
                 ...state,
+                isLoadings: true
+            };
+        case TRACK_LOADING:
+            return {
+                ...state,
                 isLoading: true
             };
         case TRACKS_LOADED:
             return {
                 ...state,
-                isLoading: false,
+                isLoadings: false,
                 data: action.payload
             };
         case TRACKS_CLEAR:
-            return {
-                ...state,
-                isLoading: false,
-                data: null,
-                track: {}
-            };
+            return initialState;
         case TRACK_LOADED:
             return {
                 ...state,
@@ -47,7 +48,6 @@ export default function (state = initialState, action) {
         case TRACK_CLEAR:
             return {
                 ...state,
-                isLoading: false,
                 track: {}
             };
         case DELETE_TRACK:

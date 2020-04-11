@@ -7,6 +7,7 @@ import {getFiles} from "../actions/files";
 import {getTrackPartition, getTracks} from "../actions/tracks";
 
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
+import {TRACK_PARTITION_CLEAR} from "../actions/types";
 
 export default class MyMap extends Component {
     constructor(props) {
@@ -30,6 +31,10 @@ export default class MyMap extends Component {
     boundsPointHandler = (e) => {
         const coords = e.latlng;
         this.props.getPointLatLng(coords);
+
+        if (this.props.bounds.length === 1) {
+            this.props.clearPartition();
+        }
 
         const bounds = [];
         if (this.props.bounds.length === 2) {
@@ -69,13 +74,12 @@ export default class MyMap extends Component {
                 bounds = latLngBounds(this.props.track.geometry.coordinates);
             }
         }
-        
+
         return (
             <Map doubleClickZoom={false}
                  bounds={bounds}
                  ref={this.map}
-                 onclick={(e) => this.boundsPointHandler(e)}
-                 ondblclick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates)}
+                 ondblclick={(e) => !_.isEmpty(this.props.track) ? this.boundsPointHandler(e) : null}
                  maxZoom={18}
             >
                 <TileLayer
@@ -122,6 +126,7 @@ MyMap = connect (
             getFiles: () => dispatch(getFiles()),
             getTracks: () => dispatch(getTracks()),
             selectPoint: (p) => dispatch(selectPoint(p)),
+            clearPartition: () => dispatch({type: TRACK_PARTITION_CLEAR}),
             insertPoint: (idx, val) => dispatch(insertPoint(idx, val)),
             getPointLatLng: (point) => dispatch(getPointLatLng(point)),
             getTrackPartition: (idx, bounds) => dispatch(getTrackPartition(idx, bounds)),

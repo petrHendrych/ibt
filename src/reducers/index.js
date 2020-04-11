@@ -1,14 +1,15 @@
-import {GET_TRACK_PARTITION, SELECT_POINT, UNSELECT_POINT} from "../actions/types";
+import {BOUNDS_CLEAR, SELECT_POINT, UNSELECT_POINT} from "../actions/types";
 
 import { combineReducers } from 'redux';
 import auth from "./auth";
 import errors from "./errors";
 import files from "./files";
 import tracks from "./tracks";
+import partitions from "./partitions";
 
-const selectedPointReducer = (selectedPoint = null, action) => {
+const selectedPointReducer = (state = null, action) => {
     if (action.type === SELECT_POINT) {
-        if (selectedPoint === action.payload) {
+        if (state === action.payload) {
             return null;
         }
         return action.payload;
@@ -18,7 +19,7 @@ const selectedPointReducer = (selectedPoint = null, action) => {
         return null;
     }
 
-    return selectedPoint;
+    return state;
 };
 
 const getBoundsReducer = (state = [], action) => {
@@ -28,16 +29,11 @@ const getBoundsReducer = (state = [], action) => {
                 return [action.payload];
             }
             return [...state, action.payload];
+        case BOUNDS_CLEAR:
+            return [];
         default:
             return state;
     }
-};
-
-const trackPartitions = (state = {}, action) => {
-    if (action.type === GET_TRACK_PARTITION) {
-        return action.payload;
-    }
-    return state;
 };
 
 export default combineReducers({
@@ -47,5 +43,5 @@ export default combineReducers({
     errors: errors,
     files: files,
     tracks: tracks,
-    partition: trackPartitions
+    partition: partitions
 });

@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
-import {Accordion, Card, OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Accordion, Card} from "react-bootstrap";
 import { connect } from 'react-redux';
 import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faTrashAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
@@ -11,7 +9,8 @@ import SideBarHeader from './SideBarHeader';
 import {deletePoints, selectPoint} from "../actions/points";
 import { Spinner } from "../utils";
 import {deleteTrack, getTrack, updateTrack} from "../actions/tracks";
-import {TRACK_CLEAR, UNSELECT_POINT} from "../actions/types";
+import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
+import SideBarNavigation from "./SideBarNavigation";
 
 
 export default class SideBar extends Component {
@@ -84,7 +83,7 @@ export default class SideBar extends Component {
     };
 
     render() {
-        if (this.props.auth.isLoading || this.props.trackLoading) {
+        if (this.props.auth.isLoading || this.props.tracksLoading) {
             return (
                 <div className="side-bar d-flex flex-column justify-content-between">
                     <SideBarHeader/>
@@ -146,7 +145,7 @@ export default class SideBar extends Component {
     }
 }
 
-function Footer(props) {
+function Footer() {
     return (
         <div className="footer p-2">
             <span className="small">
@@ -159,20 +158,19 @@ function Footer(props) {
 SideBar = connect (
     state => {
         return {
-            selectedIndex: state.selectedIndex,
-            trackLoading: state.tracks.isLoading,
-            trackList: state.tracks.data ? state.tracks.data : [],
-            files: state.files.data ? state.files.data : [],
             auth: state.auth,
-            track: state.tracks.track
+            track: state.tracks.track,
+            selectedIndex: state.selectedIndex,
+            partition: state.partition,
+            tracksLoading: state.tracks.isLoadings,
+            files: state.files.data ? state.files.data : [],
+            trackList: state.tracks.data ? state.tracks.data : []
         }
     },
     dispatch => {
         return {
             getTrack: (id) => dispatch(getTrack(id)),
             deleteTrack: (id) => dispatch(deleteTrack(id)),
-            clearTrack: () => dispatch({type: TRACK_CLEAR}),
-            clearIndex: () => dispatch({type: UNSELECT_POINT})
         }
     }
 )(SideBar);
@@ -259,6 +257,18 @@ class PointContainer extends Component {
     };
 
     pointsRenderer = ({index, key, style, parent}) => {
+        let coords = [], time = [], elevation = [];
+
+        if (!_.isEmpty(this.props.partition.data)) {
+            coords = this.props.partition.data.points[index];
+            time = this.props.partition.data.times[index];
+            elevation = this.props.partition.data.elevations[index];
+        } else {
+            coords = this.props.track.geometry.coordinates[0][index];
+            time = this.props.track.properties.times[index];
+            elevation = this.props.track.properties.elevations[index];
+        }
+
         return (
             <CellMeasurer
                 parent={parent}
@@ -274,9 +284,9 @@ class PointContainer extends Component {
                             active={index === this.props.selectedIndex}
                             key={`card-${index}`}
                             index={index}
-                            coords={this.props.track.geometry.coordinates[0][index]}
-                            elevation={this.props.track.properties.elevations[index]}
-                            time={this.props.track.properties.times[index]}
+                            coords={coords}
+                            elevation={elevation}
+                            time={time}
                             delete={this.state.toggleDelete}
                             checked={this.checkboxHandler}
                             all={this.state.checkAll}
@@ -287,61 +297,31 @@ class PointContainer extends Component {
         )
     };
 
+    getPointsLength = () => {
+        if (!_.isEmpty(this.props.partition.data)) {
+            return this.props.partition.data.points.length;
+        } else {
+            return this.props.track.geometry.coordinates[0].length;
+        }
+    };
+
     render() {
+
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
-                <nav className="navigation text-center">
-                    <OverlayTrigger placement="bottom" overlay={<Tooltip className="nav-tooltip" id="tooltip-disabled">back to tracks</Tooltip>}>
-                        <FontAwesomeIcon
-                            onClick={() => {
-                                this.props.onChange();
-                                this.props.clearTrack();
-                                this.props.clearIndex();
-                                this.toggleCheckboxes(this.state.toggleDelete)
-                            }}
-                            icon={faArrowRight}
-                            className="pointer"
-                        />
-                    </OverlayTrigger>
-                    <div className="mx-5 d-inline-block">
-                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">save changes</Tooltip>}>
-                            <FontAwesomeIcon
-                                onClick={() => this.props.updateTrack(this.props.track.properties.id, this.props.track)}
-                                icon={faSave}
-                                className="pointer"
-                            />
-                        </OverlayTrigger>
-                    </div>
-                    <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">delete multiple points</Tooltip>}>
-                          <FontAwesomeIcon
-                              icon={faTrashAlt}
-                              className={"pointer " + (this.state.toggleDelete ? "text-danger" : "")}
-                              onClick={(e) => {
-                                  e.stopPropagation();
-                                  this.toggleDelete(this.state.checked);
-                                  this.props.selectPoint(this.props.selectedIndex);
-                              }}
-                          />
-                    </OverlayTrigger>
-                    { this.state.toggleDelete ?
-                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">select all</Tooltip>}>
-                            <input
-                                type="checkbox"
-                                className="select-all-checkbox"
-                                onClick={() => this.checkAll()}
-                            />
-                        </OverlayTrigger> :
-                        <></>
-                    }
-                </nav>
+                <SideBarNavigation onChange={this.props.onChange}
+                                   onDelete={() => this.toggleDelete(this.state.checked)}
+                                   toggleState={this.state.toggleDelete}
+                                   checked={this.state.checked}
+                />
 
-                {!_.isEmpty(this.props.track) ?
+                {!_.isEmpty(this.props.track) && !this.props.partition.isLoading && !this.props.trackLoading ?
                     <div style={{ flex: '1 1 auto' }}>
                         <AutoSizer>
                             {({ height, width }) => (
                                 <List
                                     ref={this.bindListRef}
-                                    rowCount={this.props.track.geometry.coordinates[0].length}
+                                    rowCount={this.getPointsLength()}
                                     height={height}
                                     width={width}
                                     defferedMeasurementCache={this.cachePoints}
@@ -353,7 +333,9 @@ class PointContainer extends Component {
                         </AutoSizer>
                     </div>
                     :
-                    <></>
+                    <div className="flex-mid">
+                        <Spinner size="5x"/>
+                    </div>
                 }
             </div>
         )
@@ -364,8 +346,10 @@ PointContainer = connect (
     state => {
         return {
             bounds: state.bounds,
+            track: state.tracks.track,
+            partition: state.partition,
             selectedIndex: state.selectedIndex,
-            track: state.tracks.track
+            trackLoading: state.tracks.isLoading
         }
     },
     dispatch => {
@@ -373,8 +357,12 @@ PointContainer = connect (
             selectPoint: (p) => dispatch(selectPoint(p)),
             updateTrack: (id, track) => dispatch(updateTrack(id, track)),
             deletePoints: (indexes) => dispatch(deletePoints(indexes)),
-            clearTrack: () => dispatch({type: TRACK_CLEAR}),
-            clearIndex: () => dispatch({type: UNSELECT_POINT})
+            clearAll: () => {
+                dispatch({type: TRACK_CLEAR});
+                dispatch({type: UNSELECT_POINT});
+                dispatch({type: TRACK_PARTITION_CLEAR});
+                dispatch({type: BOUNDS_CLEAR})
+            }
         }
     }
 )(PointContainer);

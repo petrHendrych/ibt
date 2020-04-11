@@ -108,6 +108,7 @@ class TrackViewSet(viewsets.ModelViewSet):
 
         points = []
         indexes = []
+
         track_list = list(trk.track[0])
         for idx, (lat, lng) in enumerate(track_list):
             point = Point(lat, lng)
@@ -115,4 +116,12 @@ class TrackViewSet(viewsets.ModelViewSet):
                 points.append([lat, lng])
                 indexes.append(idx)
 
-        return JsonResponse({'points': points, 'indexes': indexes})
+        elevations = [trk.elevations[i] for i in indexes]
+        times = [trk.times[i] for i in indexes]
+
+        return JsonResponse({
+            'points': points,
+            'indexes': indexes,
+            'elevations': elevations,
+            'times': times
+        })

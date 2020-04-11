@@ -90,10 +90,16 @@
 .navigation {
   background: #e7ebef;
   border-bottom: 1px solid black; }
+  .navigation.partition {
+    background: #b6cbff; }
   .navigation .select-all-checkbox {
     position: absolute;
     right: 46px;
     top: 6px; }
+  .navigation .icon-times {
+    position: absolute;
+    right: 25px;
+    top: 4px; }
 
 .side-card {
   -webkit-box-shadow: 0 0 25px -15px rgba(0, 0, 0, 0.75);
@@ -149,7 +155,7 @@
   top: 0;
   height: 100%;
   left: 100%;
-  transition: transform 0.3s; }
+  transition: transform 0.1s; }
   .point-container.show {
     -webkit-transform: translateX(-100%);
     -ms-transform: translateX(-100%);
