@@ -280,7 +280,7 @@ class PointContainer extends Component {
                 <div style={style}>
                     <Accordion activeKey={this.props.selectedIndex}>
                         <SideBarCard
-                            onClick={() => {this.props.selectPoint(index); this.makeTimeout()}}
+                            selectPointClick={() => {this.props.selectPoint(index); this.makeTimeout()}}
                             active={index === this.props.selectedIndex}
                             key={`card-${index}`}
                             index={index}

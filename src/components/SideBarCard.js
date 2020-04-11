@@ -77,7 +77,7 @@ export default class SideBarCard extends Component {
         return (
             <Card>
                 <Accordion.Toggle as={Card.Header} eventKey={index}
-                                  onClick={() => {this.props.onClick()}}
+                                  onClick={() => {this.props.selectPointClick()}}
                                   className={`${cardClass}`}
                 >
                     <div className="left-exclamation">

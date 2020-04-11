@@ -21,13 +21,10 @@
 /* SideBar header css */
 
 .side-bar-header {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 444;
+  flex-shrink: 0;
   width: 100%;
   background: #fff;
-  height: 50px;
+  height: 50px !important;
   border-bottom: 1px solid black;
   .box {
     width: 50%;
