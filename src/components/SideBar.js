@@ -256,6 +256,14 @@ class PointContainer extends Component {
         }
     };
 
+    getIndex = (index) => {
+        if (_.isEmpty(this.props.partition.data)) {
+            return index;
+        }
+
+        return this.props.partition.data.indexes[index];
+    };
+
     pointsRenderer = ({index, key, style, parent}) => {
         let coords = [], time = [], elevation = [];
 
@@ -280,10 +288,10 @@ class PointContainer extends Component {
                 <div style={style}>
                     <Accordion activeKey={this.props.selectedIndex}>
                         <SideBarCard
-                            selectPointClick={() => {this.props.selectPoint(index); this.makeTimeout()}}
-                            active={index === this.props.selectedIndex}
-                            key={`card-${index}`}
-                            index={index}
+                            selectPointClick={() => {this.props.selectPoint(this.getIndex(index)); this.makeTimeout()}}
+                            active={this.getIndex(index) === this.props.selectedIndex}
+                            key={`card-${this.getIndex(index)}`}
+                            index={this.getIndex(index)}
                             coords={coords}
                             elevation={elevation}
                             time={time}
@@ -355,8 +363,8 @@ PointContainer = connect (
     dispatch => {
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
-            updateTrack: (id, track) => dispatch(updateTrack(id, track)),
             deletePoints: (indexes) => dispatch(deletePoints(indexes)),
+            updateTrack: (id, track) => dispatch(updateTrack(id, track)),
             clearAll: () => {
                 dispatch({type: TRACK_CLEAR});
                 dispatch({type: UNSELECT_POINT});

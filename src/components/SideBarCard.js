@@ -7,6 +7,7 @@ import _ from 'lodash';
 
 import Input from './Input';
 import {deletePoint, updatePointLatLng} from "../actions/points";
+import {UNSELECT_POINT} from "../actions/types";
 
 export default class SideBarCard extends Component {
     state = {
@@ -77,7 +78,7 @@ export default class SideBarCard extends Component {
         return (
             <Card>
                 <Accordion.Toggle as={Card.Header} eventKey={index}
-                                  onClick={() => {this.props.selectPointClick()}}
+                                  onClick={() => this.props.selectPointClick()}
                                   className={`${cardClass}`}
                 >
                     <div className="left-exclamation">
@@ -114,7 +115,11 @@ export default class SideBarCard extends Component {
                         <div className="right-trash-bin d-inline-block">
                             <FontAwesomeIcon
                                 icon={faTrashAlt}
-                                onClick={(e) => {e.stopPropagation(); this.deletePointHandler(index)}}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    this.props.clearIndex();
+                                    this.deletePointHandler(index)}
+                                }
                                 className={this.props.delete ? "disable" : ""}
                             />
                         </div> :
@@ -148,13 +153,15 @@ SideBarCard = connect (
     state => {
         return {
             bounds: state.bounds,
-            track: state.tracks.track
+            track: state.tracks.track,
+            partition: state.partition
         }
     },
     dispatch => {
         return {
             updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val)),
-            deletePoint: (index) => dispatch(deletePoint(index))
+            deletePoint: (index) => dispatch(deletePoint(index)),
+            clearIndex: () => dispatch({type: UNSELECT_POINT})
         }
     }
 )(SideBarCard);
