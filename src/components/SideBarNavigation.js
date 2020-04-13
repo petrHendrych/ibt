@@ -30,13 +30,13 @@ export default class SideBarNavigation extends Component {
 
     render () {
         return (
-            <nav className={"navigation text-center " + (_.isEmpty(this.props.partition.data) ? "" : "partition")}>
+            <nav className={"navigation text-center " + (_.isEmpty(this.props.partition.indexes) ? "" : "partition")}>
                 <NavIcon text="back to tracks"
                          icon={faArrowRight}
                          onClick={() => {
                              this.props.onChange();
                              this.props.clearAll();
-                             // this.toggleCheckboxes(this.state.toggleDelete)
+                             this.props.onToggle();
                          }}
                 />
                 <div className="mx-5 d-inline-block">
@@ -48,17 +48,21 @@ export default class SideBarNavigation extends Component {
                 <NavIcon text="delete multiple points"
                          icon={faTrashAlt}
                          onClick={() => {
-                             this.props.onDelete(this.props.checked);
-                             this.props.selectPoint(this.props.selectedIndex);
+                             this.props.onDelete();
+                             // this.props.selectPoint(this.props.selectedIndex);
                          }}
                 />
-                <NavIcon text="deselect partition"
-                         icon={faTimes}
-                         class="icon-times"
-                         onClick={() => {
-                             this.props.clearPartition();
-                         }}
-                />
+                {
+                    !_.isEmpty(this.props.partition.indexes) ?
+                        <NavIcon text="deselect partition"
+                                 icon={faTimes}
+                                 class="icon-times"
+                                 onClick={() => {
+                                     this.props.clearPartition();
+                                 }}
+                        /> :
+                        <></>
+                }
             </nav>
         )
     }

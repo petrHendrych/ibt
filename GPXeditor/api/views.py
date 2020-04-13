@@ -106,22 +106,14 @@ class TrackViewSet(viewsets.ModelViewSet):
         poly = Polygon.from_bbox(bbox)
         prep_poly = poly.prepared
 
-        points = []
         indexes = []
 
         track_list = list(trk.track[0])
         for idx, (lat, lng) in enumerate(track_list):
             point = Point(lat, lng)
             if prep_poly.contains(point):
-                points.append([lat, lng])
                 indexes.append(idx)
 
-        elevations = [trk.elevations[i] for i in indexes]
-        times = [trk.times[i] for i in indexes]
-
         return JsonResponse({
-            'points': points,
-            'indexes': indexes,
-            'elevations': elevations,
-            'times': times
+            'indexes': indexes
         })

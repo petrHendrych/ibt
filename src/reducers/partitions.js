@@ -1,7 +1,12 @@
-import {TRACK_PARTITION_CLEAR, TRACK_PARTITION_LOADED, TRACK_PARTITION_LOADING} from "../actions/types";
+import {
+    PARTITION_DELETE_POINT, PARTITION_DELETE_POINTS,
+    TRACK_PARTITION_CLEAR,
+    TRACK_PARTITION_LOADED,
+    TRACK_PARTITION_LOADING
+} from "../actions/types";
 
 const initialState = {
-    data: {},
+    indexes: [],
     isLoading: false
 };
 
@@ -16,7 +21,25 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isLoading: false,
-                data: action.payload
+                indexes: action.payload.indexes,
+            };
+        case PARTITION_DELETE_POINT:
+            return {
+                ...state,
+                indexes: state.indexes.filter(val => val !== action.index)
+            };
+        case PARTITION_DELETE_POINTS:
+            console.log("am here");
+            // console.log(action.indexes.length);
+            // let arr = state.indexes;
+            // for (let i = action.indexes.length - 1; i >= 0; i--) {
+            //     const idx = arr.indexOf(action.indexes[i]);
+            //     arr.splice(idx, 1);
+            // }
+            // console.log(arr);
+            return {
+                ...state,
+                // indexes: arr
             };
         case TRACK_PARTITION_CLEAR:
             return initialState;

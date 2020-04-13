@@ -6,14 +6,14 @@ import {connect} from 'react-redux';
 import _ from 'lodash';
 
 import Input from './Input';
-import {deletePoint, updatePointLatLng} from "../actions/points";
+import {deletePartitionPoint, deletePoint, updatePointLatLng} from "../actions/points";
 import {UNSELECT_POINT} from "../actions/types";
 
 export default class SideBarCard extends Component {
     state = {
         coords: [...this.props.coords],
         valid: [true, true],
-        checked: this.props.all
+        checked: false
     };
 
     // updating after marker is moved
@@ -24,11 +24,8 @@ export default class SideBarCard extends Component {
                 coords: [...this.props.coords],
             });
         }
-        if (prevProps.all !== this.props.all) {
-            const bol = this.props.all;
-            this.setState({
-                checked: bol
-            })
+        if (prevProps.delete !== this.props.delete) {
+            this.setState({ checked: false})
         }
     }
 
@@ -67,6 +64,9 @@ export default class SideBarCard extends Component {
         if (!_.isEmpty(this.props.track)) {
             if (window.confirm("Really want to delete this point?")) {
                 this.props.deletePoint(index);
+                if (!_.isEmpty(this.props.partition.indexes)) {
+                    this.props.deletePartitionPoint(index);
+                }
             }
         }
     };
@@ -109,9 +109,6 @@ export default class SideBarCard extends Component {
                             onClick={e => e.stopPropagation()}
                             checked={this.state.checked}
                         /> :
-                        <></>
-                    }
-                    { !this.props.delete ?
                         <div className="right-trash-bin d-inline-block">
                             <FontAwesomeIcon
                                 icon={faTrashAlt}
@@ -122,8 +119,7 @@ export default class SideBarCard extends Component {
                                 }
                                 className={this.props.delete ? "disable" : ""}
                             />
-                        </div> :
-                        <></>
+                        </div>
                     }
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={index}>
@@ -159,9 +155,10 @@ SideBarCard = connect (
     },
     dispatch => {
         return {
-            updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val)),
+            clearIndex: () => dispatch({type: UNSELECT_POINT}),
             deletePoint: (index) => dispatch(deletePoint(index)),
-            clearIndex: () => dispatch({type: UNSELECT_POINT})
+            deletePartitionPoint: (index) => dispatch(deletePartitionPoint(index)),
+            updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
         }
     }
 )(SideBarCard);

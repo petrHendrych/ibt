@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
-import {deletePoints, selectPoint} from "../actions/points";
+import {deletePartitionPoints, deletePoints, selectPoint} from "../actions/points";
 import { Spinner } from "../utils";
 import {deleteTrack, getTrack, updateTrack} from "../actions/tracks";
 import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
@@ -225,6 +225,10 @@ class PointContainer extends Component {
         if (this.state.toggleDelete) {
             if (window.confirm("Are you sure you want to delete these points?")) {
                 this.props.deletePoints(indexes);
+                if (!_.isEmpty(this.props.partition.indexes)) {
+                    this.props.deletePartitionPoints(indexes);
+                }
+                this.setState({checked: []});
                 this.toggleCheckboxes();
             }
         } else {
@@ -257,25 +261,18 @@ class PointContainer extends Component {
     };
 
     getIndex = (index) => {
-        if (_.isEmpty(this.props.partition.data)) {
+        if (_.isEmpty(this.props.partition.indexes)) {
             return index;
         }
 
-        return this.props.partition.data.indexes[index];
+        return this.props.partition.indexes[index];
     };
 
     pointsRenderer = ({index, key, style, parent}) => {
-        let coords = [], time = [], elevation = [];
 
-        if (!_.isEmpty(this.props.partition.data)) {
-            coords = this.props.partition.data.points[index];
-            time = this.props.partition.data.times[index];
-            elevation = this.props.partition.data.elevations[index];
-        } else {
-            coords = this.props.track.geometry.coordinates[0][index];
-            time = this.props.track.properties.times[index];
-            elevation = this.props.track.properties.elevations[index];
-        }
+        const coords = this.props.track.geometry.coordinates[0][this.getIndex(index)];
+        const time = this.props.track.properties.times[this.getIndex(index)];
+        const elevation = this.props.track.properties.elevations[this.getIndex(index)];
 
         return (
             <CellMeasurer
@@ -297,7 +294,7 @@ class PointContainer extends Component {
                             time={time}
                             delete={this.state.toggleDelete}
                             checked={this.checkboxHandler}
-                            all={this.state.checkAll}
+                            // showCheckboxes={this.state.checkAll}
                         />
                     </Accordion>
                 </div>
@@ -306,8 +303,8 @@ class PointContainer extends Component {
     };
 
     getPointsLength = () => {
-        if (!_.isEmpty(this.props.partition.data)) {
-            return this.props.partition.data.points.length;
+        if (!_.isEmpty(this.props.partition.indexes)) {
+            return this.props.partition.indexes.length;
         } else {
             return this.props.track.geometry.coordinates[0].length;
         }
@@ -319,8 +316,7 @@ class PointContainer extends Component {
             <div className={"point-container " + (this.props.show ? "show" : "")}>
                 <SideBarNavigation onChange={this.props.onChange}
                                    onDelete={() => this.toggleDelete(this.state.checked)}
-                                   toggleState={this.state.toggleDelete}
-                                   checked={this.state.checked}
+                                   onToggle={() => this.toggleCheckboxes(this.state.toggleDelete)}
                 />
 
                 {!_.isEmpty(this.props.track) && !this.props.partition.isLoading && !this.props.trackLoading ?
@@ -364,6 +360,7 @@ PointContainer = connect (
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
             deletePoints: (indexes) => dispatch(deletePoints(indexes)),
+            deletePartitionPoints: (indexes) => dispatch(deletePartitionPoints(indexes)),
             updateTrack: (id, track) => dispatch(updateTrack(id, track)),
             clearAll: () => {
                 dispatch({type: TRACK_CLEAR});
