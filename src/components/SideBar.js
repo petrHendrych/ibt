@@ -328,6 +328,8 @@ class PointContainer extends Component {
                                     rowCount={this.getPointsLength()}
                                     height={height}
                                     width={width}
+                                    scrollToAlignment="start"
+                                    scrollToIndex={this.props.selectedIndex}
                                     defferedMeasurementCache={this.cachePoints}
                                     rowHeight={this.cachePoints.rowHeight}
                                     rowRenderer={this.pointsRenderer}

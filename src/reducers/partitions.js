@@ -24,15 +24,30 @@ export default function (state = initialState, action) {
                 indexes: action.payload.indexes,
             };
         case PARTITION_DELETE_POINT:
+            let tmp = state.indexes;
+
+            for (let i = tmp.length - 1; i >=0; i--) {
+                if (tmp[i] === action.index) {
+                    tmp.splice(i, 1);
+                    break;
+                }
+                tmp[i] = tmp[i] - 1;
+            }
             return {
                 ...state,
-                indexes: state.indexes.filter(val => val !== action.index)
+                indexes: tmp
             };
         case PARTITION_DELETE_POINTS:
             let arr = state.indexes;
+
             for (let i = action.indexes.length - 1; i >= 0; i--) {
-                const idx = arr.indexOf(action.indexes[i]);
-                arr.splice(idx, 1);
+                for (let j = arr.length - 1; j >= 0; j--) {
+                    if (arr[j] === action.indexes[i]) {
+                        arr.splice(j, 1);
+                        break;
+                    }
+                    arr[j] = arr[j] - 1;
+                }
             }
             return {
                 ...state,
