@@ -106,7 +106,11 @@ export default class MyMap extends Component {
                             position={this.props.track.geometry.coordinates[0][this.props.selectedIndex]}
                     />
                 }
-                {this.props.bounds.length === 2 ? <Rectangle bounds={this.props.bounds}/> : <></>}
+                {
+                    this.props.bounds.length === 2 && !_.isEmpty(this.props.partition.indexes) ?
+                    <Rectangle bounds={this.props.bounds}/> :
+                    <></>
+                }
             </Map>
         );
     }

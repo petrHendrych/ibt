@@ -49,6 +49,7 @@ export default class SideBarNavigation extends Component {
                          icon={faTrashAlt}
                          onClick={() => {
                              this.props.onDelete();
+                             // this.props.clearSelected();
                              // this.props.selectPoint(this.props.selectedIndex);
                          }}
                 />
@@ -82,6 +83,7 @@ SideBarNavigation = connect (
             selectPoint: (p) => dispatch(selectPoint(p)),
             updateTrack: (id, track) => dispatch(updateTrack(id, track)),
             deletePoints: (indexes) => dispatch(deletePoints(indexes)),
+            clearSelected: () => dispatch({type: UNSELECT_POINT}),
             clearPartition: () => {
                 dispatch({type: BOUNDS_CLEAR});
                 dispatch({type: UNSELECT_POINT});

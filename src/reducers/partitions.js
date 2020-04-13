@@ -29,17 +29,14 @@ export default function (state = initialState, action) {
                 indexes: state.indexes.filter(val => val !== action.index)
             };
         case PARTITION_DELETE_POINTS:
-            console.log("am here");
-            // console.log(action.indexes.length);
-            // let arr = state.indexes;
-            // for (let i = action.indexes.length - 1; i >= 0; i--) {
-            //     const idx = arr.indexOf(action.indexes[i]);
-            //     arr.splice(idx, 1);
-            // }
-            // console.log(arr);
+            let arr = state.indexes;
+            for (let i = action.indexes.length - 1; i >= 0; i--) {
+                const idx = arr.indexOf(action.indexes[i]);
+                arr.splice(idx, 1);
+            }
             return {
                 ...state,
-                // indexes: arr
+                indexes: arr
             };
         case TRACK_PARTITION_CLEAR:
             return initialState;
