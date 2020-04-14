@@ -11,30 +11,13 @@ import {deletePoints, selectPoint} from "../actions/points";
 import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
 
 export default class SideBarNavigation extends Component {
-
-    checkAll = () => {
-        this.setState({checkAll: !this.state.checkAll}, () => {
-            let arr = this.state.checked;
-
-            if (this.state.checkAll) {
-                for (let i = 0; i < this.props.track.geometry.coordinates[0].length; i++) {
-                    if (arr.includes(i)) {continue;}
-                    arr = [...arr, i];
-                }
-                this.setState({checked: arr});
-            } else {
-                this.setState({checked: []});
-            }
-        });
-    };
-
     render () {
         return (
             <nav className={"navigation text-center " + (_.isEmpty(this.props.partition.indexes) ? "" : "partition")}>
                 <NavIcon text="back to tracks"
                          icon={faArrowRight}
                          onClick={() => {
-                             this.props.onChange();
+                             this.props.onClose();
                              this.props.clearAll();
                              this.props.onToggle();
                          }}
@@ -49,10 +32,21 @@ export default class SideBarNavigation extends Component {
                          icon={faTrashAlt}
                          onClick={() => {
                              this.props.onDelete();
-                             // this.props.clearSelected();
-                             // this.props.selectPoint(this.props.selectedIndex);
                          }}
+                         class={this.props.toggle ? "text-danger" : ""}
                 />
+                {
+                    this.props.toggle ?
+                        <OverlayTrigger placement="bottom" overlay={<Tooltip id="tooltip-disabled">select all</Tooltip>}>
+                            <input
+                                type="checkbox"
+                                className="select-all-checkbox"
+                                onClick={() => this.props.onCheckAll()}
+                            />
+                        </OverlayTrigger> :
+                        <></>
+                }
+
                 {
                     !_.isEmpty(this.props.partition.indexes) ?
                         <NavIcon text="deselect partition"
@@ -83,7 +77,6 @@ SideBarNavigation = connect (
             selectPoint: (p) => dispatch(selectPoint(p)),
             updateTrack: (id, track) => dispatch(updateTrack(id, track)),
             deletePoints: (indexes) => dispatch(deletePoints(indexes)),
-            clearSelected: () => dispatch({type: UNSELECT_POINT}),
             clearPartition: () => {
                 dispatch({type: BOUNDS_CLEAR});
                 dispatch({type: UNSELECT_POINT});

@@ -25,7 +25,10 @@ export default class SideBarCard extends Component {
             });
         }
         if (prevProps.delete !== this.props.delete) {
-            this.setState({ checked: false})
+            this.setState({checked: false})
+        }
+        if (prevProps.checkAll !== this.props.checkAll) {
+            this.setState({checked: this.props.checkAll})
         }
     }
 

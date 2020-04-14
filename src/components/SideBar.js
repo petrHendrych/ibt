@@ -222,7 +222,7 @@ class PointContainer extends Component {
     };
 
     toggleDelete = (indexes) => {
-        if (this.state.toggleDelete) {
+        if (this.state.toggleDelete && !_.isEmpty(this.state.checked)) {
             if (window.confirm("Are you sure you want to delete these points?")) {
                 this.props.deletePoints(indexes);
                 if (!_.isEmpty(this.props.partition.indexes)) {
@@ -294,7 +294,7 @@ class PointContainer extends Component {
                             time={time}
                             delete={this.state.toggleDelete}
                             checked={this.checkboxHandler}
-                            // showCheckboxes={this.state.checkAll}
+                            checkAll={this.state.checkAll}
                         />
                     </Accordion>
                 </div>
@@ -314,9 +314,11 @@ class PointContainer extends Component {
 
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
-                <SideBarNavigation onChange={this.props.onChange}
+                <SideBarNavigation onClose={this.props.onChange}
+                                   toggle={this.state.toggleDelete}
                                    onDelete={() => this.toggleDelete(this.state.checked)}
                                    onToggle={() => this.toggleCheckboxes(this.state.toggleDelete)}
+                                   onCheckAll={() => this.checkAll()}
                 />
 
                 {!_.isEmpty(this.props.track) && !this.props.partition.isLoading && !this.props.trackLoading ?
