@@ -32,10 +32,6 @@ export default class MyMap extends Component {
         const coords = e.latlng;
         this.props.getPointLatLng(coords);
 
-        if (this.props.bounds.length === 1) {
-            this.props.clearPartition();
-        }
-
         const bounds = [];
         if (this.props.bounds.length === 2) {
             bounds.push([parseFloat(this.props.bounds[0].lat.toFixed(6)), parseFloat(this.props.bounds[0].lng.toFixed(6))]);
@@ -66,6 +62,12 @@ export default class MyMap extends Component {
         }
     };
 
+    dblClickHandler = (e) => {
+        if (!_.isEmpty(this.props.track) && this.props.bounds.length !== 2) {
+            this.boundsPointHandler(e)
+        }
+    };
+
     render() {
         let bounds = latLngBounds([[49.24, 16.54], [49.15, 16.71]]);
 
@@ -79,7 +81,7 @@ export default class MyMap extends Component {
             <Map doubleClickZoom={false}
                  bounds={bounds}
                  ref={this.map}
-                 ondblclick={(e) => !_.isEmpty(this.props.track) ? this.boundsPointHandler(e) : null}
+                 ondblclick={(e) => this.dblClickHandler(e)}
                  maxZoom={18}
             >
                 <TileLayer
@@ -107,7 +109,7 @@ export default class MyMap extends Component {
                     />
                 }
                 {
-                    this.props.bounds.length === 2 && !_.isEmpty(this.props.partition.indexes) ?
+                    this.props.bounds.length === 2 ?
                     <Rectangle bounds={this.props.bounds}/> :
                     <></>
                 }
@@ -139,7 +141,7 @@ MyMap = connect (
     }
 )(MyMap);
 
-// modified origitnal method of leaflet
+// modified original method of leaflet
 function closestPoint(p, polyline) {
     let minDistance = Infinity,
         minPoint = null,

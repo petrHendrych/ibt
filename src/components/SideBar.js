@@ -274,6 +274,14 @@ class PointContainer extends Component {
         const time = this.props.track.properties.times[this.getIndex(index)];
         const elevation = this.props.track.properties.elevations[this.getIndex(index)];
 
+        if (this.props.partition.loaded && _.isEmpty(this.props.partition.indexes)) {
+            return <div className="text-center">No points in selected bounds.</div>
+        }
+
+        if (_.isEmpty(this.props.track.geometry.coordinates[0])) {
+            return <div className="text-center">Track doesn't have any points.</div>
+        }
+
         return (
             <CellMeasurer
                 parent={parent}
@@ -303,11 +311,16 @@ class PointContainer extends Component {
     };
 
     getPointsLength = () => {
-        if (!_.isEmpty(this.props.partition.indexes)) {
-            return this.props.partition.indexes.length;
-        } else {
-            return this.props.track.geometry.coordinates[0].length;
+        if (this.props.partition.loaded) {
+            if (_.isEmpty(this.props.partition.indexes)) {
+                return 1
+            }
+            return this.props.partition.indexes.length
         }
+        if (_.isEmpty(this.props.track.geometry.coordinates[0])) {
+            return 1
+        }
+        return this.props.track.geometry.coordinates[0].length
     };
 
     render() {

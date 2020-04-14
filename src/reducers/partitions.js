@@ -7,7 +7,8 @@ import {
 
 const initialState = {
     indexes: [],
-    isLoading: false
+    isLoading: false,
+    loaded: false
 };
 
 export default function (state = initialState, action) {
@@ -21,6 +22,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isLoading: false,
+                loaded: true,
                 indexes: action.payload.indexes,
             };
         case PARTITION_DELETE_POINT:

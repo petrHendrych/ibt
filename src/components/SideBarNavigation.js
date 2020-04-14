@@ -3,17 +3,14 @@ import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faTrashAlt, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {connect} from 'react-redux';
-import _ from 'lodash';
-
 
 import {updateTrack} from "../actions/tracks";
-import {deletePoints, selectPoint} from "../actions/points";
 import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
 
 export default class SideBarNavigation extends Component {
     render () {
         return (
-            <nav className={"navigation text-center " + (_.isEmpty(this.props.partition.indexes) ? "" : "partition")}>
+            <nav className={"navigation text-center " + (this.props.partition.loaded ? "partition" : "")}>
                 <NavIcon text="back to tracks"
                          icon={faArrowRight}
                          onClick={() => {
@@ -48,7 +45,7 @@ export default class SideBarNavigation extends Component {
                 }
 
                 {
-                    !_.isEmpty(this.props.partition.indexes) ?
+                    this.props.partition.loaded ?
                         <NavIcon text="deselect partition"
                                  icon={faTimes}
                                  class="icon-times"
@@ -74,9 +71,7 @@ SideBarNavigation = connect (
     },
     dispatch => {
         return {
-            selectPoint: (p) => dispatch(selectPoint(p)),
             updateTrack: (id, track) => dispatch(updateTrack(id, track)),
-            deletePoints: (indexes) => dispatch(deletePoints(indexes)),
             clearPartition: () => {
                 dispatch({type: BOUNDS_CLEAR});
                 dispatch({type: UNSELECT_POINT});
