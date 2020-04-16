@@ -6,11 +6,11 @@ import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
 import SideBarHeader from './SideBarHeader';
+import SideBarNavigation from "./SideBarNavigation";
 import {deletePartitionPoints, deletePoints, selectPoint} from "../actions/points";
 import { Spinner } from "../utils";
 import {deleteTrack, getTrack, updateTrack} from "../actions/tracks";
 import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
-import SideBarNavigation from "./SideBarNavigation";
 
 
 export default class SideBar extends Component {
@@ -224,10 +224,12 @@ class PointContainer extends Component {
     toggleDelete = (indexes) => {
         if (this.state.toggleDelete && !_.isEmpty(this.state.checked)) {
             if (window.confirm("Are you sure you want to delete these points?")) {
+                this.props.selectPoint(this.props.selectedIndex);
                 this.props.deletePoints(indexes);
                 if (!_.isEmpty(this.props.partition.indexes)) {
                     this.props.deletePartitionPoints(indexes);
                 }
+                this.props.updateTrack(this.props.track.properties.id);
                 this.setState({checked: []});
                 this.toggleCheckboxes();
             }
@@ -239,11 +241,22 @@ class PointContainer extends Component {
     checkAll = () => {
         this.setState({checkAll: !this.state.checkAll}, () => {
             let arr = this.state.checked;
+            let len = this.props.track.geometry.coordinates[0].length;
 
             if (this.state.checkAll) {
-                for (let i = 0; i < this.props.track.geometry.coordinates[0].length; i++) {
-                    if (arr.includes(i)) {continue;}
-                    arr = [...arr, i];
+                if (this.props.partition.loaded) {
+                    len = this.props.partition.indexes.length;
+                    for (let i = 0; i < len; i++) {
+                        if (arr.includes(this.props.partition.indexes[i])) {
+                            continue;
+                        }
+                        arr = [...arr, this.props.partition.indexes[i]];
+                    }
+                } else {
+                    for (let i = 0; i < len; i++) {
+                        if (arr.includes(i)) {continue;}
+                        arr = [...arr, i];
+                    }
                 }
                 this.setState({checked: arr});
             } else {
@@ -275,11 +288,11 @@ class PointContainer extends Component {
         const elevation = this.props.track.properties.elevations[this.getIndex(index)];
 
         if (this.props.partition.loaded && _.isEmpty(this.props.partition.indexes)) {
-            return <div className="text-center">No points in selected bounds.</div>
+            return <div style={style} key={key} className="text-center">No points in selected bounds.</div>
         }
 
         if (_.isEmpty(this.props.track.geometry.coordinates[0])) {
-            return <div className="text-center">Track doesn't have any points.</div>
+            return <div style={style} key={key} className="text-center">Track doesn't have any points.</div>
         }
 
         return (
@@ -343,8 +356,8 @@ class PointContainer extends Component {
                                     rowCount={this.getPointsLength()}
                                     height={height}
                                     width={width}
-                                    scrollToAlignment="start"
-                                    scrollToIndex={this.props.selectedIndex}
+                                    // scrollToAlignment="center"
+                                    // scrollToIndex={this.props.selectedIndex}
                                     defferedMeasurementCache={this.cachePoints}
                                     rowHeight={this.cachePoints.rowHeight}
                                     rowRenderer={this.pointsRenderer}
@@ -378,7 +391,7 @@ PointContainer = connect (
             selectPoint: (p) => dispatch(selectPoint(p)),
             deletePoints: (indexes) => dispatch(deletePoints(indexes)),
             deletePartitionPoints: (indexes) => dispatch(deletePartitionPoints(indexes)),
-            updateTrack: (id, track) => dispatch(updateTrack(id, track)),
+            updateTrack: (id) => dispatch(updateTrack(id)),
             clearAll: () => {
                 dispatch({type: TRACK_CLEAR});
                 dispatch({type: UNSELECT_POINT});

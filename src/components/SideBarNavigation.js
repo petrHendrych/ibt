@@ -22,7 +22,7 @@ export default class SideBarNavigation extends Component {
                 <div className="mx-5 d-inline-block">
                     <NavIcon text="save changes"
                              icon={faSave}
-                             onClick={() => this.props.updateTrack(this.props.track.properties.id, this.props.track)}
+                             onClick={() => this.props.updateTrack(this.props.track.properties.id)}
                     />
                 </div>
                 <NavIcon text="delete multiple points"
@@ -71,7 +71,7 @@ SideBarNavigation = connect (
     },
     dispatch => {
         return {
-            updateTrack: (id, track) => dispatch(updateTrack(id, track)),
+            updateTrack: (id) => dispatch(updateTrack(id)),
             clearPartition: () => {
                 dispatch({type: BOUNDS_CLEAR});
                 dispatch({type: UNSELECT_POINT});

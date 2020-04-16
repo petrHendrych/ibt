@@ -12,7 +12,10 @@ def gpx_folder(instance, filename):
 class GPXFile(models.Model):
     title = models.CharField(max_length=100, blank=True)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    gpx_file = models.FileField(upload_to=gpx_folder, blank=True, validators=[FileExtensionValidator(allowed_extensions=['gpx'])])
+    gpx_file = models.FileField(upload_to=gpx_folder,
+                                blank=True,
+                                validators=[FileExtensionValidator(allowed_extensions=['gpx'])]
+                                )
 
     def __unicode__(self):
         return self.title

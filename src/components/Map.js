@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
 import {latLngBounds, LineUtil} from "leaflet";
 import _ from 'lodash';
+
 import {getFiles} from "../actions/files";
 import {getTrackPartition, getTracks} from "../actions/tracks";
-
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
 
@@ -132,9 +132,9 @@ MyMap = connect (
             getFiles: () => dispatch(getFiles()),
             getTracks: () => dispatch(getTracks()),
             selectPoint: (p) => dispatch(selectPoint(p)),
-            clearPartition: () => dispatch({type: TRACK_PARTITION_CLEAR}),
-            insertPoint: (idx, val) => dispatch(insertPoint(idx, val)),
             getPointLatLng: (point) => dispatch(getPointLatLng(point)),
+            insertPoint: (idx, val) => dispatch(insertPoint(idx, val)),
+            clearPartition: () => dispatch({type: TRACK_PARTITION_CLEAR}),
             getTrackPartition: (idx, bounds) => dispatch(getTrackPartition(idx, bounds)),
             updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
         }

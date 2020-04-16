@@ -41,7 +41,7 @@ class FileViewSet(viewsets.ModelViewSet):
 
 
 def save_gpx_to_database(f, file_instance):
-    gpx_file = open(settings.MEDIA_ROOT + '/uploaded_gpx_files'+'/' + f.name)
+    gpx_file = open(settings.MEDIA_ROOT + '/uploaded_gpx_files'+'/' + f.name, encoding='utf-8-sig')
     gpx = gpxpy.parse(gpx_file)
 
     if gpx.tracks:
@@ -54,14 +54,19 @@ def save_gpx_to_database(f, file_instance):
 
             for segment in track.segments:
                 for point in segment.points:
-
-                    point_in_segment = Point(point.latitude, point.longitude)
-                    tracks_elevations.append(point.elevation)
-                    tracks_times.append(point.time.isoformat())
+                    point_in_segment = Point(round(point.latitude, 6), round(point.longitude, 6))
                     track_list_of_points.append(point_in_segment.coords)
+
+                    if point.elevation:
+                        tracks_elevations.append(point.elevation)
+
+                    if point.time:
+                        tracks_times.append(point.time.isoformat())
 
                 if len(track_list_of_points) == 1:
                     track_list_of_points.append(track_list_of_points[0])
+                    tracks_elevations.append(tracks_elevations[0])
+                    tracks_times.append(tracks_times[0])
                     
                 new_track_segment = LineString(track_list_of_points)
 

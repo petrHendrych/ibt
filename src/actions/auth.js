@@ -118,7 +118,7 @@ export const logoutUser = () => (dispatch, getState) => {
                 type: TRACKS_CLEAR,
             });
         }).catch(err => {
-            console.log("logout");
+            console.log(err);
     });
 };
 

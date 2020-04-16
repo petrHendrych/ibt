@@ -51,10 +51,11 @@ export const getTrackPartition = (id, bounds) => async (dispatch, getState) => {
 };
 
 // UPDATE TRACK POINTS
-export const updateTrack = (id, track) => (dispatch, getState) => {
+export const updateTrack = (id) => (dispatch, getState) => {
+    const trk = getState().tracks.track;
     dispatch({type: TRACK_LOADING});
 
-    axios.put(`http://localhost:8000/api/tracks/${id}`, track, tokenConfig(getState))
+    axios.put(`http://localhost:8000/api/tracks/${id}`, trk, tokenConfig(getState))
         .then(res => {
             dispatch({
                 type: TRACK_LOADED,

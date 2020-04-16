@@ -8,6 +8,7 @@ import _ from 'lodash';
 import Input from './Input';
 import {deletePartitionPoint, deletePoint, updatePointLatLng} from "../actions/points";
 import {UNSELECT_POINT} from "../actions/types";
+import {updateTrack} from "../actions/tracks";
 
 export default class SideBarCard extends Component {
     state = {
@@ -70,6 +71,7 @@ export default class SideBarCard extends Component {
                 if (!_.isEmpty(this.props.partition.indexes)) {
                     this.props.deletePartitionPoint(index);
                 }
+                this.props.updateTrack(this.props.track.properties.id);
             }
         }
     };
@@ -109,7 +111,6 @@ export default class SideBarCard extends Component {
                                 this.setState({checked: !this.state.checked});
                                 this.props.checked(index)
                             }}
-                            onClick={e => e.stopPropagation()}
                             checked={this.state.checked}
                         /> :
                         <div className="right-trash-bin d-inline-block">
@@ -138,8 +139,16 @@ export default class SideBarCard extends Component {
                                onBlur={this.blurHandler}
                         />
                         <div className="d-flex mt-1">
-                            <div className="w-50 small text-left">Elevation: {elevation}</div>
-                            <div className="w-50 small text-right">Time: {this.parseTime(time)}</div>
+                            {
+                                _.isEmpty(elevation) ?
+                                    <></> :
+                                    <div className="w-50 small text-left">Elevation: {elevation}</div>
+                            }
+                            {
+                                _.isEmpty(time) ?
+                                    <></> :
+                                    <div className="w-50 small text-right">Time: {this.parseTime(time)}</div>
+                            }
                         </div>
                     </Card.Body>
                 </Accordion.Collapse>
@@ -158,6 +167,7 @@ SideBarCard = connect (
     },
     dispatch => {
         return {
+            updateTrack: (id) => dispatch(updateTrack(id)),
             clearIndex: () => dispatch({type: UNSELECT_POINT}),
             deletePoint: (index) => dispatch(deletePoint(index)),
             deletePartitionPoint: (index) => dispatch(deletePartitionPoint(index)),
