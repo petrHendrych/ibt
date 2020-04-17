@@ -19,13 +19,15 @@ from django.contrib import admin
 from django.urls import include, re_path
 
 from api.urls import router
+from api.views import DownloadViewSet
 
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^api/', include("api.urls")),
     re_path(r'^api', router.get_api_root_view()),
-    re_path(r'^auth/', include('accounts.urls'))
+    re_path(r'^auth/', include('accounts.urls')),
+    re_path(r'^download', DownloadViewSet.as_view())
 ]
 
 if settings.DEBUG:

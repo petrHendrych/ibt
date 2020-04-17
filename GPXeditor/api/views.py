@@ -1,11 +1,12 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.contrib.gis.geos import Point, MultiLineString, LineString, Polygon
 
 from tracks import models
@@ -13,6 +14,9 @@ from . import serializers
 
 import gpxpy
 import gpxpy.gpx
+
+import xml.etree.ElementTree as ET
+import os
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -122,3 +126,32 @@ class TrackViewSet(viewsets.ModelViewSet):
         return JsonResponse({
             'indexes': indexes
         })
+
+
+class DownloadViewSet(generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        with open("testfile.gpx", "w+") as file:
+            root = ET.Element("gpx", {
+                "version": "1.1",
+                "creator": "{}".format(request.user),
+                "xmlns": "http://www.topografix.com/GPX/1/1",
+                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                "xsi:schemaLocation": "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd",
+            })
+
+            trk = ET.SubElement(root, "trk")
+            ET.SubElement(trk, "name").text = "{}".format(request.data['properties']['name'])
+            trk_seg = ET.SubElement(trk, "trkseg")
+
+            for idx, item in enumerate(request.data['geometry']['coordinates'][0]):
+                point = ET.SubElement(trk_seg, "trkpt", lat="{}".format(item[0]), lon="{}".format(item[1]))
+                if request.data['properties']['elevations']:
+                    ET.SubElement(point, "ele").text = "{}".format(request.data['properties']['elevations'][idx])
+                if request.data['properties']['times']:
+                    ET.SubElement(point, "time").text = "{}".format(request.data['properties']['times'][idx])
+
+            tree = ET.ElementTree(root)
+            tree.write("testfile.gpx", xml_declaration=True, encoding="utf-8", method="xml")
+            response = FileResponse(open("testfile.gpx", 'rb'), as_attachment=True, content_type="text/gpx+xml")
+
+            return response

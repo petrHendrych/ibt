@@ -63,7 +63,9 @@ export default class SideBar extends Component {
                           border="success"
                           onClick={() => {this.props.getTrack(this.props.trackList[index].id); this.isShow()}}
                     >
-                        <div><strong>{this.props.trackList[index].name}</strong></div>
+                        <div>
+                            <strong>{this.props.trackList[index].name}</strong>
+                        </div>
                         <div>
                             <span className="float-left pt-2">File: {this.getFileName(this.props.trackList[index].gpx_file)}</span>
                             <button

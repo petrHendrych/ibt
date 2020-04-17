@@ -9,6 +9,7 @@ import {
     TRACK_PARTITION_LOADING, TRACK_LOADING, GET_ERRORS
 } from "./types";
 import {tokenConfig} from "./auth";
+import { saveAs } from 'file-saver';
 
 // GET USER'S TRACKS
 export const getTracks = () => async (dispatch, getState) => {
@@ -89,4 +90,14 @@ export const deleteTrack = (id) => (dispatch, getState) => {
             console.log(err);
         });
 
+};
+
+// DOWNLOAD TRACK
+export const downloadTrack = () => (dispatch, getState) => {
+    const trk = getState().tracks.track;
+    axios.post(`http://localhost:8000/download`, trk, tokenConfig(getState))
+        .then(res => {
+            let blob = new Blob([res.data], {type: "text/gpx+xml"});
+            saveAs(blob, `${trk.properties.name}.gpx`);
+        })
 };
