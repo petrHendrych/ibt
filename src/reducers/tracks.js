@@ -65,8 +65,12 @@ export default function (state = initialState, action) {
             const date = new Date();
 
             copTr.geometry.coordinates[0].splice(action.index, 0, action.val);
-            copTr.properties.elevations.splice(action.index, 0, copTr.properties.elevations[action.index]);
-            copTr.properties.times.splice(action.index, 0, date.toISOString());
+            if (!checkEmptyElevation(copTr.properties.elevations)) {
+                copTr.properties.elevations.splice(action.index, 0, copTr.properties.elevations[action.index]);
+            }
+            if (!checkEmptyTime(copTr.properties.times)) {
+                copTr.properties.times.splice(action.index, 0, date.toISOString());
+            }
             return {
                 ...state,
                 track: copTr
@@ -92,4 +96,12 @@ export default function (state = initialState, action) {
         default:
             return state;
     }
+}
+
+function checkEmptyElevation(ele) {
+    return !(ele && ele.length > 0);
+}
+
+function checkEmptyTime(time) {
+    return !(time && time.length > 0);
 }

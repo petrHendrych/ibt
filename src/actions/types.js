@@ -37,4 +37,3 @@ export const DELETE_POINTS = "DELETE_POINTS";
 export const INSERT_POINT = "INSERT_POINT";
 
 export const BOUNDS_CLEAR = "BOUNDS_CLEAR";
-export const TOGGLE_SIDEBAR = "TOGGLE_SIDEBAR";

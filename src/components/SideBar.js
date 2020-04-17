@@ -361,7 +361,7 @@ class PointContainer extends Component {
                                     defferedMeasurementCache={this.cachePoints}
                                     rowHeight={this.cachePoints.rowHeight}
                                     rowRenderer={this.pointsRenderer}
-                                    overscanRowCount={45}
+                                    overscanRowCount={30}
                                 />
                             )}
                         </AutoSizer>

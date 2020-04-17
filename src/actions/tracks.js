@@ -6,7 +6,7 @@ import {
     TRACKS_CLEAR,
     TRACKS_LOADED,
     TRACKS_LOADING,
-    TRACK_PARTITION_LOADING, TRACK_LOADING
+    TRACK_PARTITION_LOADING, TRACK_LOADING, GET_ERRORS
 } from "./types";
 import {tokenConfig} from "./auth";
 
@@ -62,8 +62,15 @@ export const updateTrack = (id) => (dispatch, getState) => {
                 payload: res.data
             })
         })
-        .catch(err => {
-            console.log(err);
+        .catch(e => {
+            const errors = {
+                msg: e.response.data,
+                status: e.response.status
+            };
+            dispatch({
+                type: GET_ERRORS,
+                payload: errors
+            });
         })
 };
 
