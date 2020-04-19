@@ -4,9 +4,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-
 from django.conf import settings
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.gis.geos import Point, MultiLineString, LineString, Polygon
 
 from tracks import models
@@ -15,8 +14,7 @@ from . import serializers
 import gpxpy
 import gpxpy.gpx
 
-import xml.etree.ElementTree as ET
-import os
+from yattag import Doc, indent
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -45,7 +43,7 @@ class FileViewSet(viewsets.ModelViewSet):
 
 
 def save_gpx_to_database(f, file_instance):
-    gpx_file = open(settings.MEDIA_ROOT + '/uploaded_gpx_files'+'/' + f.name, encoding='utf-8-sig')
+    gpx_file = open(settings.MEDIA_ROOT + '/uploaded_gpx_files'+'/' + f.name.replace(" ", "_"), encoding='utf-8-sig')
     gpx = gpxpy.parse(gpx_file)
 
     if gpx.tracks:
@@ -129,29 +127,33 @@ class TrackViewSet(viewsets.ModelViewSet):
 
 
 class DownloadViewSet(generics.GenericAPIView):
-    def post(self, request, *args, **kwargs):
-        with open("testfile.gpx", "w+") as file:
-            root = ET.Element("gpx", {
-                "version": "1.1",
-                "creator": "{}".format(request.user),
-                "xmlns": "http://www.topografix.com/GPX/1/1",
-                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                "xsi:schemaLocation": "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd",
-            })
+    def post(self, request):
 
-            trk = ET.SubElement(root, "trk")
-            ET.SubElement(trk, "name").text = "{}".format(request.data['properties']['name'])
-            trk_seg = ET.SubElement(trk, "trkseg")
+        doc, tag, text = Doc().tagtext()
 
-            for idx, item in enumerate(request.data['geometry']['coordinates'][0]):
-                point = ET.SubElement(trk_seg, "trkpt", lat="{}".format(item[0]), lon="{}".format(item[1]))
-                if request.data['properties']['elevations']:
-                    ET.SubElement(point, "ele").text = "{}".format(request.data['properties']['elevations'][idx])
-                if request.data['properties']['times']:
-                    ET.SubElement(point, "time").text = "{}".format(request.data['properties']['times'][idx])
+        doc.asis('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>')
+        with tag('gpx', ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
+                 ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
+                 ('xsi:schemaLocation', 'http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd'),
+                 version="1.1", creator="{}".format(request.user), xmlns="http://www.topografix.com/GPX/1/1"):
+            with tag('trk'):
+                with tag('name'):
+                    text("{}".format(request.data['properties']['name']))
+                with tag('trkseg'):
+                    for idx, item in enumerate(request.data['geometry']['coordinates'][0]):
+                        with tag('trkpt', lat="{}".format(item[0]), lon="{}".format(item[1])):
+                            if request.data['properties']['elevations']:
+                                with tag('ele'):
+                                    text("{}".format(request.data['properties']['elevations'][idx]))
+                            if request.data['properties']['times']:
+                                with tag('time'):
+                                    text("{}".format(request.data['properties']['times'][idx]))
 
-            tree = ET.ElementTree(root)
-            tree.write("testfile.gpx", xml_declaration=True, encoding="utf-8", method="xml")
-            response = FileResponse(open("testfile.gpx", 'rb'), as_attachment=True, content_type="text/gpx+xml")
+        result_xml = indent(
+            doc.getvalue(),
+            indentation=' ' * 2,
+            newline='\r\n'
+        )
 
-            return response
+        return HttpResponse(result_xml, content_type="text/gpx+xml")
+

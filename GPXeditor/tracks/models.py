@@ -6,7 +6,7 @@ from django.core.validators import FileExtensionValidator
 
 
 def gpx_folder(instance, filename):
-    return "uploaded_gpx_files/%s" % filename
+    return "uploaded_gpx_files/%s" % filename.replace(" ", "_")
 
 
 class GPXFile(models.Model):
