@@ -15,6 +15,7 @@ import gpxpy
 import gpxpy.gpx
 
 from yattag import Doc, indent
+import datetime
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -135,7 +136,16 @@ class DownloadViewSet(generics.GenericAPIView):
         with tag('gpx', ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
                  ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
                  ('xsi:schemaLocation', 'http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd'),
-                 version="1.1", creator="{}".format(request.user), xmlns="http://www.topografix.com/GPX/1/1"):
+                 version="1.1", creator="FIT GPX editor",
+                 xmlns="http://www.topografix.com/GPX/1/1"):
+            with tag('metadata'):
+                with tag('author'):
+                    with tag('name'):
+                        text("{}".format(request.user))
+                    with tag('email'):
+                        text("{}".format(request.user.email))
+                with tag('time'):
+                    text("{}".format(datetime.datetime.now().astimezone().replace(microsecond=0).isoformat()))
             with tag('trk'):
                 with tag('name'):
                     text("{}".format(request.data['properties']['name']))

@@ -134,6 +134,12 @@
   &:hover {
     border-width: 2px;
   }
+  * > svg {
+    display: none;
+  }
+  &:hover * > svg {
+    display: inline-block;
+  }
 }
 
 .side-bar-input {

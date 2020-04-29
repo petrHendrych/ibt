@@ -108,6 +108,10 @@
   cursor: pointer; }
   .side-card:hover {
     border-width: 2px; }
+  .side-card * > svg {
+    display: none; }
+  .side-card:hover * > svg {
+    display: inline-block; }
 
 .side-bar-input {
   width: 1%;
