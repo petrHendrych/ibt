@@ -160,7 +160,6 @@ export default class SideBarCard extends Component {
 SideBarCard = connect (
     state => {
         return {
-            bounds: state.bounds,
             track: state.tracks.track,
             partition: state.partition
         }

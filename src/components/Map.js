@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
-import {latLngBounds, LineUtil} from "leaflet";
+import {latLngBounds, LineUtil, icon} from "leaflet";
 import _ from 'lodash';
 
 import {getFiles} from "../actions/files";
@@ -9,17 +9,32 @@ import {getTrackPartition, getTracks} from "../actions/tracks";
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
 
+const circleMarker = icon({
+    iconUrl: require('../images/circleMarker.svg'),
+    iconSize: [14, 14], // size of the icon
+});
+
 export default class MyMap extends Component {
     constructor(props) {
         super(props);
 
         this.map = React.createRef();
         this.polyline = React.createRef();
+
+        this.state = {
+            markers: []
+        }
     }
 
     componentDidMount() {
         this.props.getFiles();
         this.props.getTracks();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.bounds !== this.props.bounds) {
+            this.setState({markers: this.props.bounds})
+        }
     }
 
     boundsHandler = () => {
@@ -32,12 +47,16 @@ export default class MyMap extends Component {
         const coords = e.latlng;
         this.props.getPointLatLng(coords);
 
-        const bounds = [];
         if (this.props.bounds.length === 2) {
-            bounds.push([parseFloat(this.props.bounds[0].lat.toFixed(6)), parseFloat(this.props.bounds[0].lng.toFixed(6))]);
-            bounds.push([parseFloat(this.props.bounds[1].lat.toFixed(6)), parseFloat(this.props.bounds[1].lng.toFixed(6))]);
-            this.props.getTrackPartition(this.props.track.properties.id, bounds);
+            this.getPartition();
         }
+    };
+
+    getPartition = () => {
+        const bounds = [];
+        bounds.push([parseFloat(this.state.markers[0].lat.toFixed(6)), parseFloat(this.state.markers[0].lng.toFixed(6))]);
+        bounds.push([parseFloat(this.state.markers[1].lat.toFixed(6)), parseFloat(this.state.markers[1].lng.toFixed(6))]);
+        this.props.getTrackPartition(this.props.track.properties.id, bounds);
     };
 
     updateMarker = (e) => {
@@ -45,6 +64,17 @@ export default class MyMap extends Component {
         coords.lat = parseFloat(coords.lat.toFixed(6));
         coords.lng = parseFloat(coords.lng.toFixed(6));
         this.props.updatePointLatLng(this.props.selectedIndex, coords);
+    };
+
+    updateRectangle = (e) => {
+        const latLng = e.target.getLatLng(); //get marker LatLng
+        const markerIndex = e.target.options.index; //get marker index
+
+        this.setState(prevState => {
+            const markerData = [...prevState.markers];
+            markerData[markerIndex] = latLng;
+            return { markers: markerData };
+        });
     };
 
     polylineClickHandler = (e) => {
@@ -109,9 +139,22 @@ export default class MyMap extends Component {
                     />
                 }
                 {
-                    this.props.bounds.length === 2 ?
-                    <Rectangle bounds={this.props.bounds}/> :
+                    this.state.markers.length === 2 ?
+                    <Rectangle bounds={this.state.markers}/> :
                     <></>
+                }
+                {
+                    this.state.markers.map((position, index) =>
+                        <Marker
+                            key={index}
+                            index={index}
+                            position={position}
+                            draggable={true}
+                            onDrag={this.updateRectangle}
+                            onDragend={() => this.state.markers.length === 2 ? this.getPartition() : null}
+                            icon={circleMarker}
+                        />
+                    )
                 }
             </Map>
         );

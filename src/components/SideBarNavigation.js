@@ -69,7 +69,6 @@ export default class SideBarNavigation extends Component {
 SideBarNavigation = connect (
     state => {
         return {
-            bounds: state.bounds,
             track: state.tracks.track,
             selectedIndex: state.selectedIndex,
             partition: state.partition

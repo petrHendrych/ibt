@@ -381,7 +381,6 @@ class PointContainer extends Component {
 PointContainer = connect (
     state => {
         return {
-            bounds: state.bounds,
             track: state.tracks.track,
             partition: state.partition,
             selectedIndex: state.selectedIndex,
