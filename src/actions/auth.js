@@ -107,7 +107,7 @@ export const registerUser = ({username, email, password}) => dispatch => {
 // LOGOUT USER
 export const logoutUser = () => (dispatch, getState) => {
        axios.post("http://localhost:8000/auth/logout", null, tokenConfig(getState))
-        .then(res => {
+        .then(_ => {
             dispatch({
                 type: LOGOUT_SUCCESS,
             });
@@ -139,4 +139,15 @@ export const tokenConfig = (getState) => {
     }
 
     return config;
+};
+
+export const invalidPasswords = () => dispatch =>{
+    const errors = {
+        msg: {pass: ["Passwords aren't same"]},
+        status: 401
+    };
+    dispatch({
+        type: GET_ERRORS,
+        payload: errors
+    });
 };

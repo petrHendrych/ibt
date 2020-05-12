@@ -69,14 +69,12 @@ class LoginForm extends Component {
             <Form onSubmit={this.onSubmit}>
                 <Form.Group controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Enter username" name="username" value={username} onChange={this.onChange}/>
-                    {this.props.error.msg.username ? <span className="small text-danger">{this.props.error.msg.username.join()}</span> : <></>}
+                    <Form.Control type="text" placeholder="Enter username" name="username" value={username} onChange={this.onChange} required/>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" name="password" value={password} onChange={this.onChange}/>
-                    {this.props.error.msg.password ? <span className="small text-danger">{this.props.error.msg.password.join()}</span> : <></>}
+                    <Form.Control type="password" placeholder="Password" name="password" value={password} onChange={this.onChange} required/>
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     Login
@@ -85,11 +83,3 @@ class LoginForm extends Component {
         );
     }
 }
-
-LoginForm = connect (
-    state => {
-        return {
-            error: state.errors
-        }
-    }
-)(LoginForm);

@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import _ from 'lodash';
 
 import Input from './Input';
+import {validateCoords} from '../utils';
 import {deletePartitionPoint, deletePoint, updatePointLatLng} from "../actions/points";
 import {UNSELECT_POINT} from "../actions/types";
 import {updateTrack} from "../actions/tracks";
@@ -13,7 +14,7 @@ import {updateTrack} from "../actions/tracks";
 export default class SideBarCard extends Component {
     state = {
         coords: [...this.props.coords],
-        valid: [true, true],
+        valid: validateCoords(this.props.coords),
         checked: false
     };
 
@@ -21,7 +22,7 @@ export default class SideBarCard extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.coords !== this.props.coords) {
             this.setState({
-                valid: [true, true],
+                valid: validateCoords(this.props.coords),
                 coords: [...this.props.coords],
             });
         }
@@ -34,10 +35,10 @@ export default class SideBarCard extends Component {
     }
 
     changeHandler = (val, idx) => {
-        const arr = this.state.coords;
+        const arr = [...this.state.coords];
         arr[idx] = parseFloat(val);
         if (isNaN(arr[idx])) {
-            arr[idx] = '';
+            arr[idx] = '0';
         }
         this.setState({coords: arr});
     };
@@ -47,13 +48,11 @@ export default class SideBarCard extends Component {
         arr[idx] = val;
 
         this.setState({valid: arr}, () => {
-            if (this.state.valid[0] && this.state.valid[1]) {
-                const val =  {
-                    lat: this.state.coords[0],
-                    lng: this.state.coords[1],
-                };
-                this.props.updatePointLatLng(this.props.index, val);
-            }
+            const val =  {
+                lat: this.state.coords[0],
+                lng: this.state.coords[1],
+            };
+            this.props.updatePointLatLng(this.props.index, val);
         });
     };
 
@@ -96,8 +95,7 @@ export default class SideBarCard extends Component {
                         <div className="d-inline-block position-absolute" style={{left: "24px"}}>Point:</div>
                         <div className="d-inline-block position-relative" style={{left: "40px"}}>
                             <span className={this.state.valid[0] ? "" : "text-danger"}>
-                                {this.state.coords[0]},
-                            </span>
+                                {this.state.coords[0]}, </span>
                                 <span className={this.state.valid[1] ? "" : "text-danger"}>
                                 {this.state.coords[1]}
                             </span>

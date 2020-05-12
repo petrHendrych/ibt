@@ -173,6 +173,17 @@
       -ms-transform: translateY(100%);
       transform: translateY(100%); }
 
+.error_container {
+  width: 100%;
+  height: 100vh;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center; }
+
+.text_container {
+  display: inline-flex;
+  flex-direction: column; }
+
 * {
   margin: 0;
   padding: 0; }

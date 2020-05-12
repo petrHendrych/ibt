@@ -5,7 +5,8 @@ import {Redirect} from "react-router";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {registerUser} from "../actions/auth";
+import {registerUser, invalidPasswords} from "../actions/auth";
+import Alerts from "../components/Alerts";
 
 class RegisterView extends Component {
     render() {
@@ -14,6 +15,7 @@ class RegisterView extends Component {
         }
         return (
             <Container className="w-50">
+                <Alerts/>
                 <Row className="justify-content-center align-items-center flex-fill">
                     <Col>
                         <Card className="p-4 mt-5">
@@ -54,7 +56,7 @@ class RegisterForm extends Component {
         e.preventDefault();
         const { username, email, password, password2 } = this.state;
         if (password !== password2) {
-            // TODO messages reducer
+            this.props.invalidPassswords();
         } else {
             const newUser = {
                 username,
@@ -78,13 +80,13 @@ class RegisterForm extends Component {
                 <Form.Group controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" placeholder="Enter username" onChange={this.onChange} value={username}
-                    name="username"/>
+                    name="username" required/>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email</Form.Label>
                     <Form.Control type="email" placeholder="example@gmail.com" onChange={this.onChange} value={email}
-                    name="email"/>
+                    name="email" required/>
                     <Form.Text className="text-muted">
                         We'll never share your email with anyone else.
                     </Form.Text>
@@ -92,12 +94,12 @@ class RegisterForm extends Component {
 
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" onChange={this.onChange} value={password} name="password"/>
+                    <Form.Control type="password" onChange={this.onChange} value={password} name="password" required/>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Verity password</Form.Label>
-                    <Form.Control type="password" onChange={this.onChange} value={password2} name="password2"/>
+                    <Form.Control type="password" onChange={this.onChange} value={password2} name="password2" required/>
                     <Form.Text className="text-muted">
                         Verify password by entering the same password from the above field.
                     </Form.Text>
@@ -110,3 +112,14 @@ class RegisterForm extends Component {
         );
     }
 }
+
+RegisterForm = connect (
+    state => {
+        return {}
+    },
+    dispatch => {
+        return {
+            invalidPassswords: () => dispatch(invalidPasswords())
+        }
+    }
+)(RegisterForm);

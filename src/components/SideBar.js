@@ -1,16 +1,13 @@
 import React, {Component} from 'react';
-import {Accordion, Card} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import { connect } from 'react-redux';
 import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import _ from 'lodash';
 
-import SideBarCard from './SideBarCard';
+import PointContainer from './PointContainer';
 import SideBarHeader from './SideBarHeader';
-import SideBarNavigation from "./SideBarNavigation";
-import {deletePartitionPoints, deletePoints, selectPoint} from "../actions/points";
 import { Spinner } from "../utils";
-import {deleteTrack, getTrack, updateTrack} from "../actions/tracks";
-import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
+import {deleteTrack, getTrack} from "../actions/tracks";
 
 
 export default class SideBar extends Component {

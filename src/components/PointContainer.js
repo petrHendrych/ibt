@@ -1,11 +1,17 @@
-import {connect} from "react-redux";
-import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
-import {CellMeasurerCache} from "react-virtualized";
-import _ from "lodash";
-import {deletePartitionPoints, deletePoints, selectPoint} from "../actions/points";
-import {updateTrack} from "../actions/tracks";
+import React, {Component} from 'react';
+import {Accordion} from "react-bootstrap";
+import { connect } from 'react-redux';
+import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
+import _ from 'lodash';
 
-class PointContainer extends Component {
+import SideBarCard from './SideBarCard';
+import SideBarNavigation from "./SideBarNavigation";
+import {deletePartitionPoints, deletePoints, selectPoint} from "../actions/points";
+import { Spinner } from "../utils";
+import {updateTrack} from "../actions/tracks";
+import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
+
+export default class PointContainer extends Component {
     constructor(props) {
         super(props);
 

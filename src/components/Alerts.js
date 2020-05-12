@@ -13,7 +13,17 @@ class Alerts extends Component {
                 alert.error(error.msg.detail)
             }
             if (error.status === 400) {
-                alert.error(error.msg.detail);
+                if (error.msg.track) {
+                    alert.error(error.msg.track[0])
+                }
+                if (error.msg.gpx_file) {
+                    alert.error(error.msg.gpx_file[0])
+                }
+            }
+            if (error.status === 401) {
+                if (error.msg.pass) {
+                    alert.error(error.msg.pass[0])
+                }
             }
         }
     }

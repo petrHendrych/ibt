@@ -32,7 +32,14 @@ export const getTrack = (id) => async (dispatch, getState) => {
         let response = await axios.get(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
         dispatch({ type: TRACK_LOADED, payload: response.data});
     } catch (error) {
-        console.log(error);
+        const errors = {
+            msg: error.response.data,
+            status: error.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
     }
 
 };
@@ -72,6 +79,10 @@ export const updateTrack = (id) => (dispatch, getState) => {
                 type: GET_ERRORS,
                 payload: errors
             });
+            dispatch({
+                type: TRACK_LOADED,
+                payload: trk
+            })
         })
 };
 
@@ -99,5 +110,15 @@ export const downloadTrack = () => (dispatch, getState) => {
         .then(res => {
             let blob = new Blob([res.data], {type: "text/gpx+xml"});
             saveAs(blob, `${trk.properties.name}.gpx`);
+        })
+        .catch(e => {
+            const errors = {
+                msg: e.response.data,
+                status: e.response.status
+            };
+            dispatch({
+                type: GET_ERRORS,
+                payload: errors
+            });
         })
 };
