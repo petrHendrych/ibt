@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import {Link} from "react-router-dom";
 import {Redirect} from "react-router";
 import {connect} from "react-redux";
@@ -24,6 +26,7 @@ class LoginView extends Component {
                                 <p className="text-muted">All fields are required</p>
                                 <LoginForm  loginUser={this.props.loginUser} />
                                 <p className="mt-4">Do not have an account, yet? <Link to="/register">Register here!</Link></p>
+                                <p><Link to="/"><FontAwesomeIcon icon={faArrowLeft} className="mr-2"/>Go back home</Link></p>
                             </Card.Body>
                         </Card>
                     </Col>

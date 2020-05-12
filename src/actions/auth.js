@@ -143,7 +143,7 @@ export const tokenConfig = (getState) => {
 
 export const invalidPasswords = () => dispatch =>{
     const errors = {
-        msg: {pass: ["Passwords aren't same"]},
+        msg: {pass: ["Password doesn't match"]},
         status: 401
     };
     dispatch({
