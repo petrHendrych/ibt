@@ -17,6 +17,10 @@ class GPXFile(models.Model):
                                 validators=[FileExtensionValidator(allowed_extensions=['gpx'])]
                                 )
 
+    def delete(self, using=None, keep_parents=False):
+        self.gpx_file.delete()
+        super(GPXFile, self).delete()
+
     def __unicode__(self):
         return self.title
 

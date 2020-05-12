@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
+
 if os.name == 'nt':
     import platform
     OSGEO4W = r"C:\OSGeo4W"
@@ -156,3 +158,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://localhost:3000",
 ]
+
+REST_KNOX = {
+    'TOKEN_TTL': timedelta(minutes=10),
+    'AUTO_REFRESH': True,
+}
