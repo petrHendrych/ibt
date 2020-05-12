@@ -79,10 +79,12 @@ export const updateTrack = (id) => (dispatch, getState) => {
                 type: GET_ERRORS,
                 payload: errors
             });
-            dispatch({
-                type: TRACK_LOADED,
-                payload: trk
-            })
+            if (e.response.status === 400) {
+                dispatch({
+                    type: TRACK_LOADED,
+                    payload: trk
+                })
+            }
         })
 };
 

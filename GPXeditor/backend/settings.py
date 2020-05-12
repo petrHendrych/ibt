@@ -160,6 +160,6 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 REST_KNOX = {
-    'TOKEN_TTL': timedelta(minutes=10),
+    'TOKEN_TTL': timedelta(minutes=30),
     'AUTO_REFRESH': True,
 }

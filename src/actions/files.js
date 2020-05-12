@@ -12,14 +12,6 @@ export const getFiles = () => async (dispatch, getState) => {
         dispatch({ type: GET_FILES, payload: response.data });
     } catch (e) {
         console.log(e);
-        // const errors = {
-        //     msg: e.response.data,
-        //     status: e.response.status
-        // };
-        // dispatch({
-        //     type: GET_ERRORS,
-        //     payload: errors
-        // });
     }
 
 };

@@ -183,7 +183,7 @@ export default class PointContainer extends Component {
                                    onCheckAll={() => this.checkAll()}
                 />
 
-                {!_.isEmpty(this.props.track) && !this.props.partition.isLoading && !this.props.trackLoading ?
+                {!_.isEmpty(this.props.track) && !this.props.partition.trackIsLoading && !this.props.trackLoading ?
                     <div style={{ flex: '1 1 auto' }}>
                         <AutoSizer>
                             {({ height, width }) => (
@@ -218,7 +218,7 @@ PointContainer = connect (
             track: state.tracks.track,
             partition: state.partition,
             selectedIndex: state.selectedIndex,
-            trackLoading: state.tracks.isLoading
+            trackLoading: state.tracks.trackIsLoading
         }
     },
     dispatch => {

@@ -82,7 +82,7 @@ export default class SideBar extends Component {
     };
 
     render() {
-        if (this.props.auth.isLoading || this.props.tracksLoading) {
+        if (this.props.auth.trackIsLoading || this.props.tracksLoading) {
             return (
                 <div className="side-bar d-flex flex-column justify-content-between">
                     <SideBarHeader/>
@@ -161,7 +161,7 @@ SideBar = connect (
             track: state.tracks.track,
             selectedIndex: state.selectedIndex,
             partition: state.partition,
-            tracksLoading: state.tracks.isLoadings,
+            tracksLoading: state.tracks.trackListIsLoading,
             files: state.files.data ? state.files.data : [],
             trackList: state.tracks.data ? state.tracks.data : []
         }
