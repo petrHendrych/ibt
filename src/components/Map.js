@@ -8,7 +8,7 @@ import {getFiles} from "../actions/files";
 import {getTrackPartition, getTracks} from "../actions/tracks";
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
-import {Button, Modal} from "react-bootstrap";
+import {Modal} from "react-bootstrap";
 
 const circleMarker = icon({
     iconUrl: require('../images/circleMarker.svg'),
