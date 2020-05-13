@@ -36,6 +36,11 @@ class Alerts extends Component {
                 if (error.msg.pass) {
                     alert.error(error.msg.pass[0])
                 }
+                if (error.msg.detail === "Invalid token.") {
+                    alert.error(error.msg.detail);
+                    this.props.authError();
+                    this.props.clearAll();
+                }
             }
         }
     }

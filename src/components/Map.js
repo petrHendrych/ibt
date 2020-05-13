@@ -4,8 +4,7 @@ import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
 import {latLngBounds, LineUtil, icon} from "leaflet";
 import _ from 'lodash';
 
-import {getFiles} from "../actions/files";
-import {getTrackPartition, getTracks} from "../actions/tracks";
+import {getTrackPartition} from "../actions/tracks";
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
 import {Modal} from "react-bootstrap";
@@ -25,11 +24,6 @@ export default class MyMap extends Component {
         this.state = {
             markers: []
         }
-    }
-
-    componentDidMount() {
-        this.props.getFiles();
-        this.props.getTracks();
     }
 
     componentDidUpdate(prevProps) {
@@ -189,8 +183,6 @@ MyMap = connect (
     },
     dispatch => {
         return {
-            getFiles: () => dispatch(getFiles()),
-            getTracks: () => dispatch(getTracks()),
             selectPoint: (p) => dispatch(selectPoint(p)),
             getPointLatLng: (point) => dispatch(getPointLatLng(point)),
             insertPoint: (idx, val) => dispatch(insertPoint(idx, val)),
