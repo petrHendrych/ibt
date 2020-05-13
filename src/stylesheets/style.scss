@@ -1,4 +1,5 @@
 @import "SideBar";
+@import "ErrorView";
 
 * {
   margin: 0;
@@ -26,6 +27,24 @@ html, body {
   position: absolute;
   z-index: 9999;
   bottom: 15px;
+  left: 15px;
+  border-radius: 2px;
+  color: black;
+  background: #ffffff;
+  border: 2px solid rgba(0,0,0,.2);
+  &:hover {
+    background: #f4f4f4;
+  }
+  &:focus {
+    outline: none !important;
+  }
+}
+
+.help-button {
+  padding: 5px 15px;
+  position: absolute;
+  z-index: 9999;
+  bottom: 55px;
   left: 15px;
   border-radius: 2px;
   color: black;

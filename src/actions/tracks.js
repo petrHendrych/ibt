@@ -32,7 +32,14 @@ export const getTrack = (id) => async (dispatch, getState) => {
         let response = await axios.get(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
         dispatch({ type: TRACK_LOADED, payload: response.data});
     } catch (error) {
-        console.log(error);
+        const errors = {
+            msg: error.response.data,
+            status: error.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
     }
 
 };
@@ -52,52 +59,59 @@ export const getTrackPartition = (id, bounds) => async (dispatch, getState) => {
 };
 
 // UPDATE TRACK POINTS
-export const updateTrack = (id) => (dispatch, getState) => {
+export const updateTrack = (id) => async (dispatch, getState) => {
     const trk = getState().tracks.track;
     dispatch({type: TRACK_LOADING});
 
-    axios.put(`http://localhost:8000/api/tracks/${id}`, trk, tokenConfig(getState))
-        .then(res => {
+    try {
+        let response = await axios.put(`http://localhost:8000/api/tracks/${id}`, trk, tokenConfig(getState));
+        dispatch({type: TRACK_LOADED, payload: response.data});
+    } catch (e) {
+        const errors = {
+            msg: e.response.data,
+            status: e.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
+        if (e.response.status === 400) {
             dispatch({
                 type: TRACK_LOADED,
-                payload: res.data
+                payload: trk
             })
-        })
-        .catch(e => {
-            const errors = {
-                msg: e.response.data,
-                status: e.response.status
-            };
-            dispatch({
-                type: GET_ERRORS,
-                payload: errors
-            });
-        })
+        }
+    }
 };
 
 // DELETE TRACK
-export const deleteTrack = (id) => (dispatch, getState) => {
-    axios.delete(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState))
-        .then(() => {
-            dispatch({
-                type: DELETE_TRACK,
-                payload: id
-            });
+export const deleteTrack = (id) =>  async (dispatch, getState) => {
 
-            dispatch(getTracks());
-        })
-        .catch(err => {
-            console.log(err);
-        });
-
+    try {
+        await axios.delete(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
+        dispatch({type: DELETE_TRACK, payload: id});
+        dispatch(getTracks());
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 // DOWNLOAD TRACK
-export const downloadTrack = () => (dispatch, getState) => {
+export const downloadTrack = () => async (dispatch, getState) => {
     const trk = getState().tracks.track;
-    axios.post(`http://localhost:8000/download`, trk, tokenConfig(getState))
-        .then(res => {
-            let blob = new Blob([res.data], {type: "text/gpx+xml"});
-            saveAs(blob, `${trk.properties.name}.gpx`);
-        })
+
+    try {
+        let response = await axios.post(`http://localhost:8000/download`, trk, tokenConfig(getState));
+        let blob = new Blob([response.data], {type: "text/gpx+xml"});
+        saveAs(blob, `${trk.properties.name}.gpx`);
+    } catch (err) {
+        const errors = {
+            msg: err.response.data,
+            status: err.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
+    }
 };

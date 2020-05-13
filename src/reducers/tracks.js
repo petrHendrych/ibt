@@ -11,8 +11,8 @@ import {
 } from "../actions/types";
 
 const initialState = {
-    isLoadings: false,
-    isLoading: false,
+    trackListIsLoading: false,
+    trackIsLoading: false,
     data: null,
     track: {}
 };
@@ -24,17 +24,17 @@ export default function (state = initialState, action) {
         case TRACKS_LOADING:
             return {
                 ...state,
-                isLoadings: true
+                trackListIsLoading: true
             };
         case TRACK_LOADING:
             return {
                 ...state,
-                isLoading: true
+                trackIsLoading: true
             };
         case TRACKS_LOADED:
             return {
                 ...state,
-                isLoadings: false,
+                trackListIsLoading: false,
                 data: action.payload
             };
         case TRACKS_CLEAR:
@@ -42,7 +42,7 @@ export default function (state = initialState, action) {
         case TRACK_LOADED:
             return {
                 ...state,
-                isLoading: false,
+                trackIsLoading: false,
                 track: action.payload
             };
         case TRACK_CLEAR:

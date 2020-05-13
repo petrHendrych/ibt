@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {FILE_DELETE, FILES_CLEAR, FILES_LOADING, GET_ERRORS, GET_FILES} from './types';
+import {FILE_DELETE, FILES_LOADING, GET_ERRORS, GET_FILES} from './types';
 import {tokenConfig} from "./auth";
 import {getTracks} from "./tracks";
 
@@ -11,23 +11,13 @@ export const getFiles = () => async (dispatch, getState) => {
         let response = await axios.get("http://localhost:8000/api/files/", tokenConfig(getState));
         dispatch({ type: GET_FILES, payload: response.data });
     } catch (e) {
-        const errors = {
-            msg: e.response.data,
-            status: e.response.status
-        };
-        dispatch({
-            type: GET_ERRORS,
-            payload: errors
-        });
-        dispatch({
-            type: FILES_CLEAR
-        })
+        console.log(e);
     }
 
 };
 
 // UPLOAD NEW FILE
-export const uploadFile = (file, title) => (dispatch, getState) => {
+export const uploadFile = (file, title) => async (dispatch, getState) => {
     //Get token from state
     const token = getState().auth.token;
 
@@ -46,33 +36,29 @@ export const uploadFile = (file, title) => (dispatch, getState) => {
     data.append('gpx_file', file);
     data.append('title', title);
 
-    axios.post("http://localhost:8000/api/files/", data, config)
-        .then(() => {
-            dispatch(getFiles());
-            dispatch(getTracks());
-        })
-        .catch((e) => {
-            const errors = {
-                msg: e.response.data,
-                status: e.response.status
-            };
-            dispatch({
-                type: GET_ERRORS,
-                payload: errors
-            });
-        })
+    try {
+        await axios.post("http://localhost:8000/api/files/", data, config);
+        dispatch(getFiles());
+        dispatch(getTracks());
+    } catch (err) {
+        const errors = {
+            msg: err.response.data,
+            status: err.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
+    }
 };
 
 // DELETE FILE
-export const deleteFile = (id) => (dispatch, getState) => {
-    axios.delete(`http://localhost:8000/api/files/${id}`, tokenConfig(getState))
-        .then(() => {
-            dispatch({
-                type: FILE_DELETE,
-                payload: id
-            });
-
-            dispatch(getTracks());
-        })
-        .catch(err => console.log(err))
+export const deleteFile = (id) => async (dispatch, getState) => {
+    try {
+        await axios.delete(`http://localhost:8000/api/files/${id}`, tokenConfig(getState));
+        dispatch({type: FILE_DELETE, payload: id});
+        dispatch(getTracks());
+    } catch (err) {
+        console.log(err);
+    }
 };

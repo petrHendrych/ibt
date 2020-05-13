@@ -10,6 +10,14 @@ class TrackSerializer(serializers.ModelSerializer):
         model = GPXTrack
         fields = '__all__'
 
+    def validate_track(self, val):
+        for line_string in val:
+            for x, y in line_string:
+                if x < -90 or x > 90 or y < -180 or y > 180:
+                    raise serializers.ValidationError("Track contains invalid coordinates")
+
+        return val
+
 
 class TracksSerializer(serializers.ModelSerializer):
     class Meta:

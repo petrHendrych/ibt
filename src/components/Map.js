@@ -8,6 +8,7 @@ import {getFiles} from "../actions/files";
 import {getTrackPartition, getTracks} from "../actions/tracks";
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
+import {Modal} from "react-bootstrap";
 
 const circleMarker = icon({
     iconUrl: require('../images/circleMarker.svg'),
@@ -99,27 +100,32 @@ export default class MyMap extends Component {
     };
 
     render() {
-        let bounds = latLngBounds([[49.24, 16.54], [49.15, 16.71]]);
-
-        if (!_.isEmpty(this.props.track)) {
-            if (!_.isEmpty(this.props.track.geometry.coordinates[0])) {
-                bounds = latLngBounds(this.props.track.geometry.coordinates);
-            }
-        }
+        const position = [49.94415, 15.446655];
+        const maxBounds = latLngBounds([-90, 180], [90, -180]);
 
         return (
             <Map doubleClickZoom={false}
-                 bounds={bounds}
+                 bounds={!_.isEmpty(this.props.track) ? latLngBounds(this.props.track.geometry.coordinates) : null}
+                 center={position}
+                 zoom={8}
                  ref={this.map}
                  ondblclick={(e) => this.dblClickHandler(e)}
                  maxZoom={18}
+                 maxBounds={maxBounds}
             >
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    noWrap={true}
                 />
 
-                {_.isEmpty(this.props.track) ? <></> : <button onClick={this.boundsHandler} className="fit-button">fit track</button>}
+
+                {_.isEmpty(this.props.track) ? <></> :
+                    <>
+                        <button onClick={this.boundsHandler} className="fit-button">Fit Track</button>
+                        <button onClick={() => this.setState({isShow: true})} className="help-button">Help</button>
+                    </>
+                }
 
                 { !_.isEmpty(this.props.track) ?
                     <Polyline
@@ -156,6 +162,17 @@ export default class MyMap extends Component {
                         />
                     )
                 }
+                <Modal show={this.state.isShow} onHide={() => this.setState({isShow: false})} backdrop={'static'}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>User help</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>To add point click anywhere on track.</p>
+                        <p>To select only partition of track two times double click anywhere on map to create boundary.
+                            Points of track that are inside this boundary will  appear in side bar.
+                        </p>
+                    </Modal.Body>
+                </Modal>
             </Map>
         );
     }
