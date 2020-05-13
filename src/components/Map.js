@@ -8,6 +8,7 @@ import {getFiles} from "../actions/files";
 import {getTrackPartition, getTracks} from "../actions/tracks";
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
+import {Button, Modal} from "react-bootstrap";
 
 const circleMarker = icon({
     iconUrl: require('../images/circleMarker.svg'),
@@ -118,7 +119,13 @@ export default class MyMap extends Component {
                     noWrap={true}
                 />
 
-                {_.isEmpty(this.props.track) ? <></> : <button onClick={this.boundsHandler} className="fit-button">fit track</button>}
+
+                {_.isEmpty(this.props.track) ? <></> :
+                    <>
+                        <button onClick={this.boundsHandler} className="fit-button">Fit Track</button>
+                        <button onClick={() => this.setState({isShow: true})} className="help-button">Help</button>
+                    </>
+                }
 
                 { !_.isEmpty(this.props.track) ?
                     <Polyline
@@ -155,6 +162,17 @@ export default class MyMap extends Component {
                         />
                     )
                 }
+                <Modal show={this.state.isShow} onHide={() => this.setState({isShow: false})} backdrop={'static'}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>User help</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>To add point click anywhere on track.</p>
+                        <p>To select only partition of track two times double click anywhere on map to create boundary.
+                            Points of track that are inside this boundary will  appear in side bar.
+                        </p>
+                    </Modal.Body>
+                </Modal>
             </Map>
         );
     }
