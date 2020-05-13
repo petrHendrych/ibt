@@ -17,7 +17,7 @@ export const getFiles = () => async (dispatch, getState) => {
 };
 
 // UPLOAD NEW FILE
-export const uploadFile = (file, title) => (dispatch, getState) => {
+export const uploadFile = (file, title) => async (dispatch, getState) => {
     //Get token from state
     const token = getState().auth.token;
 
@@ -36,33 +36,29 @@ export const uploadFile = (file, title) => (dispatch, getState) => {
     data.append('gpx_file', file);
     data.append('title', title);
 
-    axios.post("http://localhost:8000/api/files/", data, config)
-        .then(() => {
-            dispatch(getFiles());
-            dispatch(getTracks());
-        })
-        .catch((e) => {
-            const errors = {
-                msg: e.response.data,
-                status: e.response.status
-            };
-            dispatch({
-                type: GET_ERRORS,
-                payload: errors
-            });
-        })
+    try {
+        await axios.post("http://localhost:8000/api/files/", data, config);
+        dispatch(getFiles());
+        dispatch(getTracks());
+    } catch (err) {
+        const errors = {
+            msg: err.response.data,
+            status: err.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
+    }
 };
 
 // DELETE FILE
-export const deleteFile = (id) => (dispatch, getState) => {
-    axios.delete(`http://localhost:8000/api/files/${id}`, tokenConfig(getState))
-        .then(() => {
-            dispatch({
-                type: FILE_DELETE,
-                payload: id
-            });
-
-            dispatch(getTracks());
-        })
-        .catch(err => console.log(err))
+export const deleteFile = (id) => async (dispatch, getState) => {
+    try {
+        await axios.delete(`http://localhost:8000/api/files/${id}`, tokenConfig(getState));
+        dispatch({type: FILE_DELETE, payload: id});
+        dispatch(getTracks());
+    } catch (err) {
+        console.log(err);
+    }
 };
