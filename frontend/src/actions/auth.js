@@ -10,12 +10,15 @@ import {
     REGISTER_FAIL,
     FILES_CLEAR, TRACKS_CLEAR, GET_ERRORS
 } from './types';
+import {getFiles} from "./files";
+import {getTracks} from "./tracks";
 
 // CHECK TOKEN & LOAD USER
 export const loadUser = () => async (dispatch, getState) => {
     // User Loading
     dispatch({ type: USER_LOADING});
-
+    dispatch(getFiles());
+    dispatch(getTracks());
     try {
         let response = await axios.get("http://localhost:8000/auth/user", tokenConfig(getState));
         dispatch({type: USER_LOADED, payload: response.data});
@@ -44,6 +47,8 @@ export const loginUser = (username, password) => async dispatch => {
     try {
         let response = await axios.post("http://localhost:8000/auth/login", body, config);
         dispatch({type: LOGIN_SUCCESS, payload: response.data});
+        dispatch(getFiles());
+        dispatch(getTracks());
     } catch (err) {
         const errors = {
             msg: err.response.data,
@@ -87,7 +92,11 @@ export const logoutUser = () => async (dispatch, getState) => {
         dispatch({type: FILES_CLEAR,});
         dispatch({type: TRACKS_CLEAR,});
     } catch (err) {
-        console.log(err);
+        const errors = {
+            msg: err.response.data,
+            status: err.response.status
+        };
+        dispatch({type: GET_ERRORS, payload: errors});
     }
 };
 
