@@ -84,6 +84,7 @@
 .selected {
   background: #def6df; }
 
+/* Navigation header menu css */
 .navigation {
   background: #e7ebef;
   border-bottom: 1px solid black; }
@@ -163,15 +164,6 @@
     transform: translateX(-100%); }
   .point-container > * .ReactVirtualized__Grid__innerScrollContainer {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125); }
-  .point-container .save-changes-button {
-    border: none;
-    position: relative;
-    top: -100%;
-    transition: transform 0.3s; }
-    .point-container .save-changes-button.show {
-      -webkit-transform: translateY(100%);
-      -ms-transform: translateY(100%);
-      transform: translateY(100%); }
 
 .error_container {
   width: 100%;
@@ -204,7 +196,7 @@ html, body {
 .fit-button {
   padding: 5px 15px;
   position: absolute;
-  z-index: 9999;
+  z-index: 999;
   bottom: 15px;
   left: 15px;
   border-radius: 2px;
@@ -219,7 +211,7 @@ html, body {
 .help-button {
   padding: 5px 15px;
   position: absolute;
-  z-index: 9999;
+  z-index: 999;
   bottom: 55px;
   left: 15px;
   border-radius: 2px;
@@ -253,5 +245,40 @@ html, body {
 
 a {
   outline: 0; }
+
+/* Tranck info css */
+.track-info {
+  position: relative;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  padding: 5px;
+  width: 310px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  z-index: 999;
+  -webkit-box-shadow: 0 0 31px -14px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0 0 31px -14px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 0 31px -14px rgba(0, 0, 0, 0.75);
+  left: -310px;
+  transition: left .6s ease-in-out; }
+  .track-info.show {
+    left: 0; }
+
+.track-info-button {
+  position: absolute;
+  top: 50%;
+  padding: 15px 5px;
+  width: 25px;
+  border-radius: 0 5px 5px 0;
+  border-right: 1px solid lightgray;
+  right: -26px;
+  transform: translateY(-50%);
+  background: #fff;
+  z-index: 9999;
+  -webkit-box-shadow: 18px 0 33px -14px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 18px 0 33px -14px rgba(0, 0, 0, 0.75);
+  box-shadow: 18px 0 33px -14px rgba(0, 0, 0, 0.75);
+  cursor: pointer; }
 
 /*# sourceMappingURL=style.css.map */

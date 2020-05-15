@@ -10,7 +10,8 @@ class TrackSerializer(serializers.ModelSerializer):
         model = GPXTrack
         fields = '__all__'
 
-    def validate_track(self, val):
+    @staticmethod
+    def validate_track(val):
         for line_string in val:
             for x, y in line_string:
                 if x < -90 or x > 90 or y < -180 or y > 180:

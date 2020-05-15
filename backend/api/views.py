@@ -72,6 +72,7 @@ def save_gpx_to_database(f, file_instance):
                     tracks_times.append(tracks_times[0])
                     
                 new_track_segment = LineString(track_list_of_points)
+                new_track_segment.srid = 4326
 
             new_track.track = MultiLineString(new_track_segment)
             new_track.gpx_file = file_instance

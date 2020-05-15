@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
 import {latLngBounds, LineUtil, icon} from "leaflet";
+import {Modal} from "react-bootstrap";
 import _ from 'lodash';
 
+import TrackInfo from "./TrackInfo";
 import {getTrackPartition} from "../actions/tracks";
 import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
-import {Modal} from "react-bootstrap";
 
 const circleMarker = icon({
     iconUrl: require('../images/circleMarker.svg'),
@@ -96,10 +97,11 @@ export default class MyMap extends Component {
     render() {
         const position = [49.94415, 15.446655];
         const maxBounds = latLngBounds([-90, 180], [90, -180]);
+        const bounds = !_.isEmpty(this.props.track) ? latLngBounds(this.props.track.geometry.coordinates) : null;
 
         return (
             <Map doubleClickZoom={false}
-                 bounds={!_.isEmpty(this.props.track) ? latLngBounds(this.props.track.geometry.coordinates) : null}
+                 bounds={bounds}
                  center={position}
                  zoom={8}
                  ref={this.map}
@@ -118,6 +120,7 @@ export default class MyMap extends Component {
                     <>
                         <button onClick={this.boundsHandler} className="fit-button">Fit Track</button>
                         <button onClick={() => this.setState({isShow: true})} className="help-button">Help</button>
+                        <TrackInfo />
                     </>
                 }
 
@@ -193,7 +196,15 @@ MyMap = connect (
     }
 )(MyMap);
 
-// modified original method of leaflet
+/**
+ * Function took and modified from oficial Leaflet source
+ * url: https://github.com/Leaflet/Leaflet/blob/master/src/layer/vector/Polyline.js
+ * line: 89
+ *
+ * @param p
+ * @param polyline
+ * @returns {{minPoint: *, idxClosest: number}}
+ */
 function closestPoint(p, polyline) {
     let minDistance = Infinity,
         minPoint = null,

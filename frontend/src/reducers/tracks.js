@@ -62,14 +62,15 @@ export default function (state = initialState, action) {
                 track: copTr
             };
         case INSERT_POINT:
-            const date = new Date();
+            const startDate = copTr.properties.times[action.index];
+            const endDate = copTr.properties.times[action.index-1];
 
             copTr.geometry.coordinates[0].splice(action.index, 0, action.val);
             if (!checkEmptyElevation(copTr.properties.elevations)) {
                 copTr.properties.elevations.splice(action.index, 0, copTr.properties.elevations[action.index]);
             }
             if (!checkEmptyTime(copTr.properties.times)) {
-                copTr.properties.times.splice(action.index, 0, date.toISOString());
+                copTr.properties.times.splice(action.index, 0, getMiddleTime(startDate,endDate));
             }
             return {
                 ...state,
@@ -104,4 +105,12 @@ function checkEmptyElevation(ele) {
 
 function checkEmptyTime(time) {
     return !(time && time.length > 0);
+}
+
+function getMiddleTime(startTime, endTime) {
+    const a = new Date(startTime);
+    const b = new Date(endTime);
+
+    return new Date((a.getTime() + b.getTime()) / 2).toISOString();
+
 }

@@ -105,6 +105,7 @@
   background: #def6df;
 }
 
+/* Navigation header menu css */
 .navigation {
   background: #e7ebef;
   border-bottom: 1px solid black;
@@ -201,14 +202,5 @@
   }
   & > * .ReactVirtualized__Grid__innerScrollContainer {
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-  }
-  .save-changes-button {
-    border: none;
-    position: relative;
-    top: -100%;
-    transition: transform 0.3s;
-    &.show {
-      @include prefix(transform, translateY(100%), webkit ms);
-    }
   }
 }
