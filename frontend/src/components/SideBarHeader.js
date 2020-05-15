@@ -148,7 +148,7 @@ class TableRender extends Component {
                         <td>
                             <button
                                 className="btn btn-danger btn-sm"
-                                onClick={() => {this.deleteFileHandler(file.id); this.props.updateState()}}
+                                onClick={() => this.deleteFileHandler(file.id)}
                             >
                                 Delete
                             </button>

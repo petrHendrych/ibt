@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faChevronLeft} from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import CanvasJSReact from '../canvas/canvasjs.react';
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -42,16 +43,34 @@ export default class TrackInfo extends Component {
         }
     };
 
+    getLength = (track) => {
+        if (track.current) {
+            let distance = 0;
+            const latLng = track.current.leafletElement._latlngs[0];
+
+            for (let i = 1; i < latLng.length; i++) {
+                distance += latLng[i].distanceTo(latLng[i - 1]);
+            }
+
+            if (distance < 1000) {
+                return `${_.round(distance, 1)} m`
+            } else {
+                distance = distance / 1000;
+                return `${_.round(distance, 1)} km`
+            }
+        }
+
+        return 0;
+    };
+
     render() {
         const {elevations, times} = this.props.track.properties;
 
+        if (_.isEmpty(this.props.track.geometry.coordinates[0]))
+            return  <></>;
+
         const options = {
             theme: "light2",
-            animationEnabled: false,
-            zoomEnabled: false,
-            title: {
-                text: "Track elevations"
-            },
             axisY: {
                 includeZero: false
             },
@@ -64,20 +83,27 @@ export default class TrackInfo extends Component {
         };
         return (
             <div className={this.state.show ? "track-info show" : "track-info"}>
-                <div className="track-info-button" onClick={(e) => {
-                    e.stopPropagation();
-                    this.setState({show: !this.state.show})
-                }}>
-                    <FontAwesomeIcon icon={this.state.show ? faChevronLeft : faChevronRight} size="2x" className="text-muted"/>
-                </div>
-                { !_.isEmpty(elevations) ? <CanvasJSChart options = {options}/> : <></>}
+                <OverlayTrigger placement="right"  overlay={<Tooltip className="nav-tooltip" id="tooltip-disabled">Track info</Tooltip>}>
+                    <div className="track-info-button" onClick={(e) => {
+                        e.stopPropagation();
+                        this.setState({show: !this.state.show})
+                    }}>
+                        <FontAwesomeIcon icon={this.state.show ? faChevronLeft : faChevronRight} size="2x" className="text-muted"/>
+                    </div>
+                </OverlayTrigger>
+                <h5 className="track-info-key">Name: <span className="track-info-value">{this.props.track.properties.name}</span>
+                    {/*<FontAwesomeIcon icon={faEdit} className="float-right" size="1x"/>*/}
+                </h5>
+                <h5 className="track-info-key">Length: <span className="track-info-value">{this.getLength(this.props.polyline)}</span></h5>
                 { !_.isEmpty(times) ?
+                <>
+                    <h5 className="track-info-key">Time: <span className="track-info-value">{this.getTotalTime(this.props.track)}</span></h5>
+                </> : <></>}
+                { !_.isEmpty(elevations) ?
                     <>
-                        <h4 className="text-center mt-2"><strong>Track duration</strong></h4>
-                        <h5 className="text-center">{this.getTotalTime(this.props.track)}</h5>
-                    </> : <></>
-                }
-
+                        <h5>Track elevations:</h5>
+                        <CanvasJSChart options = {options}/>
+                    </> : <></>}
             </div>
         )
     }

@@ -31,11 +31,14 @@ class Alerts extends Component {
                 if (error.msg.gpx_file) {
                     alert.error(error.msg.gpx_file[0])
                 }
-            }
-            if (error.status === 401) {
                 if (error.msg.pass) {
                     alert.error(error.msg.pass[0])
                 }
+                if (error.msg.pointsError) {
+                    alert.error(error.msg.pointsError[0])
+                }
+            }
+            if (error.status === 401) {
                 if (error.msg.detail === "Invalid token.") {
                     alert.error(error.msg.detail);
                     this.props.authError();

@@ -1,6 +1,6 @@
 import {
     DELETE_POINT,
-    DELETE_POINTS,
+    DELETE_POINTS, GET_ERRORS,
     INSERT_POINT,
     PARTITION_DELETE_POINT,
     PARTITION_DELETE_POINTS,
@@ -63,4 +63,15 @@ export const insertPoint = (index, value) => {
         index: index,
         val: value
     }
+};
+
+export const pointsError = () => dispatch => {
+    const errors = {
+        msg: {pointsError: ["Delete all or leave at least 2 points"]},
+        status: 400
+    };
+    dispatch({
+        type: GET_ERRORS,
+        payload: errors
+    });
 };

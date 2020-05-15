@@ -1,7 +1,7 @@
 import {FILES_LOADING, GET_FILES, FILES_CLEAR, FILE_DELETE} from "../actions/types";
 
 const initialState = {
-    trackIsLoading: false,
+    filesIsLoading: false,
     data: null
 };
 
@@ -10,12 +10,12 @@ export default function(state = initialState, action) {
         case FILES_LOADING:
             return {
                 ...state,
-                trackIsLoading: true
+                filesIsLoading: true
             };
         case GET_FILES:
             return {
                 ...state,
-                trackIsLoading: false,
+                filesIsLoading: false,
                 data: action.payload
             };
         case FILE_DELETE:
@@ -26,7 +26,7 @@ export default function(state = initialState, action) {
         case FILES_CLEAR:
             return {
                 ...state,
-                trackIsLoading: false,
+                filesIsLoading: false,
                 data: null
             };
         default:

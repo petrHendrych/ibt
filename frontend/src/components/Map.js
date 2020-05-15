@@ -12,7 +12,17 @@ import {TRACK_PARTITION_CLEAR} from "../actions/types";
 
 const circleMarker = icon({
     iconUrl: require('../images/circleMarker.svg'),
-    iconSize: [14, 14], // size of the icon
+    iconSize: [14, 14] // size of the icon
+});
+
+const startMarker = icon({
+    iconUrl: require('../images/startMarker.svg'),
+    iconSize: [16, 16]
+});
+
+const endMarker = icon({
+    iconUrl: require('../images/endMarker.svg'),
+    iconSize: [16, 16]
 });
 
 export default class MyMap extends Component {
@@ -23,13 +33,13 @@ export default class MyMap extends Component {
         this.polyline = React.createRef();
 
         this.state = {
-            markers: []
+            bounds: []
         }
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.bounds !== this.props.bounds) {
-            this.setState({markers: this.props.bounds})
+            this.setState({bounds: this.props.bounds})
         }
     }
 
@@ -50,8 +60,8 @@ export default class MyMap extends Component {
 
     getPartition = () => {
         const bounds = [];
-        bounds.push([parseFloat(this.state.markers[0].lat.toFixed(6)), parseFloat(this.state.markers[0].lng.toFixed(6))]);
-        bounds.push([parseFloat(this.state.markers[1].lat.toFixed(6)), parseFloat(this.state.markers[1].lng.toFixed(6))]);
+        bounds.push([parseFloat(this.state.bounds[0].lat.toFixed(6)), parseFloat(this.state.bounds[0].lng.toFixed(6))]);
+        bounds.push([parseFloat(this.state.bounds[1].lat.toFixed(6)), parseFloat(this.state.bounds[1].lng.toFixed(6))]);
         this.props.getTrackPartition(this.props.track.properties.id, bounds);
     };
 
@@ -67,9 +77,9 @@ export default class MyMap extends Component {
         const markerIndex = e.target.options.index; //get marker index
 
         this.setState(prevState => {
-            const markerData = [...prevState.markers];
+            const markerData = [...prevState.bounds];
             markerData[markerIndex] = latLng;
-            return { markers: markerData };
+            return { bounds: markerData };
         });
     };
 
@@ -97,7 +107,11 @@ export default class MyMap extends Component {
     render() {
         const position = [49.94415, 15.446655];
         const maxBounds = latLngBounds([-90, 180], [90, -180]);
-        const bounds = !_.isEmpty(this.props.track) ? latLngBounds(this.props.track.geometry.coordinates) : null;
+
+        let bounds = null;
+        if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates[0])) {
+            bounds = latLngBounds(this.props.track.geometry.coordinates);
+        }
 
         return (
             <Map doubleClickZoom={false}
@@ -120,19 +134,19 @@ export default class MyMap extends Component {
                     <>
                         <button onClick={this.boundsHandler} className="fit-button">Fit Track</button>
                         <button onClick={() => this.setState({isShow: true})} className="help-button">Help</button>
-                        <TrackInfo />
+                        <TrackInfo polyline={this.polyline}/>
+                        <Polyline
+                            ref={this.polyline}
+                            color="black"
+                            weight={3}
+                            positions={this.props.track.geometry.coordinates}
+                            onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates[0])}
+                        />
+                        <Marker icon={startMarker} position={this.props.track.geometry.coordinates[0][0]}/>
+                        <Marker icon={endMarker} position={
+                            this.props.track.geometry.coordinates[0][this.props.track.geometry.coordinates[0].length - 1]
+                        }/>
                     </>
-                }
-
-                { !_.isEmpty(this.props.track) ?
-                    <Polyline
-                        ref={this.polyline}
-                        color="black"
-                        weight={3}
-                        positions={this.props.track.geometry.coordinates}
-                        onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates[0])}
-                    /> :
-                    <></>
                 }
                 {
                     this.props.selectedIndex === null ? <></> :
@@ -142,19 +156,19 @@ export default class MyMap extends Component {
                     />
                 }
                 {
-                    this.state.markers.length === 2 ?
-                    <Rectangle bounds={this.state.markers}/> :
+                    this.state.bounds.length === 2 ?
+                    <Rectangle bounds={this.state.bounds}/> :
                     <></>
                 }
                 {
-                    this.state.markers.map((position, index) =>
+                    this.state.bounds.map((position, index) =>
                         <Marker
                             key={index}
                             index={index}
                             position={position}
                             draggable={true}
                             onDrag={this.updateRectangle}
-                            onDragend={() => this.state.markers.length === 2 ? this.getPartition() : null}
+                            onDragend={() => this.state.bounds.length === 2 ? this.getPartition() : null}
                             icon={circleMarker}
                         />
                     )

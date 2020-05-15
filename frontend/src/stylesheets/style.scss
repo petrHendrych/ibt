@@ -91,14 +91,14 @@ a {
 /* Tranck info css */
 .track-info {
   position: relative;
-  border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   border: 1px solid lightgray;
   padding: 5px;
   width: 310px;
   top: 50%;
   transform: translateY(-50%);
   background-color: #fff;
-  z-index: 999;
+  z-index: 1001;
   -webkit-box-shadow: 0 0 31px -14px rgba(0,0,0,0.75);
   -moz-box-shadow: 0 0 31px -14px rgba(0,0,0,0.75);
   box-shadow: 0 0 31px -14px rgba(0,0,0,0.75);
@@ -124,4 +124,8 @@ a {
   -moz-box-shadow: 18px 0 33px -14px rgba(0,0,0,0.75);
   box-shadow: 18px 0 33px -14px rgba(0,0,0,0.75);
   cursor: pointer;
+}
+
+.track-info-value {
+  font-size: 16px;
 }

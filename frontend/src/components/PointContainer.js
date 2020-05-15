@@ -6,9 +6,9 @@ import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
 import SideBarNavigation from "./SideBarNavigation";
-import {deletePartitionPoints, deletePoints, selectPoint} from "../actions/points";
+import {deletePartitionPoints, deletePoints, pointsError, selectPoint} from "../actions/points";
 import { Spinner } from "../utils";
-import {updateTrack} from "../actions/tracks";
+import {deleteTrack, updateTrack} from "../actions/tracks";
 import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
 
 export default class PointContainer extends Component {
@@ -58,20 +58,32 @@ export default class PointContainer extends Component {
     };
 
     toggleDelete = (indexes) => {
+        const trackLength = this.props.track.geometry.coordinates[0].length;
+
         if (this.state.toggleDelete && !_.isEmpty(this.state.checked)) {
+            if (trackLength - indexes.length === 1) {
+                this.props.pointsError();
+                return
+            }
+
             if (window.confirm("Are you sure you want to delete these points?")) {
                 this.props.selectPoint(this.props.selectedIndex);
-                this.props.deletePoints(indexes);
-                if (!_.isEmpty(this.props.partition.indexes)) {
-                    this.props.deletePartitionPoints(indexes);
+
+                if (indexes.length === trackLength) {
+                    this.props.deleteTrack(this.props.track.properties.id);
+                    this.props.clearAll();
+                    this.props.onChange();
+                } else {
+                    this.props.deletePoints(indexes);
+                    if (!_.isEmpty(this.props.partition.indexes)) {
+                        this.props.deletePartitionPoints(indexes);
+                    }
+                    this.props.updateTrack(this.props.track.properties.id);
+                    this.setState({checked: []});
                 }
-                this.props.updateTrack(this.props.track.properties.id);
-                this.setState({checked: []});
-                this.toggleCheckboxes();
             }
-        } else {
-            this.toggleCheckboxes();
         }
+        this.toggleCheckboxes();
     };
 
     checkAll = () => {
@@ -224,9 +236,11 @@ PointContainer = connect (
     dispatch => {
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
-            deletePoints: (indexes) => dispatch(deletePoints(indexes)),
-            deletePartitionPoints: (indexes) => dispatch(deletePartitionPoints(indexes)),
+            deleteTrack: (id) => dispatch(deleteTrack(id)),
             updateTrack: (id) => dispatch(updateTrack(id)),
+            deletePoints: (indexes) => dispatch(deletePoints(indexes)),
+            pointsError: () => dispatch(pointsError()),
+            deletePartitionPoints: (indexes) => dispatch(deletePartitionPoints(indexes)),
             clearAll: () => {
                 dispatch({type: TRACK_CLEAR});
                 dispatch({type: UNSELECT_POINT});
