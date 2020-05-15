@@ -88,6 +88,22 @@ a {
   outline: 0;
 }
 
+.text-padding {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.help-info:first-of-type {
+  margin-top: 0 !important;
+}
+
+.help-info:last-of-type {
+  border-bottom: none !important;
+  svg {
+    margin-right: 11px;
+  }
+}
+
 /* Tranck info css */
 .track-info {
   position: relative;
@@ -97,7 +113,7 @@ a {
   width: 310px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #fff;
+  background-color: #fafafa;
   z-index: 1001;
   -webkit-box-shadow: 0 0 31px -14px rgba(0,0,0,0.75);
   -moz-box-shadow: 0 0 31px -14px rgba(0,0,0,0.75);
@@ -129,3 +145,8 @@ a {
 .track-info-value {
   font-size: 16px;
 }
+
+//.track-info-key {
+//  border-bottom: 1px solid lightgrey;
+//  width: 80%;
+//}

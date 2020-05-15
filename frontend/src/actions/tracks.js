@@ -47,7 +47,14 @@ export const getTrackPartition = (id, bounds) => async (dispatch, getState) => {
         let response = await axios.post(`http://localhost:8000/api/tracks/${id}/partition`, _bounds, tokenConfig(getState));
         dispatch({ type: TRACK_PARTITION_LOADED, payload: response.data });
     } catch (error) {
-        console.log(error);
+        const errors = {
+            msg: error.response.data,
+            status: error.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
     }
 };
 

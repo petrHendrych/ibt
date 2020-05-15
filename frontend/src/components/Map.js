@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
 import {latLngBounds, LineUtil, icon} from "leaflet";
 import {Modal} from "react-bootstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faSquare } from '@fortawesome/free-regular-svg-icons';
+import {faPlus, faTrashAlt, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import TrackInfo from "./TrackInfo";
@@ -132,7 +135,7 @@ export default class MyMap extends Component {
 
                 {_.isEmpty(this.props.track) ? <></> :
                     <>
-                        <button onClick={this.boundsHandler} className="fit-button">Fit Track</button>
+                        <button onClick={this.boundsHandler} className="fit-button">Track</button>
                         <button onClick={() => this.setState({isShow: true})} className="help-button">Help</button>
                         <TrackInfo polyline={this.polyline}/>
                         <Polyline
@@ -178,15 +181,42 @@ export default class MyMap extends Component {
                         <Modal.Title>User help</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>To add point click anywhere on track.</p>
-                        <p>To select only partition of track two times double click anywhere on map to create boundary.
-                            Points of track that are inside this boundary will  appear in side bar.
-                        </p>
+                        <HelpInfo name="Add point" icon={faPlus}
+                                  text="To add new point simply click anywhere on track.
+                                  Point will be added exactly on place where you click!"
+                        />
+                        <HelpInfo name="Part selection" icon={faSquare}
+                                  text="To create boundary for part selection make 2 corner points by double clicking on map.
+                                  Points of track that are inside this boundary will appear in side bar."
+                        />
+                        <HelpInfo name="Deleting multiple points" icon={faTrashAlt}
+                                  text="To delete multiple points click on trashcan. After click checkboxes at each point will appear.
+                                  Select points you wanna delete and click again on trashcan. To prevent errors never leave only 1 point."
+                        />
+                        <HelpInfo name="Saving edits" icon={faExclamationTriangle}
+                                  text="Beware of not implemented autosave after points position editation.
+                                  If you go back to track selection without saving then changes will be discarded.
+                                  To prevent losses always click save button."
+                        />
                     </Modal.Body>
                 </Modal>
             </Map>
         );
     }
+}
+
+function HelpInfo(props) {
+    return (
+        <div className="help-info border-bottom mt-2">
+            <p className="mb-1">
+                <FontAwesomeIcon icon={props.icon} className="ml-1" style={{marginRight: "15px"}}/>
+                <strong>{props.name}</strong>
+            </p>
+            <p className="text-justify text-padding">
+                {props.text}
+            </p>
+        </div>
+    )
 }
 
 MyMap = connect (
