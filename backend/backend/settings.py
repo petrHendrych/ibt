@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
-    'tracks.apps.TracksConfig',
+    'api',
     'rest_framework',
     'geojson_serializer',
     'accounts',

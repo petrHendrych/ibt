@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from geojson_serializer.serializers import geojson_serializer
-from tracks.models import GPXTrack
-from tracks.models import GPXFile
+from .models import GPXTrack
+from .models import GPXFile
 
 
 @geojson_serializer('track')
@@ -12,10 +12,9 @@ class TrackSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def validate_track(val):
-        for line_string in val:
-            for x, y in line_string:
-                if x < -90 or x > 90 or y < -180 or y > 180:
-                    raise serializers.ValidationError("Track contains invalid coordinates")
+        for x, y in val:
+            if x < -90 or x > 90 or y < -180 or y > 180:
+                raise serializers.ValidationError("Track contains invalid coordinates")
 
         return val
 

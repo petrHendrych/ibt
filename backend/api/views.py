@@ -6,10 +6,9 @@ from rest_framework.response import Response
 
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse
-from django.contrib.gis.geos import Point, MultiLineString, LineString, Polygon
+from django.contrib.gis.geos import Point, LineString, Polygon
 
-from tracks import models
-from . import serializers
+from . import serializers, models
 
 import gpxpy
 import gpxpy.gpx
@@ -72,11 +71,8 @@ def save_gpx_to_database(f, file_instance):
                     track_list_of_points.append(track_list_of_points[0])
                     tracks_elevations.append(tracks_elevations[0])
                     tracks_times.append(tracks_times[0])
-                    
-                new_track_segment = LineString(track_list_of_points)
-                new_track_segment.srid = 4326
 
-            new_track.track = MultiLineString(new_track_segment)
+            new_track.track = LineString(track_list_of_points)
             new_track.gpx_file = file_instance
             new_track.name = track.name
             new_track.elevations = tracks_elevations
@@ -85,7 +81,6 @@ def save_gpx_to_database(f, file_instance):
 
 
 class TrackViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.TrackSerializer
     queryset = models.GPXTrack.objects.all()
     permission_classes = (IsAuthenticated,)
     ordering = ('id',)
@@ -119,7 +114,7 @@ class TrackViewSet(viewsets.ModelViewSet):
 
         indexes = []
 
-        track_list = list(trk.track[0])
+        track_list = list(trk.track)
         for idx, (lat, lng) in enumerate(track_list):
             point = Point(lat, lng)
             if prep_poly.contains(point):
@@ -131,7 +126,8 @@ class TrackViewSet(viewsets.ModelViewSet):
 
 
 class DownloadViewSet(generics.GenericAPIView):
-    def post(self, request):
+    @staticmethod
+    def post(request):
 
         doc, tag, text = Doc().tagtext()
 
@@ -153,7 +149,7 @@ class DownloadViewSet(generics.GenericAPIView):
                 with tag('name'):
                     text("{}".format(request.data['properties']['name']))
                 with tag('trkseg'):
-                    for idx, item in enumerate(request.data['geometry']['coordinates'][0]):
+                    for idx, item in enumerate(request.data['geometry']['coordinates']):
                         with tag('trkpt', lat="{}".format(item[0]), lon="{}".format(item[1])):
                             if request.data['properties']['elevations']:
                                 with tag('ele'):

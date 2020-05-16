@@ -58,7 +58,7 @@ export default class PointContainer extends Component {
     };
 
     toggleDelete = (indexes) => {
-        const trackLength = this.props.track.geometry.coordinates[0].length;
+        const trackLength = this.props.track.geometry.coordinates.length;
 
         if (this.state.toggleDelete && !_.isEmpty(this.state.checked)) {
             if (trackLength - indexes.length === 1) {
@@ -89,7 +89,7 @@ export default class PointContainer extends Component {
     checkAll = () => {
         this.setState({checkAll: !this.state.checkAll}, () => {
             let arr = this.state.checked;
-            let len = this.props.track.geometry.coordinates[0].length;
+            let len = this.props.track.geometry.coordinates.length;
 
             if (this.state.checkAll) {
                 if (this.props.partition.loaded) {
@@ -131,7 +131,7 @@ export default class PointContainer extends Component {
 
     pointsRenderer = ({index, key, style, parent}) => {
 
-        const coords = this.props.track.geometry.coordinates[0][this.getIndex(index)];
+        const coords = this.props.track.geometry.coordinates[this.getIndex(index)];
         const time = this.props.track.properties.times[this.getIndex(index)];
         const elevation = this.props.track.properties.elevations[this.getIndex(index)];
 
@@ -139,7 +139,7 @@ export default class PointContainer extends Component {
             return <div style={style} key={key} className="text-center">No points in selected bounds.</div>
         }
 
-        if (_.isEmpty(this.props.track.geometry.coordinates[0])) {
+        if (_.isEmpty(this.props.track.geometry.coordinates)) {
             return <div style={style} key={key} className="text-center">Track doesn't have any points.</div>
         }
 
@@ -178,10 +178,10 @@ export default class PointContainer extends Component {
             }
             return this.props.partition.indexes.length
         }
-        if (_.isEmpty(this.props.track.geometry.coordinates[0])) {
+        if (_.isEmpty(this.props.track.geometry.coordinates)) {
             return 1
         }
-        return this.props.track.geometry.coordinates[0].length
+        return this.props.track.geometry.coordinates.length
     };
 
     render() {

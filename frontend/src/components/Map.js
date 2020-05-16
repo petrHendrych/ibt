@@ -112,7 +112,7 @@ export default class MyMap extends Component {
         const maxBounds = latLngBounds([-90, 180], [90, -180]);
 
         let bounds = null;
-        if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates[0])) {
+        if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates)) {
             bounds = latLngBounds(this.props.track.geometry.coordinates);
         }
 
@@ -135,7 +135,7 @@ export default class MyMap extends Component {
 
                 {_.isEmpty(this.props.track) ? <></> :
                     <>
-                        <button onClick={this.boundsHandler} className="fit-button">Track</button>
+                        <button onClick={this.boundsHandler} className="fit-button">Fit Track</button>
                         <button onClick={() => this.setState({isShow: true})} className="help-button">Help</button>
                         <TrackInfo map={this.map} polyline={this.polyline}/>
                         <Polyline
@@ -143,11 +143,11 @@ export default class MyMap extends Component {
                             color="black"
                             weight={3}
                             positions={this.props.track.geometry.coordinates}
-                            onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates[0])}
+                            onClick={(e) => this.polylineClickHandler(e, this.props.track.geometry.coordinates)}
                         />
-                        <Marker icon={startMarker} position={this.props.track.geometry.coordinates[0][0]}/>
+                        <Marker icon={startMarker} position={this.props.track.geometry.coordinates[0]}/>
                         <Marker icon={endMarker} position={
-                            this.props.track.geometry.coordinates[0][this.props.track.geometry.coordinates[0].length - 1]
+                            this.props.track.geometry.coordinates[this.props.track.geometry.coordinates.length - 1]
                         }/>
                     </>
                 }
@@ -155,7 +155,7 @@ export default class MyMap extends Component {
                     this.props.selectedIndex === null ? <></> :
                     <Marker onDragEnd={this.updateMarker}
                             draggable={true}
-                            position={this.props.track.geometry.coordinates[0][this.props.selectedIndex]}
+                            position={this.props.track.geometry.coordinates[this.props.selectedIndex]}
                     />
                 }
                 {
@@ -196,8 +196,7 @@ export default class MyMap extends Component {
                         <HelpInfo name="Saving edits" icon={faExclamationTriangle}
                                   text="Beware of not implemented autosave after points position editation.
                                   If you go back to track selection without saving then changes will be discarded.
-                                  To prevent losses always click save button before leaving. To save new track name hit
-                                  enter key."
+                                  To prevent losses always click save button before leaving. To save new track name hit enter key."
                         />
                     </Modal.Body>
                 </Modal>

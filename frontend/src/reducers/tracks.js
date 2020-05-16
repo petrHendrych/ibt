@@ -56,7 +56,7 @@ export default function (state = initialState, action) {
                 data: state.data.filter(track => track.id !== action.payload)
             };
         case UPDATE_POINT:
-            copTr.geometry.coordinates[0][action.index] = [action.val.lat, action.val.lng];
+            copTr.geometry.coordinates[action.index] = [action.val.lat, action.val.lng];
             return {
                 ...state,
                 track: copTr
@@ -65,7 +65,7 @@ export default function (state = initialState, action) {
             const startDate = copTr.properties.times[action.index];
             const endDate = copTr.properties.times[action.index-1];
 
-            copTr.geometry.coordinates[0].splice(action.index, 0, action.val);
+            copTr.geometry.coordinates.splice(action.index, 0, action.val);
             if (!checkEmptyElevation(copTr.properties.elevations)) {
                 copTr.properties.elevations.splice(action.index, 0, copTr.properties.elevations[action.index]);
             }
@@ -77,7 +77,7 @@ export default function (state = initialState, action) {
                 track: copTr
             };
         case DELETE_POINT:
-            copTr.geometry.coordinates[0].splice(action.index, 1);
+            copTr.geometry.coordinates.splice(action.index, 1);
             copTr.properties.elevations.splice(action.index, 1);
             copTr.properties.times.splice(action.index, 1);
             return {
@@ -86,7 +86,7 @@ export default function (state = initialState, action) {
             };
         case DELETE_POINTS:
             for (let i = action.indexes.length - 1; i >= 0; i--) {
-                copTr.geometry.coordinates[0].splice(action.indexes[i], 1);
+                copTr.geometry.coordinates.splice(action.indexes[i], 1);
                 copTr.properties.elevations.splice(action.indexes[i], 1);
                 copTr.properties.times.splice(action.indexes[i], 1);
             }

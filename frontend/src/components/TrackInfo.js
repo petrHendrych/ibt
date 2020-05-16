@@ -48,7 +48,7 @@ export default class TrackInfo extends Component {
     getLength = (track) => {
         if (track.current) {
             let distance = 0;
-            const latLng = track.current.leafletElement._latlngs[0];
+            const latLng = track.current.leafletElement._latlngs;
 
             for (let i = 1; i < latLng.length; i++) {
                 distance += latLng[i].distanceTo(latLng[i - 1]);
@@ -73,7 +73,7 @@ export default class TrackInfo extends Component {
     render() {
         const {elevations, times} = this.props.track.properties;
 
-        if (_.isEmpty(this.props.track.geometry.coordinates[0]))
+        if (_.isEmpty(this.props.track.geometry.coordinates))
             return  <></>;
 
         const options = {
@@ -140,8 +140,11 @@ class NameInput extends Component {
     };
 
     keyPress = async (e) => {
+        const name = this.state.name === '' ? this.props.name : this.state.name;
+
         if(e.keyCode === 13){
-            this.props.editName(this.state.name);
+            this.onBlurHandler(e);
+            this.props.editName(name);
             this.setState({enable: !this.state.enable});
             await this.props.updateTrack(this.props.id);
             this.props.getTracks();
