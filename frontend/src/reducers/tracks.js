@@ -7,7 +7,7 @@ import {
     UPDATE_POINT,
     DELETE_TRACK,
     DELETE_POINT,
-    DELETE_POINTS, INSERT_POINT, TRACK_LOADING
+    DELETE_POINTS, INSERT_POINT, TRACK_LOADING, EDIT_TRACK_NAME
 } from "../actions/types";
 
 const initialState = {
@@ -90,6 +90,12 @@ export default function (state = initialState, action) {
                 copTr.properties.elevations.splice(action.indexes[i], 1);
                 copTr.properties.times.splice(action.indexes[i], 1);
             }
+            return {
+                ...state,
+                track: copTr
+            };
+        case EDIT_TRACK_NAME:
+            copTr.properties.name = action.name;
             return {
                 ...state,
                 track: copTr

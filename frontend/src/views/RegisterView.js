@@ -72,7 +72,13 @@ class RegisterForm extends Component {
     };
 
     onChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value });
+        if (e.target.name === "username") {
+            if (e.target.value.length < 16) {
+                this.setState({[e.target.name]: e.target.value});
+            }
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
     };
 
     render() {

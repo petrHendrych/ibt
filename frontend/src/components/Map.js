@@ -137,7 +137,7 @@ export default class MyMap extends Component {
                     <>
                         <button onClick={this.boundsHandler} className="fit-button">Track</button>
                         <button onClick={() => this.setState({isShow: true})} className="help-button">Help</button>
-                        <TrackInfo polyline={this.polyline}/>
+                        <TrackInfo map={this.map} polyline={this.polyline}/>
                         <Polyline
                             ref={this.polyline}
                             color="black"
@@ -196,7 +196,8 @@ export default class MyMap extends Component {
                         <HelpInfo name="Saving edits" icon={faExclamationTriangle}
                                   text="Beware of not implemented autosave after points position editation.
                                   If you go back to track selection without saving then changes will be discarded.
-                                  To prevent losses always click save button."
+                                  To prevent losses always click save button before leaving. To save new track name hit
+                                  enter key."
                         />
                     </Modal.Body>
                 </Modal>

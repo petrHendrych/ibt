@@ -16,6 +16,7 @@ import gpxpy.gpx
 
 from yattag import Doc, indent
 import datetime
+import re
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -44,6 +45,7 @@ class FileViewSet(viewsets.ModelViewSet):
 
 
 def save_gpx_to_database(f, file_instance):
+    f.name = re.sub('[()]', '', f.name)
     gpx_file = open(settings.MEDIA_ROOT + '/uploaded_gpx_files'+'/' + f.name.replace(" ", "_"), encoding='utf-8-sig')
     gpx = gpxpy.parse(gpx_file)
 

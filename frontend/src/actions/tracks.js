@@ -6,7 +6,7 @@ import {
     TRACKS_CLEAR,
     TRACKS_LOADED,
     TRACKS_LOADING,
-    TRACK_PARTITION_LOADING, TRACK_LOADING, GET_ERRORS
+    TRACK_PARTITION_LOADING, TRACK_LOADING, GET_ERRORS, EDIT_TRACK_NAME
 } from "./types";
 import {tokenConfig} from "./auth";
 import { saveAs } from 'file-saver';
@@ -115,3 +115,11 @@ export const downloadTrack = () => async (dispatch, getState) => {
         });
     }
 };
+
+// EDIT TRACK NAME
+export const editTrackName = (name) => {
+    return {
+        type: EDIT_TRACK_NAME,
+        name: name
+    }
+}

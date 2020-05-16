@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faChevronLeft} from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faChevronLeft, faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 
 import CanvasJSReact from '../canvas/canvasjs.react';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import {editTrackName, getTracks, updateTrack} from "../actions/tracks";
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -91,9 +92,7 @@ export default class TrackInfo extends Component {
                         <FontAwesomeIcon icon={this.state.show ? faChevronLeft : faChevronRight} size="2x" className="text-muted"/>
                     </div>
                 </OverlayTrigger>
-                <h5 className="track-info-key">Name: <span className="track-info-value">{this.props.track.properties.name}</span>
-                    {/*<FontAwesomeIcon icon={faEdit} className="float-right" size="1x"/>*/}
-                </h5>
+                <NameInput name={this.props.track.properties.name} id={this.props.track.properties.id}/>
                 <h5 className="track-info-key">Length: <span className="track-info-value">{this.getLength(this.props.polyline)}</span></h5>
                 { !_.isEmpty(times) ?
                 <>
@@ -116,3 +115,64 @@ TrackInfo = connect (
         }
     }
 )(TrackInfo);
+
+class NameInput extends Component {
+    state = {name: this.props.name, enable: true};
+
+    handleNameChange = (e) => {
+        this.setState({name: e.target.value})
+    };
+
+    handleFocus = (e) => {
+        e.target.select();
+    };
+
+    onBlurHandler = (e) => {
+        if (e.target.value === '') {
+            this.setState({name: this.props.name})
+        }
+    };
+
+    keyPress = async (e) => {
+        if(e.keyCode === 13){
+            this.props.editName(this.state.name);
+            this.setState({enable: !this.state.enable});
+            await this.props.updateTrack(this.props.id);
+            this.props.getTracks();
+        }
+    };
+
+    render () {
+        return (
+            <h5 className="track-info-key">Name:
+                <input value={this.state.name}
+                       disabled={this.state.enable}
+                       className={"track-info-name ml-1 " + (this.state.enable ? "" : "border-bottom")}
+                       onFocus={this.handleFocus}
+                       onKeyUp={this.keyPress}
+                       onChange={this.handleNameChange}
+                       onBlur={this.onBlurHandler}
+                />
+                <FontAwesomeIcon icon={faPencilAlt}
+                                 className={"float-right pointer " + (this.state.enable ? "text-muted" : "")}
+                                 size="1x"
+                                 onClick={() => this.setState({enable: !this.state.enable})}
+                />
+            </h5>
+        )
+    }
+}
+
+NameInput = connect (
+    state => {
+        return {}
+    },
+    dispatch => {
+        return {
+            updateTrack: (id) => dispatch(updateTrack(id)),
+            getTracks: () => dispatch(getTracks()),
+            editName: (name) => dispatch(editTrackName(name))
+        }
+    }
+)(NameInput);
+

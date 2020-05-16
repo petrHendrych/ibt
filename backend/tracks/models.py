@@ -4,8 +4,11 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import FileExtensionValidator
 
+import re
+
 
 def gpx_folder(instance, filename):
+    filename = re.sub('[()]', '', filename)
     return "uploaded_gpx_files/%s" % filename.replace(" ", "_")
 
 
