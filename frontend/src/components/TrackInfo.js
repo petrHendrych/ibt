@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
+import {DomUtil, DomEvent} from 'leaflet';
 
 import CanvasJSReact from '../canvas/canvasjs.react';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
@@ -64,6 +65,11 @@ export default class TrackInfo extends Component {
         return 0;
     };
 
+    disableClick = () => {
+        let div = DomUtil.get('info');
+        DomEvent.disableClickPropagation(div);
+    };
+
     render() {
         const {elevations, times} = this.props.track.properties;
 
@@ -83,7 +89,7 @@ export default class TrackInfo extends Component {
             }]
         };
         return (
-            <div className={this.state.show ? "track-info show" : "track-info"}>
+            <div id="info" className={this.state.show ? "track-info show" : "track-info"} onClick={() => this.disableClick()}>
                 <OverlayTrigger placement="right"  overlay={<Tooltip className="nav-tooltip" id="tooltip-disabled">Track info</Tooltip>}>
                     <div className="track-info-button" onClick={(e) => {
                         e.stopPropagation();
@@ -164,9 +170,7 @@ class NameInput extends Component {
 }
 
 NameInput = connect (
-    state => {
-        return {}
-    },
+    null,
     dispatch => {
         return {
             updateTrack: (id) => dispatch(updateTrack(id)),
