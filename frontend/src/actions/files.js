@@ -38,7 +38,6 @@ export const uploadFile = (file, title) => async (dispatch, getState) => {
 
     try {
         await axios.post("http://localhost:8000/api/files/", data, config);
-        dispatch(getFiles());
         dispatch(getTracks());
     } catch (err) {
         const errors = {
@@ -50,6 +49,7 @@ export const uploadFile = (file, title) => async (dispatch, getState) => {
             payload: errors
         });
     }
+    dispatch(getFiles());
 };
 
 // DELETE FILE

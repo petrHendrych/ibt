@@ -82,7 +82,17 @@ export default class SideBar extends Component {
     };
 
     render() {
-        if (this.props.auth.trackIsLoading || this.props.tracksLoading) {
+        if (this.props.auth.trackIsLoading) {
+            return (
+                <div className="side-bar d-flex flex-column justify-content-between">
+                    <div className="flex-mid">
+                        <Spinner size="5x"/>
+                    </div>
+                    <Footer/>
+                </div>
+            )
+        }
+        if (this.props.tracksLoading) {
             return (
                 <div className="side-bar d-flex flex-column justify-content-between">
                     <SideBarHeader/>

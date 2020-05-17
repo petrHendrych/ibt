@@ -5,10 +5,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from django.conf import settings
-from django.http import JsonResponse, HttpResponse
 from django.contrib.gis.geos import Point, LineString, Polygon
 
 from . import serializers, models
+from api.exceptions import IncorrectValues, InvalidFileFormat
 
 import gpxpy
 import gpxpy.gpx
@@ -30,10 +30,16 @@ class FileViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer: serializers.FileSerializer):
         file_serializer = serializers.FileSerializer(data=self.request.data)
+
         if file_serializer.is_valid():
             serializer.save(owner=self.request.user)
             file_instance = models.GPXFile.objects.last()
-            save_gpx_to_database(self.request.FILES['gpx_file'], file_instance)
+
+            try:
+                save_gpx_to_database(self.request.FILES['gpx_file'], file_instance)
+            except IncorrectValues:
+                # TODO delete last uploaded file
+                raise InvalidFileFormat
 
     def perform_destroy(self, instance: models.GPXFile):
         if self.get_object().owner == self.request.user:
@@ -69,8 +75,13 @@ def save_gpx_to_database(f, file_instance):
 
                 if len(track_list_of_points) == 1:
                     track_list_of_points.append(track_list_of_points[0])
-                    tracks_elevations.append(tracks_elevations[0])
-                    tracks_times.append(tracks_times[0])
+                    if len(tracks_elevations) > 0:
+                        tracks_elevations.append(tracks_elevations[0])
+                    if len(tracks_times) > 0:
+                        tracks_times.append(tracks_times[0])
+
+            if not track.name or len(track_list_of_points) == 0:
+                raise IncorrectValues
 
             new_track.track = LineString(track_list_of_points)
             new_track.gpx_file = file_instance
@@ -120,7 +131,7 @@ class TrackViewSet(viewsets.ModelViewSet):
             if prep_poly.contains(point):
                 indexes.append(idx)
 
-        return JsonResponse({
+        return Response({
             'indexes': indexes
         })
 
@@ -164,5 +175,5 @@ class DownloadViewSet(generics.GenericAPIView):
             newline='\r\n'
         )
 
-        return HttpResponse(result_xml, content_type="text/gpx+xml")
+        return Response(result_xml, content_type="text/gpx+xml")
 

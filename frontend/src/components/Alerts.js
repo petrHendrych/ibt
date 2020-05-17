@@ -37,6 +37,9 @@ class Alerts extends Component {
                 if (error.msg.pointsError) {
                     alert.error(error.msg.pointsError[0])
                 }
+                if (error.msg.detail) {
+                    alert.error(error.msg.detail)
+                }
             }
             if (error.status === 401) {
                 if (error.msg.detail === "Invalid token.") {

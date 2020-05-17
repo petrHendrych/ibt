@@ -32,7 +32,14 @@ export const getTrack = (id) => async (dispatch, getState) => {
         let response = await axios.get(`http://localhost:8000/api/tracks/${id}`, tokenConfig(getState));
         dispatch({ type: TRACK_LOADED, payload: response.data});
     } catch (error) {
-        console.log(error);
+        const errors = {
+            msg: error.response.data,
+            status: error.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
     }
 
 };
