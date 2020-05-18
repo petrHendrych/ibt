@@ -1,4 +1,4 @@
-import {FILES_LOADING, GET_FILES, FILES_CLEAR, FILE_DELETE} from "../actions/types";
+import {FILES_LOADING, FILES_LOADED, FILES_CLEAR, FILE_DELETE} from "../actions/types";
 
 const initialState = {
     filesIsLoading: false,
@@ -12,7 +12,7 @@ export default function(state = initialState, action) {
                 ...state,
                 filesIsLoading: true
             };
-        case GET_FILES:
+        case FILES_LOADED:
             return {
                 ...state,
                 filesIsLoading: false,

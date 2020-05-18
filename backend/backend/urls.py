@@ -16,16 +16,12 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, re_path, path
-
-from api.views import DownloadViewSet
-
+from django.urls import include, re_path
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^api/', include("api.urls")),
     re_path(r'^auth/', include("accounts.urls")),
-    path('download', DownloadViewSet.as_view())
 ]
 
 if settings.DEBUG:

@@ -17,11 +17,12 @@ import {getTracks} from "./tracks";
 export const loadUser = () => async (dispatch, getState) => {
     // User Loading
     dispatch({ type: USER_LOADING});
-    dispatch(getFiles());
-    dispatch(getTracks());
+
     try {
         let response = await axios.get("http://localhost:8000/auth/user", tokenConfig(getState));
         dispatch({type: USER_LOADED, payload: response.data});
+        await dispatch(getFiles());
+        dispatch(getTracks());
     } catch (err) {
         const errors = {
             msg: err.response.data,
@@ -47,7 +48,7 @@ export const loginUser = (username, password) => async dispatch => {
     try {
         let response = await axios.post("http://localhost:8000/auth/login", body, config);
         dispatch({type: LOGIN_SUCCESS, payload: response.data});
-        dispatch(getFiles());
+        await dispatch(getFiles());
         dispatch(getTracks());
     } catch (err) {
         const errors = {

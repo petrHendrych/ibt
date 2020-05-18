@@ -99,16 +99,24 @@ export const deleteTrack = (id) =>  async (dispatch, getState) => {
         dispatch({type: DELETE_TRACK, payload: id});
         dispatch(getTracks());
     } catch (err) {
-        console.log(err);
+        const errors = {
+            msg: err.response.data,
+            status: err.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
     }
 };
 
 // DOWNLOAD TRACK
 export const downloadTrack = () => async (dispatch, getState) => {
     const trk = getState().tracks.track;
+    const id = trk.properties.id;
 
     try {
-        let response = await axios.post(`http://localhost:8000/download`, trk, tokenConfig(getState));
+        let response = await axios.get(`http://localhost:8000/api/tracks/${id}/download`, tokenConfig(getState));
         let blob = new Blob([response.data], {type: "text/gpx+xml"});
         saveAs(blob, `${trk.properties.name}.gpx`);
     } catch (err) {
@@ -129,4 +137,4 @@ export const editTrackName = (name) => {
         type: EDIT_TRACK_NAME,
         name: name
     }
-}
+};

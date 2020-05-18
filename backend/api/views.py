@@ -36,7 +36,7 @@ class FileViewSet(viewsets.ModelViewSet):
             file_instance = models.GPXFile.objects.last()
 
             try:
-                save_gpx_to_database(self.request.FILES['gpx_file'], file_instance)
+                create_track_instances(self.request.FILES['gpx_file'], file_instance)
             except IncorrectValues:
                 # TODO delete last uploaded file
                 raise InvalidFileFormat
@@ -49,7 +49,7 @@ class FileViewSet(viewsets.ModelViewSet):
                 detail='You do not have permission to DELETE file.')
 
 
-def save_gpx_to_database(f, file_instance):
+def create_track_instances(f, file_instance):
     f.name = re.sub('[()]', '', f.name)
     gpx_file = open(settings.MEDIA_ROOT + '/uploaded_gpx_files'+'/' + f.name.replace(" ", "_"), encoding='utf-8-sig')
     gpx = gpxpy.parse(gpx_file)
@@ -135,10 +135,9 @@ class TrackViewSet(viewsets.ModelViewSet):
             'indexes': indexes
         })
 
-
-class DownloadViewSet(generics.GenericAPIView):
-    @staticmethod
-    def post(request):
+    @action(methods=['get'], detail=True)
+    def download(self, request, pk=None):
+        trk = models.GPXTrack.objects.get(id=pk)
 
         doc, tag, text = Doc().tagtext()
 
@@ -158,16 +157,16 @@ class DownloadViewSet(generics.GenericAPIView):
                     text("{}".format(datetime.datetime.now().astimezone().replace(microsecond=0).isoformat()))
             with tag('trk'):
                 with tag('name'):
-                    text("{}".format(request.data['properties']['name']))
+                    text("{}".format(trk.name))
                 with tag('trkseg'):
-                    for idx, item in enumerate(request.data['geometry']['coordinates']):
-                        with tag('trkpt', lat="{}".format(item[0]), lon="{}".format(item[1])):
-                            if request.data['properties']['elevations']:
+                    for idx, (lat, lon) in enumerate(trk.track):
+                        with tag('trkpt', lat="{}".format(lat), lon="{}".format(lon)):
+                            if trk.elevations:
                                 with tag('ele'):
-                                    text("{}".format(request.data['properties']['elevations'][idx]))
-                            if request.data['properties']['times']:
+                                    text("{}".format(trk.elevations[idx]))
+                            if trk.times:
                                 with tag('time'):
-                                    text("{}".format(request.data['properties']['times'][idx]))
+                                    text("{}".format(trk.times[idx]))
 
         result_xml = indent(
             doc.getvalue(),
@@ -176,4 +175,3 @@ class DownloadViewSet(generics.GenericAPIView):
         )
 
         return Response(result_xml, content_type="text/gpx+xml")
-

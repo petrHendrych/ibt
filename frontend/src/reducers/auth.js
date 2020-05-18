@@ -9,7 +9,7 @@ import {
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
-    trackIsLoading: false,
+    isLoading: false,
     user: null
 };
 
@@ -18,13 +18,13 @@ export default function(state = initialState, action) {
         case USER_LOADING:
             return {
                 ...state,
-                trackIsLoading: true
+                isLoading: true
             };
         case USER_LOADED:
             return {
                 ...state,
                 isAuthenticated: true,
-                trackIsLoading: false,
+                isLoading: false,
                 user: action.payload
             };
         case LOGIN_SUCCESS:
@@ -34,7 +34,7 @@ export default function(state = initialState, action) {
                 ...state,
                 ...action.payload,
                 isAuthenticated: true,
-                trackIsLoading: false
+                isLoading: false
             };
         case AUTH_ERROR:
         case LOGIN_FAIL:
@@ -46,7 +46,7 @@ export default function(state = initialState, action) {
                 token: null,
                 user: null,
                 isAuthenticated: false,
-                trackIsLoading: false
+                isLoading: false
             };
         default:
             return state;

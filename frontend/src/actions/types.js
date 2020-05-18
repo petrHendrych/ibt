@@ -8,7 +8,7 @@ export const GET_ERRORS = "GET_ERRORS";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 
-export const GET_FILES = "GET_FILES";
+export const FILES_LOADED = "FILES_LOADED";
 export const FILES_LOADING = "FILES_LOADING";
 export const FILES_CLEAR = "FILES_CLEAR";
 export const FILE_DELETE = "FILE_DELETE";

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {FILE_DELETE, FILES_LOADING, GET_ERRORS, GET_FILES} from './types';
+import {FILE_DELETE, FILES_CLEAR, FILES_LOADING, GET_ERRORS, FILES_LOADED} from './types';
 import {tokenConfig} from "./auth";
 import {getTracks} from "./tracks";
 
@@ -9,9 +9,9 @@ export const getFiles = () => async (dispatch, getState) => {
 
     try {
         let response = await axios.get("http://localhost:8000/api/files/", tokenConfig(getState));
-        dispatch({ type: GET_FILES, payload: response.data });
+        dispatch({ type: FILES_LOADED, payload: response.data });
     } catch (e) {
-        console.log(e);
+        dispatch({type: FILES_CLEAR})
     }
 
 };
@@ -59,6 +59,13 @@ export const deleteFile = (id) => async (dispatch, getState) => {
         dispatch({type: FILE_DELETE, payload: id});
         dispatch(getTracks());
     } catch (err) {
-        console.log(err);
+        const errors = {
+            msg: err.response.data,
+            status: err.response.status
+        };
+        dispatch({
+            type: GET_ERRORS,
+            payload: errors
+        });
     }
 };

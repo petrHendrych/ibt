@@ -82,7 +82,7 @@ export default class SideBar extends Component {
     };
 
     render() {
-        if (this.props.auth.trackIsLoading) {
+        if (this.props.auth.isLoading) {
             return (
                 <div className="side-bar d-flex flex-column justify-content-between">
                     <div className="flex-mid">
