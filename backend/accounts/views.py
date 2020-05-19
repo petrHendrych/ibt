@@ -8,7 +8,7 @@ from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -22,7 +22,7 @@ class RegisterView(generics.GenericAPIView):
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data

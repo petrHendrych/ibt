@@ -45,8 +45,7 @@ class FileViewSet(viewsets.ModelViewSet):
         if self.get_object().owner == self.request.user:
             instance.delete()
         else:
-            raise PermissionDenied(
-                detail='You do not have permission to DELETE file.')
+            raise PermissionDenied(detail='You do not have permission to DELETE file.')
 
 
 def create_track_instances(f, file_instance):
@@ -97,9 +96,9 @@ class TrackViewSet(viewsets.ModelViewSet):
     ordering = ('id',)
 
     def get_queryset(self):
-        tracks = models.GPXFile.objects.filter(owner=self.request.user)
+        files = models.GPXFile.objects.filter(owner=self.request.user)
         result = []
-        for track in tracks:
+        for track in files:
             result.append(track.id)
         return models.GPXTrack.objects.filter(gpx_file__in=result)
 
@@ -112,10 +111,10 @@ class TrackViewSet(viewsets.ModelViewSet):
     @action(methods=['post'], detail=True)
     def partition(self, request, pk=None):
         trk = models.GPXTrack.objects.get(id=pk)
-        files = models.GPXFile.objects.filter(owner=request.user)
+        file = models.GPXFile.objects.get(id=trk.gpx_file.id)
 
-        if trk.gpx_file not in files:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if file.owner != request.user:
+            raise PermissionDenied(detail='You do not have permission to get partition of this track.')
 
         bounds = request.data['bounds']
         bbox = (bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1])
@@ -138,6 +137,10 @@ class TrackViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True)
     def download(self, request, pk=None):
         trk = models.GPXTrack.objects.get(id=pk)
+        file = models.GPXFile.objects.get(id=trk.gpx_file.id)
+
+        if file.owner != request.user:
+            raise PermissionDenied(detail='You do not have permission to download this track.')
 
         doc, tag, text = Doc().tagtext()
 
