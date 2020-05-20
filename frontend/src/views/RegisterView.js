@@ -26,7 +26,7 @@ class RegisterView extends Component {
                                 <p className="text-muted">Create new account. All fields are required</p>
                                 <RegisterForm registerUser={this.props.registerUser} isAuthenticated={this.props.isAuthenticated}/>
                                 <p className="mt-4">Already have an account? <Link to="/login">Login here!</Link></p>
-                                <p><Link to="/"><FontAwesomeIcon icon={faArrowLeft} className="mr-2"/>Go back to homepage</Link></p>
+                                <p><Link to="/"><FontAwesomeIcon icon={faArrowLeft} className="mr-2"/>Back to homepage</Link></p>
                             </Card.Body>
                         </Card>
                     </Col>

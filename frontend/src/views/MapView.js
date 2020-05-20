@@ -7,11 +7,11 @@ export default class MapView extends Component {
 
     render() {
         return (
-            <div>
+            <>
                 <SideBar />
                 <Alerts/>
                 <MyMap />
-            </div>
+            </>
         );
     }
 }

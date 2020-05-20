@@ -26,7 +26,7 @@ class LoginView extends Component {
                                 <p className="text-muted">All fields are required</p>
                                 <LoginForm  loginUser={this.props.loginUser} />
                                 <p className="mt-4">Do not have an account, yet? <Link to="/register">Register here!</Link></p>
-                                <p><Link to="/"><FontAwesomeIcon icon={faArrowLeft} className="mr-2"/>Go back to homepage</Link></p>
+                                <p><Link to="/"><FontAwesomeIcon icon={faArrowLeft} className="mr-2"/>Back to homepage</Link></p>
                             </Card.Body>
                         </Card>
                     </Col>

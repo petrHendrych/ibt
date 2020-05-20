@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 
 import { logoutUser } from "../actions/auth";
 import {deleteFile, uploadFile} from "../actions/files";
-import {UNSELECT_POINT} from "../actions/types";
+import {BOUNDS_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
 
 export default class SideBarHeader extends Component {
     state = {
@@ -61,7 +61,7 @@ export default class SideBarHeader extends Component {
                                 {this.props.auth.user.username}
                                 <Dropdown.Toggle split id="dropdown-split-basic"/>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => {this.props.clearIndex(); this.props.logoutUser()}}>Logout</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => {this.props.clearPartition(); this.props.logoutUser()}}>Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </div>
                         </Dropdown>
@@ -110,7 +110,11 @@ SideBarHeader = connect (
         return {
             logoutUser: () => dispatch(logoutUser()),
             uploadFile: (file, title) => dispatch(uploadFile(file, title)),
-            clearIndex: () => dispatch({type: UNSELECT_POINT})
+            clearPartition: () => {
+                dispatch({type: UNSELECT_POINT});
+                dispatch({type: TRACK_PARTITION_CLEAR});
+                dispatch({type: BOUNDS_CLEAR});
+            },
         }
     }
 )(SideBarHeader);

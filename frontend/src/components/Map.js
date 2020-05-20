@@ -36,7 +36,8 @@ export default class MyMap extends Component {
         this.polyline = React.createRef();
 
         this.state = {
-            bounds: []
+            bounds: [],
+            markers: []
         }
     }
 
@@ -57,6 +58,9 @@ export default class MyMap extends Component {
         this.props.getPointLatLng(coords);
 
         if (this.props.bounds.length === 2) {
+            if (this.props.selectedIndex) {
+                this.props.selectPoint(this.props.selectedIndex);
+            }
             this.getPartition();
         }
     };
@@ -68,11 +72,11 @@ export default class MyMap extends Component {
         this.props.getTrackPartition(this.props.track.properties.id, bounds);
     };
 
-    updateMarker = (e) => {
+    updateMarker = (e, idx = this.props.selectedIndex) => {
         let coords = e.target.getLatLng();
         coords.lat = parseFloat(coords.lat.toFixed(6));
         coords.lng = parseFloat(coords.lng.toFixed(6));
-        this.props.updatePointLatLng(this.props.selectedIndex, coords);
+        this.props.updatePointLatLng(idx, coords);
     };
 
     updateRectangle = (e) => {
@@ -113,7 +117,14 @@ export default class MyMap extends Component {
 
         let bounds = null;
         if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates)) {
-            bounds = latLngBounds(this.props.track.geometry.coordinates);
+            // if (this.props.selectedIndex) {
+            //     bounds = latLngBounds(
+            //         this.props.track.geometry.coordinates[this.props.selectedIndex],
+            //         this.props.track.geometry.coordinates[this.props.selectedIndex]
+            //     )
+            // } else {
+                bounds = latLngBounds(this.props.track.geometry.coordinates);
+            // }
         }
 
         return (
@@ -149,6 +160,16 @@ export default class MyMap extends Component {
                         <Marker icon={endMarker} position={
                             this.props.track.geometry.coordinates[this.props.track.geometry.coordinates.length - 1]
                         }/>
+                        {this.props.partition.indexes.map((val, index) =>
+                            <Marker
+                                key={index}
+                                index={index}
+                                position={this.props.track.geometry.coordinates[val]}
+                                draggable={true}
+                                onDragEnd={(e) => this.updateMarker(e, val)}
+                                icon={circleMarker}
+                            />
+                        )}
                     </>
                 }
                 {
@@ -176,6 +197,19 @@ export default class MyMap extends Component {
                         />
                     )
                 }
+                {/*{*/}
+                    {/*this.props.partition.indexes.map((val, index) =>*/}
+                        {/*<Marker*/}
+                            {/*key={index}*/}
+                            {/*index={index}*/}
+                            {/*position={this.props.track.geometry.coordinates[val]}*/}
+                            {/*draggable={true}*/}
+                            {/*onDragEnd={(e) => this.updateMarker(e, val)}*/}
+                            {/*icon={circleMarker}*/}
+                        {/*/>*/}
+                    {/*)*/}
+                {/*}*/}
+
                 <Modal show={this.state.isShow} onHide={() => this.setState({isShow: false})} backdrop={'static'}>
                     <Modal.Header closeButton>
                         <Modal.Title>User help</Modal.Title>
