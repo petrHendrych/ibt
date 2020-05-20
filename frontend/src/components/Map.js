@@ -36,8 +36,7 @@ export default class MyMap extends Component {
         this.polyline = React.createRef();
 
         this.state = {
-            bounds: [],
-            markers: []
+            bounds: []
         }
     }
 
