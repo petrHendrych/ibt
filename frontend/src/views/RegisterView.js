@@ -59,7 +59,7 @@ class RegisterForm extends Component {
         e.preventDefault();
         const { username, email, password, password2 } = this.state;
         if (password !== password2) {
-            this.props.invalidPassswords();
+            this.props.invalidPasswords();
         } else {
             const newUser = {
                 username,
@@ -123,12 +123,10 @@ class RegisterForm extends Component {
 }
 
 RegisterForm = connect (
-    state => {
-        return {}
-    },
+    null,
     dispatch => {
         return {
-            invalidPassswords: () => dispatch(invalidPasswords())
+            invalidPasswords: () => dispatch(invalidPasswords())
         }
     }
 )(RegisterForm);

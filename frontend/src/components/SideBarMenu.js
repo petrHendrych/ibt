@@ -7,10 +7,10 @@ import {connect} from 'react-redux';
 import {downloadTrack, updateTrack} from "../actions/tracks";
 import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
 
-export default class SideBarNavigation extends Component {
+export default class SideBarMenu extends Component {
     render () {
         return (
-            <nav className={"navigation text-center " + (this.props.partition.loaded ? "partition" : "")}>
+            <nav className={"menu text-center " + (this.props.partition.loaded ? "partition" : "")}>
                 <NavIcon text="back to tracks"
                          icon={faArrowRight}
                          onClick={() => {
@@ -66,7 +66,7 @@ export default class SideBarNavigation extends Component {
     }
 }
 
-SideBarNavigation = connect (
+SideBarMenu = connect (
     state => {
         return {
             track: state.tracks.track,
@@ -91,7 +91,7 @@ SideBarNavigation = connect (
             }
         }
     }
-)(SideBarNavigation);
+)(SideBarMenu);
 
 function NavIcon(props) {
     return (

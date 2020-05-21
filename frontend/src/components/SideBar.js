@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import _ from 'lodash';
 
-import PointContainer from './PointContainer';
+import SideBarPoints from './SideBarPoints';
 import SideBarHeader from './SideBarHeader';
 import { Spinner } from "../utils";
 import {deleteTrack, getTrack} from "../actions/tracks";
@@ -146,7 +146,7 @@ export default class SideBar extends Component {
                             />
                         )}
                     </AutoSizer>
-                    <PointContainer show={this.state.isShow} onChange={this.isShow}/>
+                    <SideBarPoints show={this.state.isShow} onChange={this.isShow}/>
                 </div>
                 <Footer/>
             </div>

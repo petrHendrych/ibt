@@ -5,7 +5,7 @@ import {Route, Switch} from "react-router";
 import {Provider} from "react-alert";
 import AlertTemplate from 'react-alert-template-basic';
 
-import MapView from './views/MapView';
+import MainView from './views/MainView';
 import LoginView from './views/LoginView';
 import RegisterView from './views/RegisterView';
 import ErrorView from './views/ErrorView';
@@ -34,10 +34,10 @@ export default class App extends Component {
             <Provider template={AlertTemplate} {...alertConfig}>
                 <BrowserRouter basename={process.env.PUBLIC_URL}>
                     <Switch>
-                        <Route exact path="/" component={MapView} />
-                        <Route path="/login" component={LoginView}/>
-                        <Route path="/register" component={RegisterView}/>
-                        <Route component={ErrorView}/>
+                        <Route exact path="/" component={MainView} />
+                        <Route exact path="/login" component={LoginView}/>
+                        <Route exact path="/register" component={RegisterView}/>
+                        <Route path="*" component={ErrorView}/>
                     </Switch>
                 </BrowserRouter>
             </Provider>

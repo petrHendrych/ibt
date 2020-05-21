@@ -32,6 +32,6 @@ class GPXTrack(models.Model):
     track = models.LineStringField()
     name = models.CharField(max_length=100, blank=True)
     gpx_file = models.ForeignKey(GPXFile, on_delete=models.CASCADE)
-    elevations = ArrayField(models.DecimalField(max_digits=13, decimal_places=4), default=list, blank=True)
+    elevations = ArrayField(models.DecimalField(max_digits=13, decimal_places=3), default=list, blank=True)
     times = ArrayField(models.CharField(max_length=100), default=list, blank=True)
     objects = GeoManager()

@@ -85,16 +85,16 @@
   background: #def6df; }
 
 /* Navigation header menu css */
-.navigation {
+.menu {
   background: #e7ebef;
   border-bottom: 1px solid black; }
-  .navigation.partition {
+  .menu.partition {
     background: #b6cbff; }
-  .navigation .select-all-checkbox {
+  .menu .select-all-checkbox {
     position: absolute;
     right: 46px;
     top: 6px; }
-  .navigation .icon-times {
+  .menu .icon-times {
     position: absolute;
     right: 25px;
     top: 4px; }

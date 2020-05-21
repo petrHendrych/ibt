@@ -15,7 +15,7 @@ import {TRACK_PARTITION_CLEAR} from "../actions/types";
 
 const circleMarker = icon({
     iconUrl: require('../images/circleMarker.svg'),
-    iconSize: [14, 14] // size of the icon
+    iconSize: [14, 14]
 });
 
 const startMarker = icon({
@@ -57,9 +57,6 @@ export default class MyMap extends Component {
         this.props.getPointLatLng(coords);
 
         if (this.props.bounds.length === 2) {
-            if (this.props.selectedIndex) {
-                this.props.selectPoint(this.props.selectedIndex);
-            }
             this.getPartition();
         }
     };
@@ -116,14 +113,14 @@ export default class MyMap extends Component {
 
         let bounds = null;
         if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates)) {
-            // if (this.props.selectedIndex) {
-            //     bounds = latLngBounds(
-            //         this.props.track.geometry.coordinates[this.props.selectedIndex],
-            //         this.props.track.geometry.coordinates[this.props.selectedIndex]
-            //     )
-            // } else {
+            if (this.props.selectedIndex) {
+                bounds = latLngBounds(
+                    this.props.track.geometry.coordinates[this.props.selectedIndex],
+                    this.props.track.geometry.coordinates[this.props.selectedIndex]
+                )
+            } else {
                 bounds = latLngBounds(this.props.track.geometry.coordinates);
-            // }
+            }
         }
 
         return (
@@ -167,6 +164,7 @@ export default class MyMap extends Component {
                                 draggable={true}
                                 onDragEnd={(e) => this.updateMarker(e, val)}
                                 icon={circleMarker}
+                                autoPan={true}
                             />
                         )}
                     </>
@@ -176,6 +174,7 @@ export default class MyMap extends Component {
                     <Marker onDragEnd={this.updateMarker}
                             draggable={true}
                             position={this.props.track.geometry.coordinates[this.props.selectedIndex]}
+                            autoPan={true}
                     />
                 }
                 {
@@ -196,18 +195,6 @@ export default class MyMap extends Component {
                         />
                     )
                 }
-                {/*{*/}
-                    {/*this.props.partition.indexes.map((val, index) =>*/}
-                        {/*<Marker*/}
-                            {/*key={index}*/}
-                            {/*index={index}*/}
-                            {/*position={this.props.track.geometry.coordinates[val]}*/}
-                            {/*draggable={true}*/}
-                            {/*onDragEnd={(e) => this.updateMarker(e, val)}*/}
-                            {/*icon={circleMarker}*/}
-                        {/*/>*/}
-                    {/*)*/}
-                {/*}*/}
 
                 <Modal show={this.state.isShow} onHide={() => this.setState({isShow: false})} backdrop={'static'}>
                     <Modal.Header closeButton>
@@ -216,7 +203,8 @@ export default class MyMap extends Component {
                     <Modal.Body>
                         <HelpInfo name="Add point" icon={faPlus}
                                   text="To add new point simply click anywhere on track.
-                                  Point will be added exactly on place where you click!"
+                                  Point will be added exactly on place where you click!
+                                  Adding point inside bounding box is not allowed."
                         />
                         <HelpInfo name="Part selection" icon={faSquare}
                                   text="To create boundary for part selection make 2 corner points by double clicking on map.
@@ -274,7 +262,7 @@ MyMap = connect (
 )(MyMap);
 
 /**
- * Function took and modified from oficial Leaflet source
+ * Function took and modified from official Leaflet source
  * url: https://github.com/Leaflet/Leaflet/blob/master/src/layer/vector/Polyline.js
  * line: 89
  *

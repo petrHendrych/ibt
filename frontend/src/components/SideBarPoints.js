@@ -5,13 +5,13 @@ import {List, AutoSizer, CellMeasurer, CellMeasurerCache} from 'react-virtualize
 import _ from 'lodash';
 
 import SideBarCard from './SideBarCard';
-import SideBarNavigation from "./SideBarNavigation";
+import SideBarMenu from "./SideBarMenu";
 import {deletePartitionPoints, deletePoints, pointsError, selectPoint} from "../actions/points";
 import { Spinner } from "../utils";
 import {deleteTrack, updateTrack} from "../actions/tracks";
 import {BOUNDS_CLEAR, TRACK_CLEAR, TRACK_PARTITION_CLEAR, UNSELECT_POINT} from "../actions/types";
 
-export default class PointContainer extends Component {
+export default class SideBarPoints extends Component {
     constructor(props) {
         super(props);
 
@@ -125,7 +125,6 @@ export default class PointContainer extends Component {
         if (_.isEmpty(this.props.partition.indexes)) {
             return index;
         }
-
         return this.props.partition.indexes[index];
     };
 
@@ -188,11 +187,11 @@ export default class PointContainer extends Component {
 
         return (
             <div className={"point-container " + (this.props.show ? "show" : "")}>
-                <SideBarNavigation onClose={this.props.onChange}
-                                   toggle={this.state.toggleDelete}
-                                   onDelete={() => this.toggleDelete(this.state.checked)}
-                                   onToggle={() => this.toggleCheckboxes(this.state.toggleDelete)}
-                                   onCheckAll={() => this.checkAll()}
+                <SideBarMenu onClose={this.props.onChange}
+                             toggle={this.state.toggleDelete}
+                             onDelete={() => this.toggleDelete(this.state.checked)}
+                             onToggle={() => this.toggleCheckboxes(this.state.toggleDelete)}
+                             onCheckAll={() => this.checkAll()}
                 />
 
                 {!_.isEmpty(this.props.track) && !this.props.partition.trackIsLoading && !this.props.trackLoading ?
@@ -222,7 +221,7 @@ export default class PointContainer extends Component {
     }
 }
 
-PointContainer = connect (
+SideBarPoints = connect (
     state => {
         return {
             track: state.tracks.track,
@@ -247,4 +246,4 @@ PointContainer = connect (
             }
         }
     }
-)(PointContainer);
+)(SideBarPoints);
