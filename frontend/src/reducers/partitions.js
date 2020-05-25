@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Reducers for partition actions
+ */
+
 import {
     PARTITION_DELETE_POINT, PARTITION_DELETE_POINTS,
     TRACK_PARTITION_CLEAR,

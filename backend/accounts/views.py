@@ -1,8 +1,19 @@
+"""Authorization views providing responses to user requests
+
+Definition of API methods for different user views
+This code was written by following online tutorial you can find on
+this link: https://www.youtube.com/playlist?list=PLXE2Bj4edhg5fnlk8C8e-aEONQNPPuqNp
+"""
+
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from knox.models import AuthToken
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from rest_framework import status
+
+__author__ = 'Petr Hendrych'
+__credits__ = ['Brad Traversy']
+__email__ = "xhendr03@fit.vutbr.cz"
 
 
 # Register API

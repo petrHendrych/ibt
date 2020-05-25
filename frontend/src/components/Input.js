@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Input component for latitude and longitude
+ */
+
 import React, {Component} from 'react';
 
 export default class Input extends Component {

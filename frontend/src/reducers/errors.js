@@ -1,3 +1,11 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Reducers to catch error responses from server
+ *
+ * All code followed from online tutorial
+ * @url https://www.youtube.com/playlist?list=PLXE2Bj4edhg5fnlk8C8e-aEONQNPPuqNp
+ */
+
 import {GET_ERRORS} from "../actions/types";
 
 const initialState = {

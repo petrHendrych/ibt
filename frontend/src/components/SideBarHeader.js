@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Header component to handle file uploads and user redirects
+ */
+
 import React, {Component} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faClipboardList, faFileUpload } from '@fortawesome/free-solid-svg-icons';

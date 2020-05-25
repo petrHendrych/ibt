@@ -1,3 +1,9 @@
+"""Simple tests for user authorization
+
+Tests for each view (registration, login, getUser)
+providing few correct request and few bad ones
+"""
+
 from django.contrib.auth.models import User
 from django.urls import reverse
 
@@ -5,6 +11,9 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from knox.models import AuthToken
+
+__author__ = 'Petr Hendrych'
+__email__ = "xhendr03@fit.vutbr.cz"
 
 
 # REGISTER TESTS

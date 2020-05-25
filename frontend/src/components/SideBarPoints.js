@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Point container component to display points of track
+ */
+
 import React, {Component} from 'react';
 import {Accordion} from "react-bootstrap";
 import { connect } from 'react-redux';
@@ -86,6 +91,7 @@ export default class SideBarPoints extends Component {
         this.toggleCheckboxes();
     };
 
+    // Function to handle selecting all checkboxes (even with partition)
     checkAll = () => {
         this.setState({checkAll: !this.state.checkAll}, () => {
             let arr = this.state.checked;

@@ -1,6 +1,17 @@
+"""Authorization serializers for user API requests and responses
+
+Three simple serializers to manage login, register and get user data requests
+This code was written by following online tutorial you can find on
+this link: https://www.youtube.com/playlist?list=PLXE2Bj4edhg5fnlk8C8e-aEONQNPPuqNp
+"""
+
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+
+__author__ = 'Petr Hendrych'
+__credits__ = ['Brad Traversy']
+__email__ = "xhendr03@fit.vutbr.cz"
 
 
 # User Serializer

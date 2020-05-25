@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Reducers for files actions
+ */
+
 import {FILES_LOADING, FILES_LOADED, FILES_CLEAR, FILE_DELETE} from "../actions/types";
 
 const initialState = {

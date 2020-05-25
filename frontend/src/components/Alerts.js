@@ -1,3 +1,11 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Alert component to show response info to user
+ *
+ * Code followed from online tutorial
+ * @url https://www.youtube.com/playlist?list=PLXE2Bj4edhg5fnlk8C8e-aEONQNPPuqNp
+ */
+
 import React, { Component, Fragment } from 'react';
 import { withAlert } from 'react-alert';
 import {connect} from 'react-redux';

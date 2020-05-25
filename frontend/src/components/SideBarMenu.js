@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Side bar menu component with it's functions to download and save
+ */
+
 import React, {Component} from 'react';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

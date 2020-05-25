@@ -1,3 +1,8 @@
+"""API views providing responses to api requests
+
+Definition of logic after receiving requests to API endpoints
+"""
+
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import PermissionDenied
@@ -16,6 +21,9 @@ import gpxpy.gpx
 from yattag import Doc, indent
 import datetime
 import re
+
+__author__ = 'Petr Hendrych'
+__email__ = 'xhendr03@fit.vutbr.cz'
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -49,6 +57,14 @@ class FileViewSet(viewsets.ModelViewSet):
 
 
 def create_track_instances(f, file_instance):
+    """
+    Function to parse GPX file, create new GPXtrack instances and save to database.
+    Using gpxpy package.
+
+    :param f: file path
+    :param file_instance: file orm instance
+    :return:
+    """
     f.name = re.sub('[()]', '', f.name)
     gpx_file = open(settings.MEDIA_ROOT + '/uploaded_gpx_files'+'/' + f.name.replace(" ", "_"), encoding='utf-8-sig')
     gpx = gpxpy.parse(gpx_file)
@@ -118,6 +134,7 @@ class TrackViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post'], detail=True)
     def partition(self, request, pk=None):
+
         trk = models.GPXTrack.objects.get(id=pk)
         file = models.GPXFile.objects.get(id=trk.gpx_file.id)
 
@@ -128,7 +145,7 @@ class TrackViewSet(viewsets.ModelViewSet):
         bbox = (bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1])
 
         poly = Polygon.from_bbox(bbox)
-        prep_poly = poly.prepared
+        prep_poly = poly.prepared  # creating prepared geometry to speed up comparisons
 
         indexes = []
 
@@ -153,6 +170,7 @@ class TrackViewSet(viewsets.ModelViewSet):
         doc, tag, text = Doc().tagtext()
         mail = request.user.email.split('@')
 
+        # creating GPX file
         doc.asis('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>')
         with tag('gpx', ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
                  ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),

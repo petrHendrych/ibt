@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Accordion component for each point of track
+ */
+
 import React, {Component} from 'react';
 import {Card, Accordion} from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -139,15 +144,11 @@ export default class SideBarCard extends Component {
                                onBlur={this.blurHandler}
                         />
                         <div className="d-flex mt-1">
-                            {
-                                _.isEmpty(elevation) ?
-                                    <></> :
-                                    <div className="w-50 small text-left">Elevation: {elevation}</div>
+                            {_.isEmpty(elevation) ? <></> :
+                                <div className="w-50 small text-left">Elevation: {elevation}</div>
                             }
-                            {
-                                _.isEmpty(time) ?
-                                    <></> :
-                                    <div className="w-50 small text-right">Time: {this.parseTime(time)}</div>
+                            {_.isEmpty(time) ? <></> :
+                                <div className="w-50 small text-right">Time: {this.parseTime(time)}</div>
                             }
                         </div>
                     </Card.Body>

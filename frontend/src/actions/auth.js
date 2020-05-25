@@ -1,6 +1,9 @@
 /**
  * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
  * @file Contains functions to handle user requests
+ *
+ * All code followed from online tutorial
+ * @url https://www.youtube.com/playlist?list=PLXE2Bj4edhg5fnlk8C8e-aEONQNPPuqNp
  */
 
 import axios from 'axios';

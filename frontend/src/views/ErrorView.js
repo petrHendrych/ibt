@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file 404 page view
+ */
+
 import React, {Component} from 'react';
 import { ReactComponent as Logo } from '../images/errorMarker.svg'
 import {Link} from "react-router-dom";

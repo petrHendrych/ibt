@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Reducers for track actions (deleting points, tracks, loading etc.)
+ */
+
 import {
     TRACKS_LOADING,
     TRACKS_LOADED,

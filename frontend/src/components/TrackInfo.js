@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Track info component with all information and measurements
+ */
+
 import React, {Component} from 'react';
 import { faChevronRight, faChevronLeft, faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,7 +36,6 @@ export default class TrackInfo extends Component {
                 return `${_.round(distance, 1)} km`
             }
         }
-
         return 0;
     };
 
@@ -45,7 +49,6 @@ export default class TrackInfo extends Component {
 
         if (_.isEmpty(this.props.track.geometry.coordinates))
             return  <></>;
-
 
         return (
             <div id="info" className={this.state.show ? "track-info show" : "track-info"} onClick={() => this.disablePropagation()}>
@@ -197,7 +200,7 @@ class TrackElevations extends Component {
 
         return (
             <AreaChart width={300} height={260} data={data}
-                       margin={{top: 10, right: 17, left: 0, bottom: 10}}>
+                       margin={{top: 10, right: 5, left: 0, bottom: 10}}>
                 <XAxis dataKey="dst" tick={{fontSize: 12}} tickFormatter={this.getFormatter(data.slice(-1)[0].dst)}>
                     <Label value="Distance" offset={-5} position="bottom" fontSize="13"/>
                 </XAxis>

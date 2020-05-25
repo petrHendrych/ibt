@@ -1,10 +1,19 @@
+"""Project models
+
+Definition of each model to store data to database.
+Contains GPXfile and GPXtrack models.
+"""
+
 from django.contrib.gis.db import models
-from django.db.models import Manager as GeoManager
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
+from django.db.models import Manager as GeoManager
 from django.core.validators import FileExtensionValidator
 
 import re
+
+__author__ = 'Petr Hendrych'
+__email__ = 'xhendr03@fit.vutbr.cz'
 
 
 def gpx_folder(_, filename):

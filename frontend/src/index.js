@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Main js file of application
+ */
+
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 
@@ -12,17 +17,7 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import reducers from './reducers';
 
-
-const loggerMiddleware = store => next => action => {
-    console.group(action.type);
-    console.info("Action", action);
-    const result = next(action);
-    console.log("Next state", store.getState());
-    console.groupEnd();
-    return result;
-};
-
-export const store = createStore(reducers, applyMiddleware(thunk, loggerMiddleware));
+export const store = createStore(reducers, applyMiddleware(thunk));
 
 ReactDOM.render(
     <Provider store={store}>
@@ -31,7 +26,4 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();

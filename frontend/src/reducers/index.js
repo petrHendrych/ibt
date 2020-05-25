@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Main reducer file to combine them
+ */
+
 import {BOUNDS_CLEAR, SELECT_POINT, UNSELECT_POINT} from "../actions/types";
 
 import { combineReducers } from 'redux';

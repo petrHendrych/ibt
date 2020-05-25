@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Side bar component
+ */
+
 import React, {Component} from 'react';
 import {Card} from "react-bootstrap";
 import { connect } from 'react-redux';
@@ -64,7 +69,9 @@ export default class SideBar extends Component {
                             <strong>{this.props.trackList[index].name}</strong>
                         </div>
                         <div>
-                            <span className="float-left pt-2">File: {this.getFileName(this.props.trackList[index].gpx_file)}</span>
+                            <span className="float-left pt-2">
+                                File: {this.getFileName(this.props.trackList[index].gpx_file)}
+                            </span>
                             <button
                                 className="btn btn-danger btn-sm float-right m-2"
                                 onClick={(e) => {
@@ -122,7 +129,8 @@ export default class SideBar extends Component {
                     <SideBarHeader/>
                     <div className="flex-mid">
                         <span
-                            className="new-line text-center">{"No tracks available \nPlease login or create new account"}</span>
+                            className="new-line text-center">{"No tracks available \nPlease login or create new account"}
+                        </span>
                     </div>
                     <Footer/>
                 </div>

@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Map component and user help info
+ */
+
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {Map, TileLayer, Polyline, Marker, Rectangle} from "react-leaflet";
@@ -59,7 +64,7 @@ export default class MyMap extends Component {
         map.fitBounds(polyline.getBounds());
     };
 
-    boundsPointHandler = (e) => {
+    partitionBoundsHandler = (e) => {
         const coords = e.latlng;
         this.props.getPointLatLng(coords);
 
@@ -83,8 +88,8 @@ export default class MyMap extends Component {
     };
 
     updateRectangle = (e) => {
-        const latLng = e.target.getLatLng(); //get marker LatLng
-        const markerIndex = e.target.options.index; //get marker index
+        const latLng = e.target.getLatLng();
+        const markerIndex = e.target.options.index;
 
         this.setState(prevState => {
             const markerData = [...prevState.bounds];
@@ -97,20 +102,22 @@ export default class MyMap extends Component {
         let point = e.latlng;
         const mapPoint = this.map.current.leafletElement.latLngToLayerPoint(point);
         const {minPoint, idxClosest} = closestPoint(mapPoint, this.polyline.current.leafletElement);
+
         point = [
             parseFloat(this.map.current.leafletElement.layerPointToLatLng(minPoint).lat.toFixed(6)),
             parseFloat(this.map.current.leafletElement.layerPointToLatLng(minPoint).lng.toFixed(6))
         ];
         this.props.selectPoint(idxClosest);
         this.props.insertPoint(idxClosest, point);
+
         if (this.props.selectedIndex === null) {
             this.props.selectPoint(idxClosest);
         }
     };
 
-    dblClickHandler = (e) => {
+    dblClickCreateBounds = (e) => {
         if (!_.isEmpty(this.props.track) && this.props.bounds.length !== 2) {
-            this.boundsPointHandler(e)
+            this.partitionBoundsHandler(e)
         }
     };
 
@@ -118,9 +125,8 @@ export default class MyMap extends Component {
         if (this.props.track.geometry.coordinates.length === 2) {
             this.props.pointsError();
         } else {
-
-
             const realIndex = this.props.partition.indexes[index];
+
             this.props.deletePartitionPoint(realIndex);
             this.props.deletePoint(realIndex);
             this.props.updateTrack(this.props.track.properties.id);
@@ -142,7 +148,7 @@ export default class MyMap extends Component {
                  center={position}
                  zoom={8}
                  ref={this.map}
-                 ondblclick={(e) => this.dblClickHandler(e)}
+                 ondblclick={(e) => this.dblClickCreateBounds(e)}
                  maxZoom={18}
                  maxBounds={maxBounds}
             >
@@ -222,7 +228,8 @@ export default class MyMap extends Component {
                         />
                         <HelpInfo name="Part selection" icon={faSquare}
                                   text="To create boundary for part selection make 2 corner points by double clicking on map.
-                                  Points of track that are inside this boundary will appear in side bar."
+                                  Points of track that are inside this boundary will appear in side bar.
+                                  Double clicking on markers inside this partition will delete that point."
                         />
                         <HelpInfo name="Deleting multiple points" icon={faTrashAlt}
                                   text="To delete multiple points click on trashcan. After click checkboxes at each point will appear.

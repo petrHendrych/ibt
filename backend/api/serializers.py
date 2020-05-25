@@ -1,7 +1,16 @@
+"""Simple serializers for request and responses
+
+Create JSONs for responses and transform JSON requests back to ORM.
+Track serializers also validate incoming data.
+"""
+
 from rest_framework import serializers
 from geojson_serializer.serializers import geojson_serializer
 from .models import GPXTrack
 from .models import GPXFile
+
+__author__ = 'Petr Hendrych'
+__email__ = 'xhendr03@fit.vutbr.cz'
 
 
 @geojson_serializer('track')

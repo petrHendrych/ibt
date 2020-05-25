@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Routing component of application
+ */
+
 import React, { Component } from 'react';
 import {BrowserRouter} from "react-router-dom";
 import {Route, Switch} from "react-router";
