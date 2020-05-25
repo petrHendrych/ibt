@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <trk>
+    <name>First track</name>	
+    <trkseg>
+      <trkpt lat="47.42754" lon="12.713117">
+        <ele>1326.8550</ele>
+        <time>2019-07-05T13:52:18+00:00</time>
+      </trkpt>
+      <trkpt lat="47.427541" lon="12.713114">
+        <ele>1323.6720</ele>
+        <time>2019-07-05T13:52:25+00:00</time>
+      </trkpt>
+      <trkpt lat="47.427538" lon="12.713151">
+        <ele>1320.4920</ele>
+        <time>2019-07-05T13:52:34+00:00</time>
+      </trkpt>
+      <trkpt lat="47.427541" lon="12.713159">
+        <ele>1317.9650</ele>
+        <time>2019-07-05T13:52:44+00:00</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+  <trk>
+  </trk>
+  <trk>
+  	<name>Second track</name>
+  	<trkseg>
+  	  <trkpt lat="47.42333" lon="12.712145">
+        <ele>1386.5830</ele>
+        <time>2019-07-05T14:00:49+00:00</time>
+      </trkpt>
+      <trkpt lat="47.423259" lon="12.712207">
+        <ele>1387.7290</ele>
+        <time>2019-07-05T14:00:55+00:00</time>
+      </trkpt>
+      <trkpt lat="47.423353" lon="12.712526">
+        <ele>1389.1850</ele>
+        <time>2019-07-05T14:01:11+00:00</time>
+      </trkpt>
+      <trkpt lat="47.423612" lon="12.712668">
+        <ele>1390.8980</ele>
+        <time>2019-07-05T14:01:22+00:00</time>
+      </trkpt>
+      <trkpt lat="47.423839" lon="12.713171">
+        <ele>1392.6660</ele>
+        <time>2019-07-05T14:01:44+00:00</time>
+      </trkpt>
+      <trkpt lat="47.423663" lon="12.713908">
+        <ele>1393.2310</ele>
+        <time>2019-07-05T14:02:05+00:00</time>
+      </trkpt>
+      <trkpt lat="47.423364" lon="12.714279">
+        <ele>1392.4510</ele>
+        <time>2019-07-05T14:02:17+00:00</time>
+      </trkpt>
+      <trkpt lat="47.423175" lon="12.714526">
+        <ele>1390.7810</ele>
+        <time>2019-07-05T14:02:24+00:00</time>
+      </trkpt>
+      <trkpt lat="47.422908" lon="12.714876">
+        <ele>1388.5670</ele>
+        <time>2019-07-05T14:02:34+00:00</time>
+      </trkpt>
+      <trkpt lat="47.422567" lon="12.715343">
+        <ele>1385.6300</ele>
+        <time>2019-07-05T14:02:41+00:00</time>
+      </trkpt>
+  	</trkseg>
+  </trk>
+</gpx>

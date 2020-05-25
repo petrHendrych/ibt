@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+ <trk>
+  <name>ACTIVE LOG094501</name>
+  <trkseg>
+   <trkpt lat="47.441812" lon="12.845014">
+    <ele>702.127</ele>
+    <time>2019-07-01T07:45:00Z</time>
+   </trkpt>
+   <trkpt lat="47.441783" lon="12.844994">
+    <ele>703.084</ele>
+    <time>2019-07-01T07:45:38Z</time>
+   </trkpt>
+  </trkseg>
+  <trkseg>
+   <trkpt lat="47.4418" lon="12.8450">
+    <ele>702.127</ele>
+    <time>2019-07-01T07:45:40Z</time>
+   </trkpt>
+   <trkpt lat="47.4417" lon="12.8449">
+    <ele>703.0</ele>
+    <time>2019-07-01T07:45:42Z</time>
+   </trkpt>
+  </trkseg>
+  <trkseg>
+   <trkpt lat="47.44" lon="12.84">
+    <ele>702.127</ele>
+    <time>2019-07-01T07:45:50Z</time>
+   </trkpt>
+   <trkpt lat="47.44" lon="12.84">
+    <ele>703.08</ele>
+    <time>2019-07-01T07:45:55Z</time>
+   </trkpt>
+  </trkseg>
+ </trk>
+</gpx>
