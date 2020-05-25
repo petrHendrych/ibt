@@ -54,7 +54,7 @@ def create_track_instances(f, file_instance):
     gpx = gpxpy.parse(gpx_file)
 
     if gpx.tracks:
-        invalid_tracks = []
+        invalid_tracks = False
 
         for idx, track in enumerate(gpx.tracks):
             new_track = models.GPXTrack()
@@ -82,7 +82,7 @@ def create_track_instances(f, file_instance):
                         tracks_times.append(tracks_times[0])
 
             if len(track_list_of_points) == 0:
-                invalid_tracks.append(idx)
+                invalid_tracks = True
                 continue
 
             new_track.track = LineString(track_list_of_points)

@@ -61,7 +61,7 @@ export default class TrackInfo extends Component {
                 <NameInput name={this.props.track.properties.name} id={this.props.track.properties.id}/>
                 <h5 className="track-info-key">Length: <span className="track-info-value">{this.getLength(this.props.polyline)}</span></h5>
                 <TrackTimes times={times} track={this.props.track}/>
-                <TrackElevations elevations={elevations} track={this.props.track}/>
+                <TrackElevations elevations={elevations} track={this.props.track} polyline={this.props.polyline}/>
             </div>
         )
     }
@@ -167,31 +167,42 @@ class TrackTimes extends Component {
 }
 
 class TrackElevations extends Component {
-    getData = (track) => {
-        if (!_.isEmpty(track)) {
+    getData = (track, polyline) => {
+        if (!_.isEmpty(track) && polyline.current) {
             const ele = track.properties.elevations;
-            let data = [];
+            const latLng = polyline.current.leafletElement._latlngs;
+            let data = [{ele: ele[0], dst: 0}];
+            let distance = 0;
 
-            for(let i = 0; i < ele.length; i++) {
-                data.push({ele: parseFloat(ele[i])});
+
+            for (let i = 1; i < ele.length; i++) {
+                distance += latLng[i].distanceTo(latLng[i - 1]);
+                data.push({ele: parseFloat(ele[i]), dst: _.round(distance, 1)});
             }
             return data;
         }
     };
 
+    getFormatter(length) {
+        if (length > 1000) {
+            return (tick) => `${_.round(tick/1000, 1)} km`
+        }
+        return (tick) => `${tick} m`
+    };
+
     renderElevations = (elevations, data) => {
-        if (_.isEmpty(elevations)) {
+        if (_.isEmpty(elevations) || !data) {
             return <span className="track-info-value">no data</span>
         }
 
         return (
             <AreaChart width={300} height={260} data={data}
                        margin={{top: 10, right: 17, left: 0, bottom: 10}}>
-                <XAxis tick={{fontSize: 12}}>
-                    <Label value="Point" offset={-5} position="bottom" fontSize="13"/>
+                <XAxis dataKey="dst" tick={{fontSize: 12}} tickFormatter={this.getFormatter(data.slice(-1)[0].dst)}>
+                    <Label value="Distance" offset={-5} position="bottom" fontSize="13"/>
                 </XAxis>
                 <YAxis tick={{fontSize: 12}} tickFormatter={(tick) => `${tick} m`}>
-                    <Label value="Altitude" position="insideLeft" angle="-90" fontSize="13"/>
+                    <Label value="Altitude" position="insideLeft" angle={-90} fontSize="13"/>
                 </YAxis>
                 <Area dataKey='ele' stroke='#8884d8' fill='#8884d8' />
             </AreaChart>
@@ -199,6 +210,8 @@ class TrackElevations extends Component {
     };
 
     render() {
-        return <h5 className="track-info-key">Elevations: {this.renderElevations(this.props.elevations, this.getData(this.props.track))}</h5>
+        return <h5 className="track-info-key">
+            Elevations: {this.renderElevations(this.props.elevations, this.getData(this.props.track, this.props.polyline))}
+            </h5>
     }
 }

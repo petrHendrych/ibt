@@ -118,8 +118,11 @@ export default class MyMap extends Component {
         if (this.props.track.geometry.coordinates.length === 2) {
             this.props.pointsError();
         } else {
-            this.props.deletePoint(this.props.partition.indexes[index]);
-            this.props.deletePartitionPoint(this.props.partition.indexes[index]);
+
+
+            const realIndex = this.props.partition.indexes[index];
+            this.props.deletePartitionPoint(realIndex);
+            this.props.deletePoint(realIndex);
             this.props.updateTrack(this.props.track.properties.id);
         }
     };
@@ -130,14 +133,7 @@ export default class MyMap extends Component {
 
         let bounds = null;
         if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates)) {
-            if (this.props.selectedIndex) {
-                bounds = latLngBounds(
-                    this.props.track.geometry.coordinates[this.props.selectedIndex],
-                    this.props.track.geometry.coordinates[this.props.selectedIndex]
-                )
-            } else {
-                bounds = latLngBounds(this.props.track.geometry.coordinates);
-            }
+            bounds = latLngBounds(this.props.track.geometry.coordinates);
         }
 
         return (
