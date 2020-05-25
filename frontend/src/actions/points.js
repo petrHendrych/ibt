@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@stud.fit.vutbr.cz>
+ * @file Contains functions to handle various requests about point changes
+ */
+
 import {
     DELETE_POINT,
     DELETE_POINTS, GET_ERRORS,

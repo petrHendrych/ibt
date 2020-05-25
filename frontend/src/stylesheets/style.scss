@@ -154,7 +154,6 @@ a {
   font-size: 16px;
 }
 
-//.track-info-key {
-//  border-bottom: 1px solid lightgrey;
-//  width: 80%;
-//}
+.track-info-key:last-of-type {
+  margin-bottom: 0;
+}

@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
-import { connect } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faChevronLeft, faPencilAlt} from '@fortawesome/free-solid-svg-icons';
-import _ from 'lodash';
-import {DomUtil, DomEvent} from 'leaflet';
-
-import CanvasJSReact from '../canvas/canvasjs.react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import {AreaChart, Area, XAxis, YAxis, Label} from 'recharts';
+import {DomUtil, DomEvent} from 'leaflet';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+
 import {editTrackName, getTracks, updateTrack} from "../actions/tracks";
 
-const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export default class TrackInfo extends Component {
     state = {
@@ -168,48 +167,38 @@ class TrackTimes extends Component {
 }
 
 class TrackElevations extends Component {
-    getElevations = (track) => {
+    getData = (track) => {
         if (!_.isEmpty(track)) {
             const ele = track.properties.elevations;
-            let xVal = 1;
-            let dps = [];
+            let data = [];
 
             for(let i = 0; i < ele.length; i++) {
-                dps.push({x: xVal,y: parseFloat(ele[i])});
-                xVal++;
+                data.push({ele: parseFloat(ele[i])});
             }
-            return dps;
+            return data;
         }
     };
 
-    renderElevations = (elevations, options) => {
+    renderElevations = (elevations, data) => {
         if (_.isEmpty(elevations)) {
             return <span className="track-info-value">no data</span>
         }
 
-        return <CanvasJSChart options = {options}/>
+        return (
+            <AreaChart width={300} height={260} data={data}
+                       margin={{top: 10, right: 17, left: 0, bottom: 10}}>
+                <XAxis tick={{fontSize: 12}}>
+                    <Label value="Point" offset={-5} position="bottom" fontSize="13"/>
+                </XAxis>
+                <YAxis tick={{fontSize: 12}} tickFormatter={(tick) => `${tick} m`}>
+                    <Label value="Altitude" position="insideLeft" angle="-90" fontSize="13"/>
+                </YAxis>
+                <Area dataKey='ele' stroke='#8884d8' fill='#8884d8' />
+            </AreaChart>
+        )
     };
 
     render() {
-        const options = {
-            theme: "light2",
-            axisY: {
-                includeZero: false,
-                suffix: "m",
-                title: "Altitude"
-            },
-            axisX: {
-                title: "Point",
-                margin: 10
-            },
-            width: 300,
-            height: 250,
-            data: [{
-                type: "area",
-                dataPoints: this.getElevations(this.props.track)
-            }]
-        };
-
-        return <h5 className="track-info-key">Elevations: {this.renderElevations(this.props.elevations, options)}</h5>
+        return <h5 className="track-info-key">Elevations: {this.renderElevations(this.props.elevations, this.getData(this.props.track))}</h5>
     }
 }

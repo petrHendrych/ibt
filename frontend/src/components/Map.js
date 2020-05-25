@@ -130,14 +130,14 @@ export default class MyMap extends Component {
 
         let bounds = null;
         if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates)) {
-            // if (this.props.selectedIndex) {
-            //     bounds = latLngBounds(
-            //         this.props.track.geometry.coordinates[this.props.selectedIndex],
-            //         this.props.track.geometry.coordinates[this.props.selectedIndex]
-            //     )
-            // } else {
+            if (this.props.selectedIndex) {
+                bounds = latLngBounds(
+                    this.props.track.geometry.coordinates[this.props.selectedIndex],
+                    this.props.track.geometry.coordinates[this.props.selectedIndex]
+                )
+            } else {
                 bounds = latLngBounds(this.props.track.geometry.coordinates);
-            // }
+            }
         }
 
         return (

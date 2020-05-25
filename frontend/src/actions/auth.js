@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@fit.vutbr.cz>
+ * @file Contains functions to handle user requests
+ */
+
 import axios from 'axios';
 import {
     USER_LOADING,
@@ -13,7 +18,11 @@ import {
 import {getFiles} from "./files";
 import {getTracks} from "./tracks";
 
-// CHECK TOKEN & LOAD USER
+/**
+ * Get information about logged user
+ * If response return valid user then get his files and tracks
+ * @returns {Function}
+ */
 export const loadUser = () => async (dispatch, getState) => {
     // User Loading
     dispatch({ type: USER_LOADING});
@@ -33,7 +42,14 @@ export const loadUser = () => async (dispatch, getState) => {
     }
 };
 
-// LOGIN USER
+/**
+ * Function to send login request to server
+ * If login is successful load user's files and tracks
+ *
+ * @param username
+ * @param password
+ * @returns {Function}
+ */
 export const loginUser = (username, password) => async dispatch => {
     // Headers
     const config = {
@@ -60,7 +76,14 @@ export const loginUser = (username, password) => async dispatch => {
     }
 };
 
-// REGISTER USER
+/**
+ * Function to send information about new user's registration
+ *
+ * @param username
+ * @param email
+ * @param password
+ * @returns {Function}
+ */
 export const registerUser = ({username, email, password}) => async dispatch => {
     // Headers
     const config = {
@@ -85,7 +108,10 @@ export const registerUser = ({username, email, password}) => async dispatch => {
     }
 };
 
-// LOGOUT USER
+/**
+ * Function to send request to logout current user
+ * @returns {Function}
+ */
 export const logoutUser = () => async (dispatch, getState) => {
     try {
         await axios.post("http://localhost:8000/auth/logout", null, tokenConfig(getState));

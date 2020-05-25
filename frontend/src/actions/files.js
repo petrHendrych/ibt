@@ -1,9 +1,17 @@
+/**
+ * @author Petr Hendrych <xhendr03@stud.fit.vutbr.cz>
+ * @file Contains functions to make requests connected with files
+ */
+
 import axios from 'axios';
 import {FILE_DELETE, FILES_CLEAR, FILES_LOADING, GET_ERRORS, FILES_LOADED} from './types';
 import {tokenConfig} from "./auth";
 import {getTracks} from "./tracks";
 
-// GET LIST OF USER'S FILES
+/**
+ * Get list of user's files
+ * @returns {Function}
+ */
 export const getFiles = () => async (dispatch, getState) => {
     dispatch({ type: FILES_LOADING});
 
@@ -16,7 +24,13 @@ export const getFiles = () => async (dispatch, getState) => {
 
 };
 
-// UPLOAD NEW FILE
+/**
+ * Upload new file
+ *
+ * @param file
+ * @param title
+ * @returns {Function}
+ */
 export const uploadFile = (file, title) => async (dispatch, getState) => {
     //Get token from state
     const token = getState().auth.token;
@@ -62,7 +76,12 @@ export const uploadFile = (file, title) => async (dispatch, getState) => {
     dispatch(getTracks());
 };
 
-// DELETE FILE
+/**
+ * Delete file
+ *
+ * @param id
+ * @returns {Function}
+ */
 export const deleteFile = (id) => async (dispatch, getState) => {
     try {
         await axios.delete(`http://localhost:8000/api/files/${id}`, tokenConfig(getState));

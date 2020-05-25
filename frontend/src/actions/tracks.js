@@ -1,3 +1,8 @@
+/**
+ * @author Petr Hendrych <xhendr03@stud.fit.vutbr.cz>
+ * @file Contains functions to make requests connected with tracks
+ */
+
 import axios from 'axios';
 import {
     DELETE_TRACK,
@@ -11,7 +16,10 @@ import {
 import {tokenConfig} from "./auth";
 import { saveAs } from 'file-saver';
 
-// GET USER'S TRACKS
+/**
+ * Get list of user's tracks
+ * @returns {Function}
+ */
 export const getTracks = () => async (dispatch, getState) => {
     dispatch({type: TRACKS_LOADING});
 
@@ -24,7 +32,12 @@ export const getTracks = () => async (dispatch, getState) => {
 
 };
 
-// GET USER'S TRACK
+/**
+ * Get detail of chosen track
+ *
+ * @param id
+ * @returns {Function}
+ */
 export const getTrack = (id) => async (dispatch, getState) => {
     dispatch({type: TRACK_LOADING});
 
@@ -44,6 +57,13 @@ export const getTrack = (id) => async (dispatch, getState) => {
 
 };
 
+/**
+ * Get indexes of points that are in selected area in selected track
+ *
+ * @param id
+ * @param bounds
+ * @returns {Function}
+ */
 // GET USER'S TRACK'S PARTITION IN BOUNDS
 export const getTrackPartition = (id, bounds) => async (dispatch, getState) => {
     const _bounds = {"bounds": bounds};
@@ -65,7 +85,12 @@ export const getTrackPartition = (id, bounds) => async (dispatch, getState) => {
     }
 };
 
-// UPDATE TRACK POINTS
+/**
+ * Update track information
+ *
+ * @param id
+ * @returns {Function}
+ */
 export const updateTrack = (id) => async (dispatch, getState) => {
     const trk = getState().tracks.track;
     dispatch({type: TRACK_LOADING});
@@ -100,7 +125,12 @@ export const updateTrack = (id) => async (dispatch, getState) => {
     }
 };
 
-// DELETE TRACK
+/**
+ * Delete chosen track
+ *
+ * @param id
+ * @returns {Function}
+ */
 export const deleteTrack = (id) =>  async (dispatch, getState) => {
 
     try {
@@ -119,7 +149,10 @@ export const deleteTrack = (id) =>  async (dispatch, getState) => {
     }
 };
 
-// DOWNLOAD TRACK
+/**
+ * Download track in GPX format
+ * @returns {Function}
+ */
 export const downloadTrack = () => async (dispatch, getState) => {
     const trk = getState().tracks.track;
     const id = trk.properties.id;
