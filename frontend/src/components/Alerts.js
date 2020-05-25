@@ -48,6 +48,9 @@ class Alerts extends Component {
                     this.props.clearAll();
                 }
             }
+            if (error.status === 200) {
+                alert.info(error.msg.detail)
+            }
         }
     }
 

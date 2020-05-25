@@ -102,6 +102,9 @@ DATABASES = {
         'PASSWORD': 'passw',
         'HOST': 'localhost',
         'PORT': '',
+        'TEST': {
+            'NAME': 'gpxeditor_test',
+        },
     }
 }
 
@@ -151,7 +154,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'knox.auth.TokenAuthentication',
-    )
+    ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'TEST_REQUEST_RENDERER_CLASSES': [
+            'rest_framework.renderers.MultiPartRenderer',
+            'rest_framework.renderers.JSONRenderer',
+            'rest_framework.renderers.TemplateHTMLRenderer'
+        ]
 }
 
 CORS_ORIGIN_WHITELIST = [

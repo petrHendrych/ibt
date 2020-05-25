@@ -67,7 +67,7 @@ export const insertPoint = (index, value) => {
 
 export const pointsError = () => dispatch => {
     const errors = {
-        msg: {pointsError: ["Delete all or leave at least 2 points"]},
+        msg: {pointsError: ["Track must contains at least 2 points"]},
         status: 400
     };
     dispatch({

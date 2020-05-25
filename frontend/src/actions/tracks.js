@@ -73,6 +73,15 @@ export const updateTrack = (id) => async (dispatch, getState) => {
     try {
         let response = await axios.put(`http://localhost:8000/api/tracks/${id}`, trk, tokenConfig(getState));
         dispatch({type: TRACK_LOADED, payload: response.data});
+
+        // if (getState().partition.indexes) {
+        //     const bounds = [];
+        //     const stateBounds = getState().bounds;
+        //     bounds.push([parseFloat(stateBounds[0].lat.toFixed(6)), parseFloat(stateBounds[0].lng.toFixed(6))]);
+        //     bounds.push([parseFloat(stateBounds[1].lat.toFixed(6)), parseFloat(stateBounds[1].lng.toFixed(6))]);
+        //
+        //     dispatch(getTrackPartition(getState().tracks.track.properties.id, bounds));
+        // }
     } catch (e) {
         const errors = {
             msg: e.response.data,

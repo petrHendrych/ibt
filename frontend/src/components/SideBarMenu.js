@@ -55,9 +55,7 @@ export default class SideBarMenu extends Component {
                         <NavIcon text="deselect partition"
                                  icon={faTimes}
                                  class="icon-times"
-                                 onClick={() => {
-                                     this.props.clearPartition();
-                                 }}
+                                 onClick={() => this.props.clearPartition()}
                         /> :
                         <></>
                 }

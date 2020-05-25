@@ -37,8 +37,17 @@ export const uploadFile = (file, title) => async (dispatch, getState) => {
     data.append('title', title);
 
     try {
-        await axios.post("http://localhost:8000/api/files/", data, config);
-        dispatch(getTracks());
+        let response = await axios.post("http://localhost:8000/api/files/", data, config);
+        if (response.status === 200) {
+            const info = {
+                msg: response.data,
+                status: response.status
+            };
+            dispatch({
+                type: GET_ERRORS,
+                payload: info
+            });
+        }
     } catch (err) {
         const errors = {
             msg: err.response.data,
@@ -49,7 +58,8 @@ export const uploadFile = (file, title) => async (dispatch, getState) => {
             payload: errors
         });
     }
-    dispatch(getFiles());
+    await dispatch(getFiles());
+    dispatch(getTracks());
 };
 
 // DELETE FILE

@@ -26,8 +26,7 @@ export default class SideBarHeader extends Component {
     formSubmit = (e) => {
         e.preventDefault();
         this.props.uploadFile(this.state.file, this.state.title);
-        this.setState({isShow: false});
-
+        this.setState({isShow: false, file: null, title: ''});
     };
 
     updateState = () => {

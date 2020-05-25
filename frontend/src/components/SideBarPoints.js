@@ -206,7 +206,7 @@ export default class SideBarPoints extends Component {
                                     defferedMeasurementCache={this.cachePoints}
                                     rowHeight={this.cachePoints.rowHeight}
                                     rowRenderer={this.pointsRenderer}
-                                    overscanRowCount={30}
+                                    overscanRowCount={10}
                                 />
                             )}
                         </AutoSizer>

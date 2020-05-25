@@ -7,7 +7,7 @@ import {
 
 const initialState = {
     indexes: [],
-    trackIsLoading: false,
+    partitionIsLoading: false,
     loaded: false
 };
 
@@ -16,12 +16,12 @@ export default function (state = initialState, action) {
         case TRACK_PARTITION_LOADING:
             return {
                 ...state,
-                trackIsLoading: true
+                partitionIsLoading: true
             };
         case TRACK_PARTITION_LOADED:
             return {
                 ...state,
-                trackIsLoading: false,
+                partitionIsLoading: false,
                 loaded: true,
                 indexes: action.payload.indexes,
             };

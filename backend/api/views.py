@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status, generics
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.gis.geos import Point, LineString, Polygon
 
 from . import serializers, models
-from api.exceptions import IncorrectValues, InvalidFileFormat
+from api.exceptions import EmptyTracks, InvalidFileFormat
 
 import gpxpy
 import gpxpy.gpx
@@ -23,6 +23,7 @@ class FileViewSet(viewsets.ModelViewSet):
     queryset = models.GPXFile.objects.all()
     permission_classes = (IsAuthenticated, IsAuthenticatedOrReadOnly)
     ordering = ('id',)
+    http_method_names = ['get', 'post', 'delete']
 
     def get_queryset(self):
         user = self.request.user
@@ -37,8 +38,7 @@ class FileViewSet(viewsets.ModelViewSet):
 
             try:
                 create_track_instances(self.request.FILES['gpx_file'], file_instance)
-            except IncorrectValues:
-                # TODO delete last uploaded file
+            except EmptyTracks:
                 raise InvalidFileFormat
 
     def perform_destroy(self, instance: models.GPXFile):
@@ -54,7 +54,9 @@ def create_track_instances(f, file_instance):
     gpx = gpxpy.parse(gpx_file)
 
     if gpx.tracks:
-        for track in gpx.tracks:
+        invalid_tracks = []
+
+        for idx, track in enumerate(gpx.tracks):
             new_track = models.GPXTrack()
 
             tracks_elevations = []
@@ -79,21 +81,27 @@ def create_track_instances(f, file_instance):
                     if len(tracks_times) > 0:
                         tracks_times.append(tracks_times[0])
 
-            if not track.name or len(track_list_of_points) == 0:
-                raise IncorrectValues
+            if len(track_list_of_points) == 0:
+                invalid_tracks.append(idx)
+                continue
 
             new_track.track = LineString(track_list_of_points)
             new_track.gpx_file = file_instance
-            new_track.name = track.name
+            if track.name:
+                new_track.name = track.name
             new_track.elevations = tracks_elevations
             new_track.times = tracks_times
             new_track.save()
+
+        if invalid_tracks:
+            raise EmptyTracks
 
 
 class TrackViewSet(viewsets.ModelViewSet):
     queryset = models.GPXTrack.objects.all()
     permission_classes = (IsAuthenticated,)
     ordering = ('id',)
+    http_method_names = ['get', 'put', 'head', 'post', 'delete']
 
     def get_queryset(self):
         files = models.GPXFile.objects.filter(owner=self.request.user)
@@ -143,6 +151,7 @@ class TrackViewSet(viewsets.ModelViewSet):
             raise PermissionDenied(detail='You do not have permission to download this track.')
 
         doc, tag, text = Doc().tagtext()
+        mail = request.user.email.split('@')
 
         doc.asis('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>')
         with tag('gpx', ('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance'),
@@ -154,8 +163,7 @@ class TrackViewSet(viewsets.ModelViewSet):
                 with tag('author'):
                     with tag('name'):
                         text("{}".format(request.user))
-                    with tag('email'):
-                        text("{}".format(request.user.email))
+                    doc.stag('email', id="{}".format(mail[0]), domain="{}".format(mail[1]))
                 with tag('time'):
                     text("{}".format(datetime.datetime.now().astimezone().replace(microsecond=0).isoformat()))
             with tag('trk'):

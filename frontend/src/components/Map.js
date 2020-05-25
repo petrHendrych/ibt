@@ -9,8 +9,15 @@ import {faPlus, faTrashAlt, faExclamationTriangle} from '@fortawesome/free-solid
 import _ from 'lodash';
 
 import TrackInfo from "./TrackInfo";
-import {getTrackPartition} from "../actions/tracks";
-import {getPointLatLng, insertPoint, selectPoint, updatePointLatLng} from "../actions/points";
+import {getTrackPartition, updateTrack} from "../actions/tracks";
+import {
+    deletePartitionPoint,
+    deletePoint,
+    getPointLatLng,
+    insertPoint, pointsError,
+    selectPoint,
+    updatePointLatLng
+} from "../actions/points";
 import {TRACK_PARTITION_CLEAR} from "../actions/types";
 
 const circleMarker = icon({
@@ -107,20 +114,30 @@ export default class MyMap extends Component {
         }
     };
 
+    dblClickDeletePoint = (index) => {
+        if (this.props.track.geometry.coordinates.length === 2) {
+            this.props.pointsError();
+        } else {
+            this.props.deletePoint(this.props.partition.indexes[index]);
+            this.props.deletePartitionPoint(this.props.partition.indexes[index]);
+            this.props.updateTrack(this.props.track.properties.id);
+        }
+    };
+
     render() {
         const position = [49.94415, 15.446655];
         const maxBounds = latLngBounds([-90, 180], [90, -180]);
 
         let bounds = null;
         if (!_.isEmpty(this.props.track) && !_.isEmpty(this.props.track.geometry.coordinates)) {
-            if (this.props.selectedIndex) {
-                bounds = latLngBounds(
-                    this.props.track.geometry.coordinates[this.props.selectedIndex],
-                    this.props.track.geometry.coordinates[this.props.selectedIndex]
-                )
-            } else {
+            // if (this.props.selectedIndex) {
+            //     bounds = latLngBounds(
+            //         this.props.track.geometry.coordinates[this.props.selectedIndex],
+            //         this.props.track.geometry.coordinates[this.props.selectedIndex]
+            //     )
+            // } else {
                 bounds = latLngBounds(this.props.track.geometry.coordinates);
-            }
+            // }
         }
 
         return (
@@ -165,6 +182,7 @@ export default class MyMap extends Component {
                                 onDragEnd={(e) => this.updateMarker(e, val)}
                                 icon={circleMarker}
                                 autoPan={true}
+                                ondblclick={() => this.dblClickDeletePoint(index)}
                             />
                         )}
                     </>
@@ -253,6 +271,10 @@ MyMap = connect (
         return {
             selectPoint: (p) => dispatch(selectPoint(p)),
             getPointLatLng: (point) => dispatch(getPointLatLng(point)),
+            updateTrack: (id) => dispatch(updateTrack(id)),
+            deletePoint: (index) => dispatch(deletePoint(index)),
+            deletePartitionPoint: (index) => dispatch(deletePartitionPoint(index)),
+            pointsError: () => dispatch(pointsError()),
             insertPoint: (idx, val) => dispatch(insertPoint(idx, val)),
             clearPartition: () => dispatch({type: TRACK_PARTITION_CLEAR}),
             getTrackPartition: (idx, bounds) => dispatch(getTrackPartition(idx, bounds)),

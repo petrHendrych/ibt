@@ -194,7 +194,13 @@ class TrackElevations extends Component {
         const options = {
             theme: "light2",
             axisY: {
-                includeZero: false
+                includeZero: false,
+                suffix: "m",
+                title: "Altitude"
+            },
+            axisX: {
+                title: "Point",
+                margin: 10
             },
             width: 300,
             height: 250,

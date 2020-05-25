@@ -13,7 +13,7 @@ def gpx_folder(_, filename):
 
 
 class GPXFile(models.Model):
-    title = models.CharField(max_length=100, blank=True)
+    title = models.CharField(max_length=100, blank=False)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     gpx_file = models.FileField(upload_to=gpx_folder,
                                 blank=True,

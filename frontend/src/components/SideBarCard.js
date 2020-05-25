@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import Input from './Input';
 import {validateCoords} from '../utils';
-import {deletePartitionPoint, deletePoint, updatePointLatLng} from "../actions/points";
+import {deletePartitionPoint, deletePoint, pointsError, updatePointLatLng} from "../actions/points";
 import {UNSELECT_POINT} from "../actions/types";
 import {updateTrack} from "../actions/tracks";
 
@@ -64,14 +64,16 @@ export default class SideBarCard extends Component {
     };
 
     deletePointHandler = (index) => {
+        if (this.props.track.geometry.coordinates.length === 2) {
+            this.props.pointsError();
+            return
+        }
         if (!_.isEmpty(this.props.track)) {
-            if (window.confirm("Really want to delete this point?")) {
-                this.props.deletePoint(index);
-                if (!_.isEmpty(this.props.partition.indexes)) {
-                    this.props.deletePartitionPoint(index);
-                }
-                this.props.updateTrack(this.props.track.properties.id);
+            this.props.deletePoint(index);
+            if (!_.isEmpty(this.props.partition.indexes)) {
+                this.props.deletePartitionPoint(index);
             }
+            this.props.updateTrack(this.props.track.properties.id);
         }
     };
 
@@ -167,6 +169,7 @@ SideBarCard = connect (
             updateTrack: (id) => dispatch(updateTrack(id)),
             clearIndex: () => dispatch({type: UNSELECT_POINT}),
             deletePoint: (index) => dispatch(deletePoint(index)),
+            pointsError: () => dispatch(pointsError()),
             deletePartitionPoint: (index) => dispatch(deletePartitionPoint(index)),
             updatePointLatLng: (index, val) => dispatch(updatePointLatLng(index, val))
         }
