@@ -59,6 +59,9 @@ class Alerts extends Component {
             if (error.status === 200) {
                 alert.info(error.msg.detail)
             }
+            if (error.status === 1) {
+                alert.error(error.msg)
+            }
         }
     }
 

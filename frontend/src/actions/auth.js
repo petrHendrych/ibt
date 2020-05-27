@@ -36,12 +36,21 @@ export const loadUser = () => async (dispatch, getState) => {
         await dispatch(getFiles());
         dispatch(getTracks());
     } catch (err) {
-        const errors = {
-            msg: err.response.data,
-            status: err.response.status
+        let errors = {
+            msg: 'Server cannot be reached',
+            status: 1
         };
-        dispatch({type: GET_ERRORS, payload: errors});
-        dispatch({type: AUTH_ERROR});
+
+        if (err.response) {
+            errors = {
+                msg: err.response.data,
+                status: err.response.status
+            };
+            dispatch({type: GET_ERRORS, payload: errors});
+            dispatch({type: AUTH_ERROR});
+        } else {
+            dispatch({type: GET_ERRORS, payload: errors});
+        }
     }
 };
 
