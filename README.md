@@ -18,5 +18,9 @@ To run this application you have to have installed following things:
 
 For more information how to setup backend and platform-specific informations visit this page: <https://docs.djangoproject.com/en/3.0/ref/contrib/gis/install/>.
 
+Don't forget to setup your own local database. Follow instructions from link above and change needed data in `settings.py` file.
 
-After cloning repository run `npm install` to install needed packages.
+
+### Frontend installation
+
+After cloning repository run `npm install` in frontend directory to install needed packages.
