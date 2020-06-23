@@ -13,16 +13,20 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from datetime import timedelta
 
-if os.name == 'nt':
-    import platform
-    OSGEO4W = r"C:\OSGeo4W"
-    if '64' in platform.architecture()[0]:
-        OSGEO4W += "64"
-    assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
-    os.environ['OSGEO4W_ROOT'] = OSGEO4W
-    os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
-    os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
-    os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
+"""
+Uncomment this section if your project cannot find OGEO4W files
+More info at: https://stackoverflow.com/questions/54256190/could-not-find-the-gdal-library-when-starting-new-django-project
+"""
+# if os.name == 'nt':
+#     import platform
+#     OSGEO4W = r"C:\OSGeo4W"
+#     if '64' in platform.architecture()[0]:
+#         OSGEO4W += "64"
+#     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
+#     os.environ['OSGEO4W_ROOT'] = OSGEO4W
+#     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
+#     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
+#     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -94,12 +98,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+"""
+Change 'NAME', 'USER' and 'PASSWORD' to your corresponding local database.
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'gpxeditor',
-        'USER': 'pedro',
-        'PASSWORD': 'passw',
+        'NAME': 'name',
+        'USER': 'username',
+        'PASSWORD': 'password',
         'HOST': 'localhost',
         'PORT': '',
         'TEST': {
@@ -145,6 +152,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+"""
+Do not change static and media urls!
+"""
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
@@ -163,11 +173,21 @@ REST_FRAMEWORK = {
         ]
 }
 
+"""
+To make sure its running correctly use these ports.
+8000 for server
+3000 for frontend React develop server
+
+Change if your 
+"""
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://localhost:3000",
 ]
 
+"""
+Auto loggout after 30 minutes of inactivity.
+"""
 REST_KNOX = {
     'TOKEN_TTL': timedelta(minutes=30),
     'AUTO_REFRESH': True,
